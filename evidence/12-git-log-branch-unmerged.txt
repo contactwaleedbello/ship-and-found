@@ -5,3 +5,9 @@
 * 9793db7 Add design system docs and business brief
 * a7dd5ab Add Gadget Plug product screen using role tokens
 * f09355f Add token JSON and CSS build scripts
+
+--- added after deleting the branch: proof it was never merged ---
+$ git branch --contains cd32780   (no output means no branch holds it)
+$ git cat-file -t cd32780   (the commit still exists in the object store)
+commit
+$ git log --oneline main | grep cd32780   (no output means main does not contain it)

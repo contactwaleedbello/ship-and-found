@@ -1,3 +1,5 @@
+* cd32780 Regression test: break one role and change primary palette
+* 5257443 Redo regression evidence with the actual broken branch
 * 5ca57e5 Add regression evidence
 * a198a80 Add evidence files and raw-value search
 * 9793db7 Add design system docs and business brief

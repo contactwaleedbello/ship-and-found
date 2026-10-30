@@ -1,0 +1,7 @@
+Checking src/ and styles/ (4 file(s) scanned).
+Exempt generated token definition: styles/tokens/primitives.css
+roles.css: primitive aliases allowed only in role definitions; rgb() allowed only in --shadow-* definitions.
+
+styles/tokens/roles.css:5: raw hex colour - --color-primary: #C4452B;
+
+FAIL: 1 offending line(s). Interface code must use role variables only.

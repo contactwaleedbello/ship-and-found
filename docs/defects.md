@@ -1,2 +1,37 @@
-# screen-without-system
-The baseline invented prices, a discount and shipping claims that the shop never gave me. On a real business page, that is a false claim.
+# Defects in the product page and token build
+
+## 1. Hard-coded breakpoints in CSS
+- **What it is:** The `@media` queries in the page stylesheet use raw pixel numbers (`840px`, `600px`, `600px`) instead of reading the breakpoint tokens.
+- **Where:** `src/style.css` lines 96 (`@media (min-width: 840px)`), 291 (`@media (min-width: 600px)`), and 337 (`@media (min-width: 600px)`). Meanwhile, `scripts/build-tokens.js` (lines 245, 753–759) skips emitting `spacing roles/breakpoint/*` as tokens and only uses `breakpoint/min-width` for the `@media` blocks in `styles/tokens/roles.css`.
+- **Why it matters:** If a breakpoint changes in `tokens/tokens.json` and the token CSS is rebuilt, `styles/tokens/roles.css` will update its `@media` queries automatically, but `src/style.css` will stay at `600px` and `840px`, putting the page layout out of sync with its spacing tokens.
+- **Fix:** Because standard CSS `@media` queries cannot read `var(--...)` custom properties, generate the breakpoint queries in `src/style.css` from `tokens/tokens.json` during the build step (or emit `@custom-media` / build-time breakpoint rules from `breakpoint/min-width`).
+
+## 2. Missing 1200px and 1600px breakpoint blocks
+- **What it is:** The design system defines five breakpoint modes (Compact `<600px`, Medium `600px`, Expanded `840px`, Large `1200px`, Extra-large `1600px`), but the page stylesheet only writes layout rules for `600px` and `840px`.
+- **Where:** `styles/tokens/roles.css` defines `@media (min-width: 1200px)` at line 274 and `@media (min-width: 1600px)` at line 321 (including `--spacing-layout-fixed-pane-width: 412px` and `--spacing-layout-side-sheet-max-width: 400px`), while `src/style.css` stops at `@media (min-width: 840px)` (line 96) and has no `1200px` or `1600px` blocks.
+- **Why it matters:** On Large (`1200px+`) and Extra-large (`1600px+`) screens, `.product-layout` keeps the `840px` equal two-column rule (`grid-template-columns: 1fr 1fr`) with `width: 100%` and no max-width or fixed-pane sizing, so the product photo box and text columns stretch across the entire wide screen.
+- **Fix:** Add `@media (min-width: 1200px)` and `@media (min-width: 1600px)` layout rules in `src/style.css` (generated from the breakpoint tokens) that use `--spacing-layout-fixed-pane-width` or constrain the layout width and column proportions for Large and Extra-large viewports.
+
+## 3. Error colour role used for a discount ("Save ₦15,000")
+- **What it is:** The `"Save ₦15,000"` discount badge is styled with the error container colour role (`--color-error-container` and `--color-on-error-container`).
+- **Where:** `src/style.css` lines 233–240 (`.price-discount` sets `background-color: var(--color-error-container)` and `color: var(--color-on-error-container)`), applied to `<span class="type-label-medium price-discount">Save ₦15,000</span>` in `src/index.html` line 75.
+- **Why it matters:** In `docs/colour-roles.md` (lines 54–57), `error` and `error-container` are reserved for urgent error states. Using the error role on a price saving makes a positive offer read like a warning or failure state.
+- **Fix:** Replace `--color-error-container` and `--color-on-error-container` on `.price-discount` with a neutral (`--color-secondary-container` / `--color-on-secondary-container`) or accent (`--color-tertiary-container` / `--color-on-tertiary-container`) container role.
+
+## 4. Invented prices, discount and shipping claims
+- **What it is:** The baseline page invented a struck-through original price (`₦200,000`), a discount badge (`"Save ₦15,000"`), and shipping/dispatch claims (`"Same-Day Fast Dispatch Available"`, `"Fast dispatch to your doorstep"`, `"Inspect your Samsung Galaxy A15 before making payment"`) that the shop never gave, and these were carried over into the system page prompt and HTML.
+- **Where:** Invented in the baseline (`evidence/09-screen-without-system.png`, from the prompt in `evidence/09-screen-without-system.txt` lines 6–15 which only gave `₦185,000` and `"Pay on delivery available"`), then copied into `evidence/10-screen-with-system.txt` (lines 19, 24, 28) and `src/index.html` at line 14 (`Same-Day Fast Dispatch Available`), line 73 (`<s>₦200,000</s>`), line 75 (`Save ₦15,000`), and line 126 (`Inspect your Samsung Galaxy A15 before making payment. Fast dispatch to your doorstep.`).
+- **Why it matters:** On a real shop page, advertising a fake `₦200,000` prior price, a fake `₦15,000` discount, and unverified same-day doorstep dispatch promises is a false claim to customers and contradicts `docs/business-brief.md`.
+- **Fix:** Remove `₦200,000`, `"Save ₦15,000"`, `"Same-Day Fast Dispatch Available"`, and the unverified dispatch/inspection promises from `src/index.html` (and unused `.price-original` / `.price-discount` rules in `src/style.css`), and show only the price (`₦185,000`) and rules the owner actually gave.
+
+## 5. Shadow colour not bound to a variable
+- **What it is:** The three shadow tokens emit a hard-coded RGB colour literal (`rgb(100 13 0 / ...)`) instead of referencing a colour variable.
+- **Where:** `styles/tokens/roles.css` lines 394–396 (`--shadow-hard`, `--shadow-medium`, `--shadow-soft` all use `rgb(100 13 0 / ...)`). In `tokens/tokens.json`, `effectStyles` (`shadow/hard`, `shadow/medium`, `shadow/soft`) leave `color` unbound in `boundVariables` (as noted in `docs/shadows.md` line 32), and `scripts/build-tokens.js` (lines 547–551) converts `style.color` (`#640D00`) directly into raw `rgb(100 13 0 / opacity)`. Furthermore, `scripts/check-tokens.js` (line 19) only scans `src/index.html` and `src/style.css`, so it does not flag the `rgb(...)` literal in `styles/tokens/roles.css`.
+- **Why it matters:** If `--primitive-primary-20` (or the `shadow roles` `*/color` variable) changes in the palette, the shadows in `styles/tokens/roles.css` will not update automatically with the variable unless `effectStyles[].color` is also manually updated.
+- **Fix:** Bind or resolve the shadow colour from the `shadow roles` `*/color` variable (`{Primitives:primary/20}`) in `scripts/build-tokens.js`, and emit CSS that references the token variable (for example, `color-mix(in srgb, var(--primitive-primary-20) 30%, transparent)` or an `--shadow-color` RGB channel variable).
+
+## 6. Cramped 3-column spec grid inside the 2-column layout at 840px and up
+- **What it is:** `.specs-grid` switches to 3 columns at `600px` and stays at 3 columns when `.product-layout` splits into a 2-column layout at `840px`, where card padding also increases to `24px`.
+- **Where:** `src/style.css` lines 291–295 (`.specs-grid` sets `grid-template-columns: repeat(3, 1fr)` at `@media (min-width: 600px)`), combined with `src/style.css` lines 96–103 (`.product-layout` sets `grid-template-columns: 1fr 1fr` at `@media (min-width: 840px)`) and `styles/tokens/roles.css` line 261 (`--spacing-component-card-padding: var(--primitive-space-300)`, which is `24px` at `840px`).
+- **Why it matters:** Inspecting the rendered page at `900px` width confirms the cards look cramped: each card is about `115px` wide with `24px` padding per side (`~65px` for text), so almost every label and value wraps badly—`"Rear camera"` breaks onto 2 lines above `"50MP + / 5MP + / 2MP"` on 3 lines (5 lines total), `"4GB / 6GB Boost"` breaks onto 3 lines (`4GB /`, `6GB`, `Boost`), `"Stock status"` breaks onto 2 lines (`Stock`, `status`), and `"128GB Internal"`, `"5,000 mAh"`, and `"12 months"` each break onto 2 lines.
+- **Fix:** Drop `.specs-grid` back to 2 columns (`grid-template-columns: repeat(2, 1fr)`) inside the `840px` two-column layout in `src/style.css` until the details column is wide enough (such as `1200px+`) to fit 3 cards without wrapping short labels and values.

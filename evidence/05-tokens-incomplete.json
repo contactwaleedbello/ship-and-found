@@ -1,0 +1,255 @@
+{
+ "meta": {
+  "source": "Figma file Nh1cw8CbrXHXCpzwraF3DD, page \"Color System\"",
+  "generatedBy": "Figma Plugin API read via use_figma, then assembled by script (not a Figma export plugin)",
+  "date": "2026-10-23",
+  "includes": "text styles and effect styles only"
+ },
+ "textStyles": [
+  {
+   "name": "type/display-large",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Bold",
+   "fontSize": 57,
+   "lineHeightPx": 80,
+   "letterSpacingPx": -0.5,
+   "boundVariables": {
+    "fontSize": "{typography:display-large/size}",
+    "lineHeight": "{typography:display-large/line-height}",
+    "letterSpacing": "{typography:display-large/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/display-medium",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Bold",
+   "fontSize": 45,
+   "lineHeightPx": 63,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:display-medium/size}",
+    "lineHeight": "{typography:display-medium/line-height}",
+    "letterSpacing": "{typography:display-medium/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/display-small",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Bold",
+   "fontSize": 36,
+   "lineHeightPx": 50,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:display-small/size}",
+    "lineHeight": "{typography:display-small/line-height}",
+    "letterSpacing": "{typography:display-small/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/headline-large",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "SemiBold",
+   "fontSize": 32,
+   "lineHeightPx": 45,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:headline-large/size}",
+    "lineHeight": "{typography:headline-large/line-height}",
+    "letterSpacing": "{typography:headline-large/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/headline-medium",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "SemiBold",
+   "fontSize": 28,
+   "lineHeightPx": 39,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:headline-medium/size}",
+    "lineHeight": "{typography:headline-medium/line-height}",
+    "letterSpacing": "{typography:headline-medium/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/headline-small",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "SemiBold",
+   "fontSize": 24,
+   "lineHeightPx": 34,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:headline-small/size}",
+    "lineHeight": "{typography:headline-small/line-height}",
+    "letterSpacing": "{typography:headline-small/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/title-large",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 22,
+   "lineHeightPx": 31,
+   "letterSpacingPx": 0,
+   "boundVariables": {
+    "fontSize": "{typography:title-large/size}",
+    "lineHeight": "{typography:title-large/line-height}",
+    "letterSpacing": "{typography:title-large/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/title-medium",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 16,
+   "lineHeightPx": 24,
+   "letterSpacingPx": 0.15,
+   "boundVariables": {
+    "fontSize": "{typography:title-medium/size}",
+    "lineHeight": "{typography:title-medium/line-height}",
+    "letterSpacing": "{typography:title-medium/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/title-small",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 14,
+   "lineHeightPx": 21,
+   "letterSpacingPx": 0.1,
+   "boundVariables": {
+    "fontSize": "{typography:title-small/size}",
+    "lineHeight": "{typography:title-small/line-height}",
+    "letterSpacing": "{typography:title-small/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/body-large",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Regular",
+   "fontSize": 16,
+   "lineHeightPx": 26,
+   "letterSpacingPx": 0.5,
+   "boundVariables": {
+    "fontSize": "{typography:body-large/size}",
+    "lineHeight": "{typography:body-large/line-height}",
+    "letterSpacing": "{typography:body-large/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/body-medium",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Regular",
+   "fontSize": 14,
+   "lineHeightPx": 22,
+   "letterSpacingPx": 0.25,
+   "boundVariables": {
+    "fontSize": "{typography:body-medium/size}",
+    "lineHeight": "{typography:body-medium/line-height}",
+    "letterSpacing": "{typography:body-medium/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/body-small",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Regular",
+   "fontSize": 12,
+   "lineHeightPx": 18,
+   "letterSpacingPx": 0.4,
+   "boundVariables": {
+    "fontSize": "{typography:body-small/size}",
+    "lineHeight": "{typography:body-small/line-height}",
+    "letterSpacing": "{typography:body-small/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/label-large",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 14,
+   "lineHeightPx": 21,
+   "letterSpacingPx": 0.1,
+   "boundVariables": {
+    "fontSize": "{typography:label-large/size}",
+    "lineHeight": "{typography:label-large/line-height}",
+    "letterSpacing": "{typography:label-large/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/label-medium",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 12,
+   "lineHeightPx": 18,
+   "letterSpacingPx": 0.5,
+   "boundVariables": {
+    "fontSize": "{typography:label-medium/size}",
+    "lineHeight": "{typography:label-medium/line-height}",
+    "letterSpacing": "{typography:label-medium/letter-spacing}"
+   }
+  },
+  {
+   "name": "type/label-small",
+   "fontFamily": "Fira Sans",
+   "fontStyle": "Medium",
+   "fontSize": 11,
+   "lineHeightPx": 17,
+   "letterSpacingPx": 0.5,
+   "boundVariables": {
+    "fontSize": "{typography:label-small/size}",
+    "lineHeight": "{typography:label-small/line-height}",
+    "letterSpacing": "{typography:label-small/letter-spacing}"
+   }
+  }
+ ],
+ "effectStyles": [
+  {
+   "name": "shadow/hard",
+   "type": "DROP_SHADOW",
+   "color": "#640D00",
+   "opacity": 0.3,
+   "x": 0,
+   "y": 1,
+   "blur": 2,
+   "spread": 0,
+   "boundVariables": {
+    "offsetX": "{shadow roles:shadow/hard/x}",
+    "offsetY": "{shadow roles:shadow/hard/y}",
+    "radius": "{shadow roles:shadow/hard/blur}",
+    "spread": "{shadow roles:shadow/hard/spread}"
+   }
+  },
+  {
+   "name": "shadow/medium",
+   "type": "DROP_SHADOW",
+   "color": "#640D00",
+   "opacity": 0.2,
+   "x": 0,
+   "y": 4,
+   "blur": 8,
+   "spread": 0,
+   "boundVariables": {
+    "offsetX": "{shadow roles:shadow/medium/x}",
+    "offsetY": "{shadow roles:shadow/medium/y}",
+    "radius": "{shadow roles:shadow/medium/blur}",
+    "spread": "{shadow roles:shadow/medium/spread}"
+   }
+  },
+  {
+   "name": "shadow/soft",
+   "type": "DROP_SHADOW",
+   "color": "#640D00",
+   "opacity": 0.16,
+   "x": 0,
+   "y": 12,
+   "blur": 24,
+   "spread": -4,
+   "boundVariables": {
+    "offsetX": "{shadow roles:shadow/soft/x}",
+    "offsetY": "{shadow roles:shadow/soft/y}",
+    "radius": "{shadow roles:shadow/soft/blur}",
+    "spread": "{shadow roles:shadow/soft/spread}"
+   }
+  }
+ ]
+}

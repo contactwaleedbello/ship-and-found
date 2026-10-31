@@ -48,6 +48,8 @@ function parseMinBatteryHours(batteryFilter: string | undefined): number | null 
   return Number.isNaN(numeric) ? null : numeric;
 }
 
+export const catalogDevices = SEEDED_DEVICES;
+
 export function listDevices(filters: DeviceFilterInput = {}): DeviceCardDto[] {
   const brandFilter = filters.brand?.toLowerCase();
   const categoryFilter = filters.category?.toLowerCase();

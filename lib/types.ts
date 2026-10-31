@@ -74,3 +74,75 @@ export interface HealthResponseDto {
   };
 }
 
+export type PaymentMethod = 'CASH' | 'TRANSFER';
+export type PaymentType = 'DOWN_PAYMENT' | 'BALANCE' | 'SETTLEMENT';
+
+export interface PaymentRecordDto {
+  id: string;
+  agreementId: string;
+  amountNaira: number;
+  paymentMethod: PaymentMethod;
+  paymentType: PaymentType;
+  recordedByUserId: string;
+  recordedByName?: string | undefined;
+  recordedAt: string;
+  notes?: string | undefined;
+}
+
+export type ReminderType = 'T-7' | 'T-3' | 'T-1' | 'T-0' | 'T+1';
+
+export interface WhatsAppReminderLogDto {
+  id: string;
+  agreementId: string;
+  customerName: string;
+  customerPhone: string;
+  reminderType: ReminderType;
+  channel: 'WHATSAPP';
+  status: 'SENT' | 'FAILED';
+  sentAt: string;
+  loggedByUserId: string;
+  loggedByName?: string | undefined;
+}
+
+export interface InventoryApprovalDto {
+  id: string;
+  deviceId: string;
+  deviceName: string;
+  proposedStockCount: number;
+  currentStockCount: number;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  submittedByUserId: string;
+  submittedByName?: string | undefined;
+  submittedAt: string;
+  decidedByUserId?: string | undefined;
+  decidedAt?: string | undefined;
+  decisionNotes?: string | undefined;
+}
+
+export interface AuditLogEntryDto {
+  id: string;
+  timestamp: string;
+  action: string;
+  actorId: string;
+  actorRole: UserRole;
+  targetId?: string | undefined;
+  ipAddress?: string | undefined;
+  metadata?: Record<string, unknown> | undefined;
+}
+
+export interface SuccessMetricsDto {
+  totalAgreementsCount: number;
+  activeAgreementsCount: number;
+  completedAgreementsCount: number;
+  defaultedAgreementsCount: number;
+  defaultRatePercent: number;
+  completionRatePercent: number;
+  totalVolumeNaira: number;
+  totalCollectedNaira: number;
+  totalOutstandingNaira: number;
+  averageTurnaroundHours: number;
+  overdueCount: number;
+}
+
+

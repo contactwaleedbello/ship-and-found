@@ -41,3 +41,4 @@ DOM Element Measurement:
 - Horizontal Scrollbar: NONE (overflow-x: hidden / normal flow)
 - Visual Weight Parity (FR-01): Battery font size (14px/text-body-sm, 700 weight) matches Dynamic Price (14px/text-body-sm, 700 weight) exactly.
 ================================================================================
+

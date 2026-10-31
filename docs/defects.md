@@ -68,6 +68,17 @@ This document tracks actual repository, configuration, routing, styling, and run
 - **Resolution & Evidence:**
   Created local untracked `.env` alongside `.env.local` (both ignored by `.gitignore`) so Prisma CLI loads `DATABASE_URL` automatically, and updated `prisma/seed.ts` to use the exact `snake_case` model fields from `prisma/schema.prisma`. Verified with `prisma validate` (`The schema at prisma/schema.prisma is valid 🚀`) and `npm run typecheck` (`0` errors).
 
+### DEF-05: `exactOptionalPropertyTypes` Type Incompatibilities in Management Domain DTOs
+- **Phase Identified:** Phase 4 (Milestone 1 — Management Services & API Routes Compilation)
+- **Severity:** Low (TypeScript strict compilation error under `exactOptionalPropertyTypes: true`)
+- **Description:**
+  `tsconfig.json` enforces all 7 strict flags from `.agents/rules/code-conventions.md`, including `exactOptionalPropertyTypes: true`. When DTO interfaces declare optional properties as `targetId?: string` or `lastReminderSentAt?: string`, assigning `targetId: entry.targetId` where the value can be `undefined` violates TypeScript's exact optional property checks (`Type 'undefined' is not assignable to type 'string'`).
+- **Reproduction Details:**
+  Running `npm run typecheck` during Phase 4 Milestone 1 failed with `TS2375` in `lib/services/audit-service.ts` and `TS2379` in `lib/services/worker-service.ts`.
+- **Status:** **Resolved in Phase 4**
+- **Resolution & Evidence:**
+  Updated `lib/types.ts` to explicitly allow `| undefined` on optional properties (`targetId?: string | undefined;`, `lastReminderSentAt?: string | undefined;`, etc.). Verified via `npm run typecheck` (`0` errors).
+
 ---
 
 ## 3. Diagnostic Reproductions & Pending UI Verifications

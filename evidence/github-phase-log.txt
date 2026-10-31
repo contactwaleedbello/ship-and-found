@@ -71,6 +71,7 @@ PHASE 3 CHECKPOINT
   1. 555de31 — feat: implement customer application, cron, and deletion services and API routes
   2. ada5432 — feat: implement customer workflow screens #8 through #13
   3. 8985fce — test: verify customer application journeys and database evidence 11-13
+  4. 3eadad4 — docs: record Phase 3 checkpoint in github-phase-log
 - Verification Status Before Commit:
   - npm run typecheck (tsc --noEmit): PASSED (0 errors)
   - npm run lint (next lint): PASSED (✔ No ESLint warnings or errors)
@@ -83,4 +84,32 @@ PHASE 3 CHECKPOINT
 - Merge into main Result: PASSED
 - Main Branch Push Result: SYNCHRONISED
 - Final Status: SYNCHRONISED
+- Blockers or Deviations: None.
+
+
+PHASE 4 CHECKPOINT
+--------------------------------------------------------------------------------
+- Phase Number & Name: Phase 4 — Store Worker & Owner/Co-owner Management Workflows, Queues, Approvals, and Administrative Endpoints
+- Date and Time: 2026-10-31T22:54:00+01:00
+- GitHub Remote (origin): https://github.com/contactwaleedbello/ship-and-found.git
+- Starting Branch: main (at Phase 3 completion commit 75a8c19)
+- Phase Branch: phase-4-management-workflows
+- Milestone Commits on phase-4-management-workflows:
+  1. 56e1b92 — feat: implement store worker and owner management services and API routes
+  2. 9409492 — feat: implement store worker operational screens #14 through #20
+  3. bbeec5c — feat: implement owner and co-owner management screens #21 through #29
+  4. test: verify management workflows and admin routes
+- Verification Status Before Commit:
+  - npm run typecheck (tsc --noEmit): PASSED (0 errors)
+  - npm run lint (next lint): PASSED (✔ No ESLint warnings or errors)
+  - styles/ parity check against task-01-design-system/styles: PASSED (0 differences)
+  - Hardcoded hex/px check across app/(worker) and app/(admin): PASSED (0 matches)
+  - Live Next.js dev server & HTTP verification: PASSED (HTTP 200 across all 7 Worker screens, 9 Admin screens, and 16 management API routes)
+  - Business rules verified: FR-08 overpayment block (400 OVERPAYMENT_BLOCKED) and BR-13 dual-control activation gate (400 PRECONDITION_FAILED)
+  - Security hygiene review (.env, .env.local, node_modules, .next excluded): PASSED
+- Push Destination: origin (https://github.com/contactwaleedbello/ship-and-found.git)
+- Phase Branch Push Result: Pending Step C
+- Merge into main Result: Pending Step D
+- Main Branch Push Result: Pending Step D
+- Final Status: IN PROGRESS (Finalizing Milestone 4 release checkpoint)
 - Blockers or Deviations: None.

@@ -54,6 +54,19 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   ├── data-model.md                           # 5-domain data model navigation aid
 │   └── design-system.md                        # Design system consumption rules & anti-patterns
 ├── app/                                        # Next.js 14 App Router presentation & API layer
+│   ├── (admin)/                                # Owner & Co-owner executive route group (Screens #21-#29)
+│   │   ├── admin/
+│   │   │   ├── applications/[id]/
+│   │   │   │   ├── final-approve/page.tsx      # Screen #23: Final Approval (BR-13 dual-control gate)
+│   │   │   │   └── review/page.tsx             # Screen #22: Review Application (NIN access & rejection)
+│   │   │   ├── audit/page.tsx                  # Screen #28: Immutable Audit Log (50 rows/page)
+│   │   │   ├── defaults/page.tsx               # Screen #25: Defaulted Contracts (FR-09 ₦0 balance resolution)
+│   │   │   ├── deletion-requests/page.tsx      # Screen #26: NDPA Section 37 Deletion Requests
+│   │   │   ├── exchange-rate/page.tsx          # Screen #24: Exchange Rate Settings (live price preview)
+│   │   │   ├── inventory-approvals/page.tsx    # Screen #27: Inventory Approvals (worker proposals)
+│   │   │   ├── metrics/page.tsx                # Screen #29: Success Metrics (5 PRD business KPIs)
+│   │   │   └── page.tsx                        # Screen #21: Owner Dashboard (alerts & KPI summary)
+│   │   └── layout.tsx                          # Executive governance navigation layout
 │   ├── (customer)/                             # Authenticated Customer route group (Screens #8-#13)
 │   │   ├── applications/
 │   │   │   ├── [id]/
@@ -75,7 +88,29 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   │   ├── register/page.tsx                   # Screen #4: Register (Terms & WhatsApp consent)
 │   │   ├── verify-otp/page.tsx                 # Screen #5: OTP Verification (with B.6 fallback)
 │   │   └── page.tsx                            # Screen #1: Home / Inventory Listing (25 devices + filters)
+│   ├── (worker)/                               # Store Worker counter operations route group (Screens #14-#20)
+│   │   ├── layout.tsx                          # Worker counter layout & navigation header
+│   │   └── worker/
+│   │       ├── balance/[agreementId]/page.tsx  # Screen #16: Record Balance Payment (FR-08 overpayment block)
+│   │       ├── inventory/page.tsx              # Screen #20: Inventory Update (propose stock changes)
+│   │       ├── reminders/page.tsx              # Screen #18: Reminder Checklist (wa.me click-to-chat)
+│   │       ├── reserved/page.tsx               # Screen #19: Reserved Units (24h hold & shelf tags)
+│   │       ├── settlement/[agreementId]/page.tsx # Screen #17: Record Settlement Payment
+│   │       ├── verify/[applicationId]/page.tsx # Screen #15: Verify Down Payment (BR-06 attestation)
+│   │       └── page.tsx                        # Screen #14: Worker Dashboard (4 operational queues)
 │   ├── api/                                    # HTTP route handlers (thin controllers)
+│   │   ├── admin/                              # Owner & Co-owner administration API routes
+│   │   │   ├── applications/
+│   │   │   │   └── [id]/
+│   │   │   │       ├── final-approve/route.ts  # POST /api/admin/applications/:id/final-approve
+│   │   │   │       ├── review/route.ts         # POST /api/admin/applications/:id/review
+│   │   │   │       └── view-nin/route.ts       # POST /api/admin/applications/:id/view-nin
+│   │   │   ├── audit-logs/route.ts             # GET /api/admin/audit-logs
+│   │   │   ├── defaults/[id]/resolve/route.ts  # POST /api/admin/defaults/:id/resolve
+│   │   │   ├── deletion-requests/[id]/decide/route.ts # POST /api/admin/deletion-requests/:id/decide
+│   │   │   ├── exchange-rate/route.ts          # POST /api/admin/exchange-rate
+│   │   │   ├── inventory-approvals/[id]/decide/route.ts # POST /api/admin/inventory-approvals/:id/decide
+│   │   │   └── metrics/route.ts                # GET /api/admin/metrics
 │   │   ├── applications/
 │   │   │   ├── [id]/
 │   │   │   │   ├── accept-agreement/route.ts   # POST /api/applications/:id/accept-agreement
@@ -99,8 +134,16 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   │   ├── devices/
 │   │   │   ├── [id]/route.ts                   # GET /api/devices/:id
 │   │   │   └── route.ts                        # GET /api/devices
-│   │   └── health/
-│   │       └── route.ts                        # GET /api/health endpoint
+│   │   ├── health/
+│   │   │   └── route.ts                        # GET /api/health endpoint
+│   │   └── worker/                             # Store Worker counter operations API routes
+│   │       ├── inventory-update/route.ts       # POST /api/worker/inventory-update
+│   │       ├── log-reminder/route.ts           # POST /api/worker/log-reminder
+│   │       ├── queues/route.ts                 # GET /api/worker/queues
+│   │       ├── record-balance/route.ts         # POST /api/worker/record-balance
+│   │       ├── record-settlement/route.ts      # POST /api/worker/record-settlement
+│   │       ├── resend-otp/route.ts             # POST /api/worker/resend-otp
+│   │       └── verify-payment/route.ts         # POST /api/worker/verify-payment
 │   ├── globals.css                             # Global stylesheet importing fonts & tokens
 │   ├── layout.tsx                              # Root Server Component layout
 │   └── not-found.tsx                           # Global 404 boundary (verbatim ux-states.md string)
@@ -131,11 +174,14 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   └── github-phase-log.txt
 ├── lib/                                        # Server-side utilities, validation, & domain modules
 │   ├── services/
+│   │   ├── admin-service.ts                    # Owner review, dual-control approval, multiplier, defaults
 │   │   ├── application-service.ts              # Part-payment submission & agreement acceptance logic
+│   │   ├── audit-service.ts                    # Immutable append-only audit trail & 50 rows/page query
 │   │   ├── auth-service.ts                     # Auth & OTP verification business logic
 │   │   ├── catalog-service.ts                  # Device filtering, lookup, & calculator math
 │   │   ├── cron-service.ts                     # Overdue application expiry & heartbeat checker
-│   │   └── customer-service.ts                 # NDPA formal data deletion service
+│   │   ├── customer-service.ts                 # NDPA formal data deletion service
+│   │   └── worker-service.ts                   # Operational queues, down payment verify, balance record
 │   ├── catalog-data.ts                         # 25 seeded Shop ATF 03 devices across 5 brands
 │   ├── constants.ts                            # Business rule thresholds & enums (BR-01..BR-20)
 │   ├── crypto.ts                               # AES-256-GCM encryption, HMAC-SHA256 blind index, NIN mask

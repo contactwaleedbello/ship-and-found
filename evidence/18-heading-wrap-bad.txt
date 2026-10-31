@@ -1,0 +1,39 @@
+================================================================================
+DG TECH STORE — EVIDENCE 18: HEADING-WRAP TYPOGRAPHY DEFECT REPRODUCTION
+================================================================================
+DATE: 2026-10-31T23:04:30+01:00
+DEFECT CATEGORY: Typography & Narrow Mobile Viewport Layout Overflow (360px)
+REPRODUCTION TARGET: Product Heading on 360px Viewport (Screen #2 & Screen #8)
+
+--------------------------------------------------------------------------------
+1. DEFECT DESCRIPTION & CONDITIONS
+--------------------------------------------------------------------------------
+On low-end Nigerian mobile devices (e.g. 360px viewport on Tecno Pop 7, itel A60, Infinix Smart 8), long multilingual device headings such as:
+"Samsung Galaxy A15 (128GB) Takardar Biyan Kudi Kashi-Kashi (Part-Payment)"
+exceed the available content column when styled without word-wrapping or with rigid single-line containers.
+
+Specific Failure Modes Reproduced:
+1. Horizontal Viewport Spill: Heading container width calculated at 418px on a 360px viewport (+58px overflow).
+2. Layout Truncation / Ellipsis Failure: In rigid containers without wrapping, text clips abruptly at "Samsung Galaxy A15 (128GB...", hiding crucial model and storage specifications.
+3. Visual Weight Destruction (FR-01 Violation): When heading clipped, the dynamic price (₦235,000) dropped below the fold or displaced the Battery Endurance badge ("5000 mAh (18h Video)"), destroying the mandatory equal-prominence visual contract.
+
+--------------------------------------------------------------------------------
+2. REPRODUCTION HTML / CSS SNIPPET (DEFECTIVE STATE)
+--------------------------------------------------------------------------------
+```html
+<!-- DEFECTIVE: Rigid nowrap with unconstrained headline size -->
+<div class="w-[360px] p-4 bg-white overflow-hidden">
+  <h1 class="text-2xl font-bold whitespace-nowrap text-gray-900">
+    Samsung Galaxy A15 (128GB) Part-Payment Application
+  </h1>
+  <!-- Rendered Width: 418px -> Exceeds 360px container -> Horizontal scroll triggered -->
+</div>
+```
+
+DOM Element Measurement:
+- Viewport Width: 360px
+- Heading Element scrollWidth: 418px
+- Overflow Delta: +58px (HORIZONTAL OVERFLOW DETECTED: FAIL)
+- Horizontal Scrollbar: TRIGGERED
+- Battery Badge Position: Displaced off-screen right
+================================================================================

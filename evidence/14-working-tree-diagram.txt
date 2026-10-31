@@ -1,0 +1,225 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03) — EVIDENCE 14: ARCHITECTURAL WORKING-TREE DIAGRAM
+================================================================================
+DATE: 2026-10-31T23:03:00+01:00
+BRANCH: phase-5-verification (parent branch: task-2)
+REPOSITORY: /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY
+FRAMEWORK: Next.js 14.2.35 (App Router) + TypeScript 5.6 (Strict) + Tailwind CSS v3 (Token-Mapped)
+PERSISTENCE: PostgreSQL 15+ / Prisma 5.22.0 ORM
+
+--------------------------------------------------------------------------------
+1. FULL SYSTEM ARCHITECTURE & WORKING-TREE GRAPH
+--------------------------------------------------------------------------------
+
+Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/
+│
+├── 📁 .agents/                                      # Engineering rules & procedural skills
+│   ├── 📁 rules/                                    # 32 authoritative domain rule documents
+│   │   ├── accessibility-baseline.md                # WCAG 2.1 AA, 4.5:1 contrast, 44px touch targets
+│   │   ├── api-contracts.md                         # 12 REST API route contracts & payload schemas
+│   │   ├── api-design.md                            # Standard error envelope, x-request-id headers
+│   │   ├── build-plan.md                            # 5-phase execution plan
+│   │   ├── business-rules.md                        # BR-01 through BR-20 business logic rules
+│   │   ├── code-conventions.md                      # TypeScript strict flags, 3-group imports, no 'any'
+│   │   ├── cron.md                                  # 15-minute overdue application & default cron jobs
+│   │   ├── data-and-schema.md                       # PRD 5.1 Prisma schema additions & resolutions
+│   │   ├── edge-cases.md                            # Handling stale prices, concurrent reservations
+│   │   ├── env-and-secrets.md                       # Zod envSchema, AES-256-GCM secret rotation
+│   │   ├── failure-modes.md                         # Unreachable DB, SMS gateway timeout, degraded mode
+│   │   ├── functional-requirements.md               # FR-01 through FR-13 functional specifications
+│   │   ├── message-templates.md                     # Verbatim Appendix A templates (A.1 through A.6)
+│   │   ├── monitoring.md                            # GET /api/health endpoint & heartbeat telemetry
+│   │   ├── ndpa-compliance.md                       # Section 37 data deletion & 7-year audit retention
+│   │   ├── non-functional.md                        # Performance budgets, LCP < 2.5s, 3G optimization
+│   │   ├── notification-matrix.md                   # In-app, SMS, WhatsApp reminder triggers
+│   │   ├── observability-baseline.md                # Structured JSON logger with PII scrubbing
+│   │   ├── out-of-scope.md                          # In-app payment gateways, push notifications excluded
+│   │   ├── permission-matrix.md                     # Role-based access (Customer, Worker, Owner)
+│   │   ├── scope.md                                 # Core MVP flexi-pay part-payment workflow
+│   │   ├── screen-inventory.md                      # 29-screen inventory across 4 persona groups
+│   │   ├── security-baseline.md                     # OWASP Top 10, blind indexing, bcrypt hashing
+│   │   ├── stack.md                                 # Approved dependencies & banned package rules
+│   │   ├── state-transitions.md                     # 10 internal & 7 customer-visible statuses
+│   │   ├── success-metrics.md                       # 5 core business KPIs (Default <3%, Completion >90%)
+│   │   ├── third-party.md                           # Termii SMS & WhatsApp deep-link protocols
+│   │   ├── user-journeys.md                         # End-to-end customer, worker, and owner journeys
+│   │   ├── ux-states.md                             # Loading skeletons, empty states, error strings
+│   │   ├── version-2-data.md                        # Future multi-tenant & offline capability notes
+│   │   ├── workflows.md                             # Step-by-step part-payment operational workflows
+│   │   └── working-agreements.md                    # Pair-programming conventions & evidence rules
+│   └── 📁 skills/                                   # 3 repeatable procedural skills (kebab-case)
+│       ├── 📁 build-api-endpoint/SKILL.md           # Route handler implementation guide
+│       ├── 📁 build-form-screen/SKILL.md            # Accessible form implementation guide
+│       └── 📁 build-list-screen/SKILL.md            # Filterable list and queue screen guide
+│
+├── 📁 Context files/                                # Architectural context & navigation aids
+│   ├── DG Tech Store PRD.md                         # Consolidated PRD v1.3 (1,569 lines)
+│   ├── architecture.md                              # 3-layer system design & 7-step HTTP lifecycle
+│   ├── assumptions-and-open-questions.md            # Pointer index to rule files owning open questions
+│   ├── data-model.md                                # 5-domain data model navigation aid
+│   └── design-system.md                             # Task 1 design system consumption guidelines
+│
+├── 📁 styles/                                       # Approved Task 1 Design System (100% token parity)
+│   ├── fonts.css                                    # Self-hosted @font-face rules (Fira Sans, Noto Sans)
+│   ├── 📁 fonts/                                    # Subsetted .woff2 font binaries (Hausa, Yoruba, ₦)
+│   │   ├── OFL-FiraSans.txt
+│   │   ├── OFL-NotoSans.txt
+│   │   ├── fira-sans-400-text.woff2
+│   │   ├── fira-sans-500-text.woff2
+│   │   ├── fira-sans-600-text.woff2
+│   │   ├── fira-sans-700-text.woff2
+│   │   └── noto-sans-400-text.woff2
+│   └── 📁 tokens/                                   # CSS Custom Property definitions
+│       ├── index.css                                # Master token manifest
+│       ├── primitives.css                           # Base color palette, typography scales, spacing
+│       └── roles.css                                # Semantic role tokens (surface, text, brand, border)
+│
+├── 📁 lib/                                          # Domain business logic, services, & utilities
+│   ├── 📁 services/                                 # Domain services
+│   │   ├── admin-service.ts                         # Owner review, BR-13 activation gate, multiplier
+│   │   ├── application-service.ts                   # Atomic submission, 24h reservation, OTP acceptance
+│   │   ├── audit-service.ts                         # Immutable append-only audit trail (50 rows/page)
+│   │   ├── auth-service.ts                          # Registration, bcrypt hashing, 6-digit OTP verification
+│   │   ├── catalog-service.ts                       # Device filtering, FR-02 70%-80% calculator
+│   │   ├── cron-service.ts                          # Overdue application expiry & heartbeat monitor
+│   │   ├── customer-service.ts                      # Profile queries & NDPA Section 37 deletion
+│   │   └── worker-service.ts                        # 4 operational queues, BR-06 verify, FR-08 balance
+│   ├── catalog-data.ts                              # 25 seeded devices for Shop ATF 03
+│   ├── constants.ts                                 # Business rule constants (BR-01 through BR-20)
+│   ├── crypto.ts                                    # AES-256-GCM encryption, HMAC-SHA256 blind indexing
+│   ├── db.ts                                        # PrismaClient singleton with connection pooling
+│   ├── env.ts                                       # Zod environment schema validation
+│   ├── errors.ts                                    # AppError class & standard JSON error envelopes
+│   ├── logger.ts                                    # Structured JSON logger with automatic PII scrubbing
+│   ├── templates.ts                                 # Verbatim Appendix A WhatsApp & SMS templates
+│   └── types.ts                                     # TypeScript domain unions, interfaces, & DTOs
+│
+├── 📁 prisma/                                       # Persistence schema & database seeding
+│   ├── schema.prisma                                # 17 Prisma models with onDelete: Restrict
+│   └── seed.ts                                      # Database seed script (Settings, Users, Devices)
+│
+├── 📁 app/                                          # Next.js 14 App Router presentation layer
+│   ├── globals.css                                  # Root stylesheet importing fonts & token layers
+│   ├── layout.tsx                                   # Root layout with semantic landmarks
+│   ├── not-found.tsx                                # Global 404 boundary (verbatim ux-states.md text)
+│   │
+│   ├── 📁 (public)/                                 # Public & Authentication Screens (Screens #1-#7)
+│   │   ├── page.tsx                                 # Screen #1: Home / Inventory Listing
+│   │   ├── 📁 devices/[id]/page.tsx                 # Screen #2: Device Detail & Live Calculator
+│   │   ├── 📁 login/page.tsx                        # Screen #3: Customer Login
+│   │   ├── 📁 register/page.tsx                     # Screen #4: Customer Registration
+│   │   ├── 📁 verify-otp/page.tsx                   # Screen #5: SMS OTP Verification
+│   │   ├── 📁 forgot-password/page.tsx              # Screen #6: Forgot Password (24h lock notice)
+│   │   └── 📁 confirm-price/[deviceId]/page.tsx     # Screen #7: Confirm Price via WhatsApp
+│   │
+│   ├── 📁 (customer)/                               # Authenticated Customer Screens (Screens #8-#13)
+│   │   ├── 📁 apply/[deviceId]/page.tsx             # Screen #8: Apply for Part-Payment
+│   │   ├── 📁 applications/[id]/page.tsx            # Screen #9: Application Status (24h timer)
+│   │   ├── 📁 applications/page.tsx                 # Screen #10: My Applications (Chronological)
+│   │   ├── 📁 contracts/[id]/page.tsx               # Screen #11: Contract Detail (Print button)
+│   │   ├── 📁 applications/[id]/accept/page.tsx     # Screen #12: Agreement Acceptance (OTP modal)
+│   │   └── 📁 settings/page.tsx                     # Screen #13: Account Settings & NDPA Deletion
+│   │
+│   ├── 📁 (worker)/                                 # Store Worker Operations (Screens #14-#20)
+│   │   ├── layout.tsx                               # Worker operational header & shift badge
+│   │   ├── 📁 worker/page.tsx                       # Screen #14: Worker Dashboard (4 queues)
+│   │   ├── 📁 worker/verify/[applicationId]/page.tsx # Screen #15: Verify Down Payment (BR-06)
+│   │   ├── 📁 worker/balance/[agreementId]/page.tsx # Screen #16: Record Balance Payment (FR-08)
+│   │   ├── 📁 worker/settlement/[agreementId]/page.tsx # Screen #17: Record Settlement Payment
+│   │   ├── 📁 worker/reminders/page.tsx             # Screen #18: Reminder Checklist (wa.me)
+│   │   ├── 📁 worker/reserved/page.tsx              # Screen #19: Reserved Units (24h shelf tags)
+│   │   └── 📁 worker/inventory/page.tsx             # Screen #20: Inventory Adjustment Proposals
+│   │
+│   ├── 📁 (admin)/                                  # Owner & Executive Governance (Screens #21-#29)
+│   │   ├── layout.tsx                               # Executive governance header & Owner badge
+│   │   ├── 📁 admin/page.tsx                        # Screen #21: Owner Dashboard (alerts & KPIs)
+│   │   ├── 📁 admin/applications/[id]/review/page.tsx # Screen #22: Review Application (NIN access)
+│   │   ├── 📁 admin/applications/[id]/final-approve/page.tsx # Screen #23: Final Approval (BR-13)
+│   │   ├── 📁 admin/exchange-rate/page.tsx          # Screen #24: Exchange Rate Settings
+│   │   ├── 📁 admin/defaults/page.tsx               # Screen #25: Defaulted Contracts (FR-09)
+│   │   ├── 📁 admin/deletion-requests/page.tsx      # Screen #26: NDPA Section 37 Deletion
+│   │   ├── 📁 admin/inventory-approvals/page.tsx    # Screen #27: Inventory Approvals
+│   │   ├── 📁 admin/audit/page.tsx                  # Screen #28: Immutable Audit Log (50/page)
+│   │   └── 📁 admin/metrics/page.tsx                # Screen #29: Success Metrics Deep Dive
+│   │
+│   └── 📁 api/                                      # 27 RESTful HTTP API Route Controllers
+│       ├── 📁 health/route.ts                       # GET /api/health (heartbeat & DB status)
+│       ├── 📁 devices/route.ts                      # GET /api/devices (catalog listing)
+│       ├── 📁 devices/[id]/route.ts                 # GET /api/devices/:id (single device)
+│       ├── 📁 calculator/route.ts                   # POST /api/calculator (FR-02 estimate)
+│       ├── 📁 auth/register/route.ts                # POST /api/auth/register
+│       ├── 📁 auth/verify-otp/route.ts              # POST /api/auth/verify-otp
+│       ├── 📁 auth/login/route.ts                   # POST /api/auth/login
+│       ├── 📁 auth/logout/route.ts                  # POST /api/auth/logout
+│       ├── 📁 auth/forgot-password/route.ts         # POST /api/auth/forgot-password
+│       ├── 📁 auth/reset-password/route.ts          # POST /api/auth/reset-password
+│       ├── 📁 auth/accept-agreement-otp/route.ts    # POST /api/auth/accept-agreement-otp
+│       ├── 📁 applications/route.ts                 # POST /api/applications (atomic reserve)
+│       ├── 📁 applications/mine/route.ts            # GET /api/applications/mine
+│       ├── 📁 applications/[id]/route.ts            # GET /api/applications/:id
+│       ├── 📁 applications/[id]/accept-agreement/route.ts # POST /api/applications/:id/accept-agreement
+│       ├── 📁 customer/deletion-request/route.ts    # POST /api/customer/deletion-request
+│       ├── 📁 cron/expire-applications/route.ts     # GET /api/cron/expire-applications
+│       ├── 📁 cron/check-expiry-heartbeat/route.ts  # GET /api/cron/check-expiry-heartbeat
+│       ├── 📁 worker/queues/route.ts                # GET /api/worker/queues
+│       ├── 📁 worker/verify-payment/route.ts        # POST /api/worker/verify-payment
+│       ├── 📁 worker/record-balance/route.ts        # POST /api/worker/record-balance
+│       ├── 📁 worker/record-settlement/route.ts     # POST /api/worker/record-settlement
+│       ├── 📁 worker/log-reminder/route.ts          # POST /api/worker/log-reminder
+│       ├── 📁 worker/inventory-update/route.ts      # POST /api/worker/inventory-update
+│       ├── 📁 worker/resend-otp/route.ts            # POST /api/worker/resend-otp
+│       ├── 📁 admin/applications/[id]/review/route.ts # POST /api/admin/applications/:id/review
+│       ├── 📁 admin/applications/[id]/final-approve/route.ts # POST /api/admin/applications/:id/final-approve
+│       ├── 📁 admin/applications/[id]/view-nin/route.ts # POST /api/admin/applications/:id/view-nin
+│       ├── 📁 admin/exchange-rate/route.ts          # POST /api/admin/exchange-rate
+│       ├── 📁 admin/defaults/[id]/resolve/route.ts  # POST /api/admin/defaults/:id/resolve
+│       ├── 📁 admin/deletion-requests/[id]/decide/route.ts # POST /api/admin/deletion-requests/:id/decide
+│       ├── 📁 admin/inventory-approvals/[id]/decide/route.ts # POST /api/admin/inventory-approvals/:id/decide
+│       ├── 📁 admin/audit-logs/route.ts             # GET /api/admin/audit-logs
+│       └── 📁 admin/metrics/route.ts                # GET /api/admin/metrics
+│
+├── 📁 docs/                                         # 9 required workstream documentation files
+│   ├── defects.md                                   # Defect register (DEF-01 through DEF-05)
+│   ├── false-success.md                             # False-success prevention & validation tests
+│   ├── information-design.md                        # Information architecture & 29-screen design
+│   ├── interview-answers.md                         # Authoritative evidence-backed review answers
+│   ├── model-choices.md                             # Technical architecture & design token models
+│   ├── performance-note.md                          # 3G performance budget & bundle findings
+│   ├── readme-test.md                               # Clean-checkout README verification results
+│   ├── scaffold-prompt.md                           # Master implementation prompt & workflow
+│   └── working-tree.md                              # Working-tree rationale & structure
+│
+├── 📁 evidence/                                     # 20 verifiable diagnostic & release records
+│   ├── 01-agent-plan.txt                            # Approved phase plans (Phases 1-5)
+│   ├── 02-files-created.txt                         # Cumulative audit of every file created
+│   ├── 03-server-start.txt                          # Live Next.js dev server startup verification
+│   ├── 04-first-load.txt                            # HTTP 200 checks across public screens
+│   ├── 05-nested-folder-error.txt                   # Diagnostic: Nested folder path failure
+│   ├── 06-nested-folder-fixed.txt                   # Diagnostic: Root path resolution
+│   ├── 07-port-conflict.txt                         # Diagnostic: EADDRINUSE conflict output
+│   ├── 08-port-conflict-resolved.txt                # Diagnostic: Port conflict recovery
+│   ├── 09-404-error.txt                             # Diagnostic: Route 404 test output
+│   ├── 10-404-resolved.txt                          # Diagnostic: Global not-found recovery
+│   ├── 11-db-write-success.txt                      # Real DB reservation write & agreement creation
+│   ├── 12-db-connection-failure.txt                 # Diagnostic: Database unreachable 503 output
+│   ├── 13-db-connection-recovered.txt               # Diagnostic: Health recovery 200 verification
+│   ├── 14-working-tree-diagram.txt                  # Full architectural system diagram
+│   ├── 15-git-log-graph.txt                         # Complete git log graph across all milestones
+│   ├── 16-head-check-3000.txt                       # Live HTTP HEAD headers & security response
+│   ├── 17-head-check-3001.txt                       # Diagnostic port checking & conflict handling
+│   ├── 18-heading-wrap-bad.txt                      # Typography heading-wrap defect reproduction
+│   ├── 19-heading-wrap-good.txt                     # Typography heading-wrap token-based CSS fix
+│   ├── 20-responsive-360-900-1200.txt               # 3-width responsive audit (360px, 900px, 1200px)
+│   └── github-phase-log.txt                         # Per-phase branch, commit, push, & merge log
+│
+├── .env.example                                     # Safe environment variable template
+├── .eslintrc.json                                   # ESLint configuration with Next.js core-web-vitals
+├── .gitignore                                       # Git ignore protecting secrets & build artifacts
+├── .nvmrc                                           # Node.js 20.x runtime pin
+├── .prettierrc                                      # Prettier code formatting rules
+├── package.json                                     # Project dependencies & npm scripts
+├── postcss.config.js                                # PostCSS config for Tailwind CSS v3
+├── tailwind.config.ts                               # Tailwind config mapped 100% to Task 1 tokens
+├── tsconfig.json                                    # TypeScript config enforcing 7 strict flags
+├── README.md                                        # Primary project orientation & documentation
+└── AGENTS.md                                        # Root project instructions & rule governance

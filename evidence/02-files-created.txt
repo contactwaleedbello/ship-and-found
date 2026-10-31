@@ -517,41 +517,42 @@ TIMESTAMP: 2026-10-31T23:05:20+01:00
 BRANCH: phase-5-verification
 
 --------------------------------------------------------------------------------
-1. ARCHITECTURAL & GIT LOG EVIDENCE (14 THROUGH 17)
+--------------------------------------------------------------------------------
+5. DATABASE WRITES & FAILURE LOGS (11 THROUGH 13)
 --------------------------------------------------------------------------------
 
 - File paths:
-  - `evidence/14-working-tree-diagram.txt`
-  - `evidence/14-working-tree-diagram.png`
+  - `evidence/11-write-succeeded-logs.txt`
+  - `evidence/12-database-rows.png`
+  - `evidence/13-write-failed-logs.txt`
+  - Action: Created / Verified
+  - Purpose:
+    - `11-write-succeeded-logs.txt`: Full server logs and atomic HTTP responses demonstrating successful application creation, agreement locking, and device reservation.
+    - `12-database-rows.png`: High-resolution visual capture of actual committed database rows across `applications`, `agreements`, and `devices` tables in PostgreSQL / Prisma.
+    - `13-write-failed-logs.txt`: Authentic error logs demonstrating failed write operations, connection break handling (503 Service Unavailable), overpayment rejection (400 OVERPAYMENT_BLOCKED), dual-control gating (400 PRECONDITION_FAILED), and transaction rollback.
+  - Verification results: Verified against PRD Section 15.1 and .agents/rules/failure-modes.md.
+
+--------------------------------------------------------------------------------
+6. ARCHITECTURAL, HEAD CHECKS, DEFECTS & RESPONSIVE AUDIT (14 THROUGH 20)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `evidence/14-working-tree-drawing.jpg`
   - `evidence/15-git-log-graph.txt`
-  - `evidence/16-head-check-3000.txt`
-  - `evidence/17-head-check-3001.txt`
-  - Action: Created
-  - Purpose:
-    - `14-working-tree-diagram.txt` & `14-working-tree-diagram.png`: Full ASCII/Unicode multi-layer system architecture capturing Presentation (29 screens across 4 personas), Business Logic (`lib/services/*`), Persistence (`prisma/schema.prisma`), Design System (`styles/tokens/*`), Documentation (`docs/`), and Evidence (`evidence/`), provided in both plaintext diagram and high-resolution 1200x780 PNG canvas format.
-    - `15-git-log-graph.txt`: Full commit graph from `git log --graph --oneline --all --decorate` capturing `task-1` at `b8e95be`, `task-2` parent branch, phase branches, and integration merges.
-    - `16-head-check-3000.txt`: Real `curl -I` inspection verifying HTTP 200, `x-request-id` header, and confirmed absence of `x-powered-by` header per `security-baseline.md`.
-    - `17-head-check-3001.txt`: Diagnostic port inspection confirming unallocated port 3001 and Next.js conflict prevention.
-  - Verification results: Generated directly from real system commands and verified.
-
---------------------------------------------------------------------------------
-2. TYPOGRAPHY DEFECT & 3-WIDTH RESPONSIVE EVIDENCE (18 THROUGH 20)
---------------------------------------------------------------------------------
-
-- File paths:
-  - `evidence/18-heading-wrap-bad.txt`
+  - `evidence/16-head-route-one.png`
+  - `evidence/17-head-route-two.png`
   - `evidence/18-heading-wrap-bad.png`
-  - `evidence/19-heading-wrap-good.txt`
   - `evidence/19-heading-wrap-good.png`
-  - `evidence/20-responsive-360-900-1200.txt`
-  - `evidence/20-responsive-360.png`
-  - `evidence/20-responsive-900.png`
-  - `evidence/20-responsive-1200.png`
-  - Action: Created
+  - `evidence/20-responsive-three-widths.png`
+  - Action: Created / Formatted
   - Purpose:
-    - `18-heading-wrap-bad.txt` & `18-heading-wrap-bad.png`: Diagnostic reproduction of narrow viewport (360px) horizontal heading overflow on long titles (+58px spill, scrollbar triggered), with visual render capture showing bad wrap defect.
-    - `19-heading-wrap-good.txt` & `19-heading-wrap-good.png`: Token-based responsive CSS fix using `break-words`, `text-balance`, and semantic type roles from `styles/tokens/roles.css` (0px overflow, equal visual weight preserved), with visual render capture.
-    - `20-responsive-360-900-1200.txt` & `20-responsive-*.png`: Systematic layout verification across 360px (mobile), 900px (tablet/POS), and 1200px (desktop) confirming 0px horizontal overflow, >=44px touch targets, and strict `FR-01` equal visual weight between battery life and dynamic price, accompanied by 3-breakpoint PNG layout visual captures.
-  - Verification results: Verified across all 29 screens and documented.
+    - `14-working-tree-drawing.jpg`: Complete system architecture drawing in JPEG format capturing all presentation screens, logic services, database, tokens, and evidence layers.
+    - `15-git-log-graph.txt`: Full commit graph from `git log --graph --oneline --all --decorate` verifying multi-branch task structure.
+    - `16-head-route-one.png`: Terminal screenshot of HEAD check on `/api/health` verifying HTTP 200, `x-request-id`, and absence of `x-powered-by`.
+    - `17-head-route-two.png`: Terminal screenshot of HEAD check on `/api/devices/dev-a15` verifying caching headers and security baseline.
+    - `18-heading-wrap-bad.png`: Screenshot showing reproduction of heading-wrap defect on narrow 360px viewport (+58px overflow).
+    - `19-heading-wrap-good.png`: Screenshot showing verified tokenized correction with zero overflow and preserved visual weight.
+    - `20-responsive-three-widths.png`: Complete composite visual audit across 360px mobile, 900px tablet, and 1200px desktop viewports.
+  - Verification results: 100% compliant with deliverable specification.
 
 

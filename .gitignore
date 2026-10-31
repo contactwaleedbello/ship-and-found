@@ -23,6 +23,10 @@ yarn-error.log*
 next-env.d.ts
 .vercel
 
+# Internal generation scripts and task artifacts
+/scripts/
+/evidence/github-phase-log.txt
+
 # OS metadata
 .DS_Store
 *.pem

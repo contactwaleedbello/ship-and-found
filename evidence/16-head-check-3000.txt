@@ -1,0 +1,36 @@
+================================================================================
+DG TECH STORE — EVIDENCE 16: HTTP HEAD & SECURITY HEADER CHECK (PORT 3000)
+================================================================================
+COMMAND: curl -I http://localhost:3000/
+TIMESTAMP: 2026-10-31T22:03:54Z
+
+HTTP/1.1 200 OK
+Vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch, Accept-Encoding
+Cache-Control: no-store, must-revalidate
+Content-Type: text/html; charset=utf-8
+Date: Sat, 31 Oct 2026 22:03:54 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+--------------------------------------------------------------------------------
+COMMAND: curl -I http://localhost:3000/api/health
+TIMESTAMP: 2026-10-31T22:03:54Z
+
+HTTP/1.1 200 OK
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+cache-control: no-store
+content-type: application/json
+x-request-id: 671557a1-a611-4118-b1da-bb27aaa242e6
+Date: Sat, 31 Oct 2026 22:03:55 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+--------------------------------------------------------------------------------
+SECURITY & HARDENING ANALYSIS:
+- HTTP Status: 200 OK verified on both root page and health route.
+- x-powered-by header: ABSENT (poweredByHeader: false strictly enforced in next.config.mjs per security-baseline.md).
+- x-request-id correlation header: Present on API routes.
+- Content-Type declared: text/html on pages, application/json on API.
+================================================================================

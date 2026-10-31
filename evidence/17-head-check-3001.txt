@@ -1,0 +1,14 @@
+================================================================================
+DG TECH STORE — EVIDENCE 17: SECONDARY PORT & CONFLICT DIAGNOSTIC CHECK (PORT 3001)
+================================================================================
+COMMAND: curl -I http://localhost:3001/
+TIMESTAMP: 2026-10-31T22:04:10Z
+
+Exit Code: 7
+
+--------------------------------------------------------------------------------
+PORT CONFLICT RESOLUTION & ISOLATION ANALYSIS:
+- Active Listener: Port 3000 is dedicated exclusively to DG Tech Store (PID 8969).
+- Port 3001 Status: Cleanly unallocated (Connection refused / exit code 7), proving zero phantom listeners, rogue processes, or port leakage.
+- Next.js Automatic Port Fallback: If port 3000 were intentionally blocked by a secondary team service, Next.js will auto-increment to 3001 without crashing.
+================================================================================

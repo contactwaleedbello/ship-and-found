@@ -117,3 +117,54 @@ In Phase 2, on dedicated branch `phase-2-database-auth`, we implement the Prisma
 - `styles/` parity check against `../task-01-design-system/styles`: PASSED (`0` differences)
 - Live Next.js 14.2.35 server verification (`evidence/03` through `10`): PASSED (`Ready in 2.2s`, all 7 Public & Auth screens and 10 API endpoints verified)
 
+
+
+================================================================================
+PHASE IDENTIFIER: Phase 3 — Customer Application Workflows, Agreement Acceptance, NDPA Settings, Expiry Cron, and Database Write/Failure Evidence (11–13)
+================================================================================
+TIMESTAMP: 2026-10-31T22:19:15+01:00
+BRANCH: phase-3-customer-workflows (branched from main at fb49740)
+APPROVAL STATUS: APPROVED BY USER ("proced")
+COMPLETION STATUS: COMPLETED & VERIFIED
+
+--------------------------------------------------------------------------------
+1. TASK UNDERSTANDING (PHASE 3)
+--------------------------------------------------------------------------------
+In Phase 3, on dedicated branch `phase-3-customer-workflows`, we implement:
+1. Application and customer services (`lib/services/application-service.ts`, `lib/services/cron-service.ts`, `lib/services/customer-service.ts`).
+2. Customer application API routes:
+   - `POST /api/applications` (Atomic submission: NIN validation, phone validation, 70%–80% down payment, stock check, fresh price check, BR-09 purchase block check, 24h duplicate check, reserved_count += 1, expires_at = NOW() + 24h, Agreement creation, AuditLog row).
+   - `GET /api/applications/mine` (List customer's own applications).
+   - `GET /api/applications/:id` (Single application details with IDOR protection).
+   - `POST /api/applications/:id/accept-agreement` (Atomic 6-digit OTP acceptance, customer_accepted_at = NOW(), status -> 'Awaiting Final Approval', AuditLog row).
+   - `POST /api/customer/deletion-request` (NDPA formal deletion request creation, AuditLog row).
+   - `GET /api/cron/expire-applications` (Overdue application expiry, stock release, price lock release, Settings.last_expiry_cron_at update).
+   - `GET /api/cron/check-expiry-heartbeat` (15-minute cron heartbeat health verification).
+3. Authenticated Customer Screens (#8 through #13 under `app/(customer)/`):
+   - Screen #8: `Apply for Part-Payment` (`/apply/[deviceId]`) with inline on-blur validation, live price change notification, and exact B.3 error strings.
+   - Screen #9: `Application Status` (`/applications/[id]`) with 24-hour expiry countdown, status badges, and agreement acceptance link.
+   - Screen #10: `My Applications` (`/applications`) showing customer's applications chronologically with status badges.
+   - Screen #11: `Contract Detail` (`/contracts/[id]`) with remaining balance, 30-day countdown timer, agreement document terms, and verified payment history.
+   - Screen #12: `Agreement Acceptance` (`/applications/[id]/accept`) with contract terms, Send OTP trigger, 6-digit OTP input, and Accept with OTP primary CTA.
+   - Screen #13: `Account Settings` (`/settings`) with profile summary, consent record toggle/status, and formal deletion request trigger.
+4. Real Execution Evidence (Files 11–13):
+   - `evidence/11-db-write-success.txt` (atomic reservation & price lock write output).
+   - `evidence/12-db-connection-failure.txt` (simulated database unreachable 503 output).
+   - `evidence/13-db-connection-recovered.txt` (health recovery verification output).
+
+--------------------------------------------------------------------------------
+2. IMPLEMENTATION MILESTONES & COMMITS (PHASE 3)
+--------------------------------------------------------------------------------
+1. `555de31` — `feat: implement customer application, cron, and deletion services and API routes`
+2. `ada5432` — `feat: implement customer workflow screens #8 through #13`
+3. `test: verify customer application journeys and database evidence 11-13` (`evidence/11-db-write-success.txt`, `evidence/12-db-connection-failure.txt`, `evidence/13-db-connection-recovered.txt`, `README.md`, `docs/defects.md`, `docs/working-tree.md`, `evidence/02-files-created.txt`, `evidence/github-phase-log.txt`)
+
+--------------------------------------------------------------------------------
+3. PHASE 3 VERIFICATION RESULTS
+--------------------------------------------------------------------------------
+- `npm run typecheck`: PASSED (`0` errors)
+- `npm run lint`: PASSED (`✔ No ESLint warnings or errors`)
+- Hardcoded hex/px check across `app/(customer)`: PASSED (`0` matches)
+- Live HTTP 200/201 checks across all 6 Customer screens and 7 API routes: PASSED (`evidence/11-db-write-success.txt`)
+- Database connection failure & recovery simulation (`evidence/12` & `13`): PASSED
+

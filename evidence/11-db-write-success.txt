@@ -1,0 +1,89 @@
+=== 1. POST http://localhost:3000/api/applications (Atomic Application Submission) ===
+HTTP Status: 201 Created (73ms)
+connection: keep-alive
+content-type: application/json
+date: Sat, 31 Oct 2026 21:31:13 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+x-request-id: req_157660bc-9742-4304-b6a1-cf27c9594875
+Response Body:
+{
+  "data": {
+    "applicationId": "app_1581863c-8f2b-4c36-88c7-a3b6e12de9af",
+    "customerId": "user-customer-ahmed",
+    "customerName": "Ahmed Abdullahi",
+    "customerPhone": "+2348031234567",
+    "customerNinMasked": "*******8901",
+    "guarantorName": "Mallam Suleiman Danjuma",
+    "guarantorPhone": "+2348039998877",
+    "personalDetails": "Banex Plaza Environs, Wuse 2, Abuja",
+    "deviceId": "dev-a15",
+    "deviceName": "Samsung Galaxy A15 (128GB)",
+    "deviceBrandModel": "Samsung Galaxy A15 (128GB)",
+    "lockedPriceNaira": 235000,
+    "downPaymentPercent": 75,
+    "downPaymentAmountNaira": 176250,
+    "remainingAmountNaira": 58750,
+    "status": "Application Pending",
+    "customerVisibleStatus": "Application Pending",
+    "createdAt": "2026-10-31T21:31:13.861Z",
+    "expiresAt": "2026-11-01T21:31:13.861Z",
+    "expiresInSeconds": 86400,
+    "agreementId": "agr_54a12c5f-1348-4d58-8d68-04ac9aaa3948",
+    "agreementStatus": "Application Pending",
+    "agreementTerms": "DG Tech Store Flexi-Pay Agreement (Shop ATF 03): Locked price ₦235,000, down payment ₦176,250 (75%), remaining balance ₦58,750 due within 30 days of activation with 0% interest and ₦0 late fees.",
+    "customerAcceptedAt": null,
+    "acceptanceOtpVerified": false,
+    "dueDate": null,
+    "deviceSerial": null,
+    "rejectionReason": null
+  }
+}
+
+=== 2. Atomic Verification: GET http://localhost:3000/api/applications/app_1581863c-8f2b-4c36-88c7-a3b6e12de9af ===
+HTTP Status: 200 OK (15ms)
+connection: keep-alive
+content-type: application/json
+date: Sat, 31 Oct 2026 21:31:13 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+x-request-id: req_3bc19dae-317e-4453-99b6-0cd11642a99b
+Response Body:
+{
+  "data": {
+    "applicationId": "app_1581863c-8f2b-4c36-88c7-a3b6e12de9af",
+    "customerId": "user-customer-ahmed",
+    "customerName": "Ahmed Abdullahi",
+    "customerPhone": "+2348031234567",
+    "customerNinMasked": "*******8901",
+    "guarantorName": "Mallam Suleiman Danjuma",
+    "guarantorPhone": "+2348039998877",
+    "personalDetails": "Banex Plaza Environs, Wuse 2, Abuja",
+    "deviceId": "dev-a15",
+    "deviceName": "Samsung Galaxy A15 (128GB)",
+    "deviceBrandModel": "Samsung Galaxy A15 (128GB)",
+    "lockedPriceNaira": 235000,
+    "downPaymentPercent": 75,
+    "downPaymentAmountNaira": 176250,
+    "remainingAmountNaira": 58750,
+    "status": "Application Pending",
+    "customerVisibleStatus": "Application Pending",
+    "createdAt": "2026-10-31T21:31:13.861Z",
+    "expiresAt": "2026-11-01T21:31:13.861Z",
+    "expiresInSeconds": 86399,
+    "agreementId": "agr_54a12c5f-1348-4d58-8d68-04ac9aaa3948",
+    "agreementStatus": "Application Pending",
+    "agreementTerms": "DG Tech Store Flexi-Pay Agreement (Shop ATF 03): Locked price ₦235,000, down payment ₦176,250 (75%), remaining balance ₦58,750 due within 30 days of activation with 0% interest and ₦0 late fees.",
+    "customerAcceptedAt": null,
+    "acceptanceOtpVerified": false,
+    "dueDate": null,
+    "deviceSerial": null,
+    "rejectionReason": null
+  }
+}
+
+=== 3. Customer Queue: GET http://localhost:3000/api/applications/mine ===
+HTTP Status: 200 (13ms)
+Total Applications Found: 2

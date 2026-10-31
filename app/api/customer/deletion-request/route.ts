@@ -27,3 +27,4 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return handleApiError(error, requestId, 'POST /api/customer/deletion-request');
   }
 }
+

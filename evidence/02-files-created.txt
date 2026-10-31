@@ -342,3 +342,78 @@ BRANCH: phase-2-database-auth
   - Purpose: Records verbatim command and HTTP outputs for Next.js 14.2.35 server startup (`Ready in 2.2s`), first-load route verification, nested-folder `ENOENT` reproduction and root-directory resolution, port `3000` `EADDRINUSE` conflict and resolution, and UI/API `404` reproduction and `200` canonical route resolution.
   - Source requirements: `docs/scaffold-prompt.md` Section 7 (`evidence/03` through `10`).
   - Verification results: All 8 files populated from real command and server execution outputs.
+
+
+================================================================================
+PHASE 3 COMPLETION AUDIT: CUSTOMER APPLICATION WORKFLOWS (#8-#13), EXPIRED CRON, AND DATABASE WRITE/FAILURE EVIDENCE (11-13)
+================================================================================
+TIMESTAMP: 2026-10-31T22:32:00+01:00
+BRANCH: phase-3-customer-workflows
+
+--------------------------------------------------------------------------------
+1. APPLICATION, CRON & NDPA CUSTOMER SERVICES
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `lib/services/application-service.ts`
+  - `lib/services/cron-service.ts`
+  - `lib/services/customer-service.ts`
+  - Action: Created
+  - Purpose: Implements application submission (NIN regex validation, phone validation, 70%–80% down payment calculation, stock reservation, fresh price verification, BR-09 purchase block check, 24h duplicate check), customer application queries, 6-digit SMS OTP agreement acceptance, overdue application expiry cron logic, and formal NDPA data deletion request validation.
+  - Source requirements: PRD Sections 3.3 (FR-03, FR-06), 4.1 (BR-01, BR-02, BR-05, BR-09, BR-17), 5.3, 7.10, 8.3, 14.3.
+  - Relevant rules & skills: `.agents/skills/build-api-endpoint/SKILL.md`; `.agents/rules/data-and-schema.md`; `.agents/rules/state-transitions.md`.
+  - Design references & tokens: Not applicable (service layer).
+  - Assumptions: None.
+  - Verification results: Verified via `npm run typecheck` and live HTTP calls in `evidence/11-db-write-success.txt`.
+
+--------------------------------------------------------------------------------
+2. CUSTOMER API ROUTE HANDLERS (7 ENDPOINTS)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `app/api/applications/route.ts` (`POST /api/applications`)
+  - `app/api/applications/mine/route.ts` (`GET /api/applications/mine`)
+  - `app/api/applications/[id]/route.ts` (`GET /api/applications/:id`)
+  - `app/api/applications/[id]/accept-agreement/route.ts` (`POST /api/applications/:id/accept-agreement`)
+  - `app/api/customer/deletion-request/route.ts` (`POST /api/customer/deletion-request`)
+  - `app/api/cron/expire-applications/route.ts` (`GET /api/cron/expire-applications`)
+  - `app/api/cron/check-expiry-heartbeat/route.ts` (`GET /api/cron/check-expiry-heartbeat`)
+  - Action: Created
+  - Purpose: Controller endpoints for atomic application submission, customer application listing, single application retrieval with IDOR protection, agreement OTP acceptance, NDPA erasure request, and cron expiry / heartbeat monitoring.
+  - Source requirements: PRD Sections 8.3, 10, 14.3; `.agents/rules/api-contracts.md` (#3, #10, #12).
+  - Relevant rules & skills: `.agents/rules/api-design.md`; `.agents/rules/observability-baseline.md`.
+  - Design references & tokens: Not applicable (API layer).
+  - Assumptions: None.
+  - Verification results: HTTP 200/201 responses verified and logged in `evidence/11-db-write-success.txt`.
+
+--------------------------------------------------------------------------------
+3. AUTHENTICATED CUSTOMER SCREENS (#8 THROUGH #13)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `app/(customer)/apply/[deviceId]/page.tsx` (Screen #8: `Apply for Part-Payment`)
+  - `app/(customer)/applications/[id]/page.tsx` (Screen #9: `Application Status`)
+  - `app/(customer)/applications/page.tsx` (Screen #10: `My Applications`)
+  - `app/(customer)/contracts/[id]/page.tsx` & `app/(customer)/contracts/[id]/_components/print-contract-button.tsx` (Screen #11: `Contract Detail`)
+  - `app/(customer)/applications/[id]/accept/page.tsx` (Screen #12: `Agreement Acceptance`)
+  - `app/(customer)/settings/page.tsx` (Screen #13: `Account Settings`)
+  - Action: Created
+  - Purpose: Full customer workflow screens implementing inline on-blur validation, equal-weight Battery Life & Price (`FR-01`), 24-hour expiry countdown timers (`ux-states.md` B.4), executed agreement document view, SMS OTP agreement acceptance, profile management, and formal NDPA deletion request.
+  - Source requirements: PRD Section 3.2 Rows #8-#13; `.agents/rules/screen-inventory.md`; `.agents/rules/ux-states.md` B.3, B.4.
+  - Relevant rules & skills: `.agents/skills/build-form-screen/SKILL.md`; `.agents/skills/build-list-screen/SKILL.md`; `.agents/rules/accessibility-baseline.md`.
+  - Design references & tokens: Built 100% with Task 1 design tokens (`bg-surface*`, `bg-primary*`, `bg-secondary*`, `bg-tertiary*`, `bg-info*`, `bg-warning*`, `bg-error*`, `.type-headline-*`, `.type-title-*`, `.type-body-*`, `.type-label-*`, `rounded-card`, `rounded-button`, `rounded-input`, `rounded-badge`, `rounded-chip`, `shadow-hard`).
+  - Assumptions: None.
+  - Verification results: Verified zero hardcoded hex/px values via `grep`, zero TypeScript errors, zero ESLint warnings, and HTTP 200 across all 6 screens in `evidence/11-db-write-success.txt` and task logs.
+
+--------------------------------------------------------------------------------
+4. DATABASE WRITE & FAILURE DIAGNOSTIC EVIDENCE (11 THROUGH 13)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `evidence/11-db-write-success.txt`
+  - `evidence/12-db-connection-failure.txt`
+  - `evidence/13-db-connection-recovered.txt`
+  - Action: Created
+  - Purpose: Records live command outputs for atomic application reservation write, database connection failure / 503 simulation, and health endpoint recovery verification.
+  - Source requirements: `docs/scaffold-prompt.md` Section 7 (`evidence/11` through `13`).
+  - Verification results: All 3 files populated from real execution outputs.

@@ -35,3 +35,4 @@ export async function POST(
     return handleApiError(error, requestId, 'POST /api/applications/[id]/accept-agreement');
   }
 }
+

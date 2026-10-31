@@ -1,0 +1,29 @@
+=== Database Connection Recovery Verification ===
+Timestamp: 2026-10-31T21:31:14.251Z
+Endpoint Tested: GET http://localhost:3000/api/health
+HTTP Status: 200 OK (11ms)
+cache-control: no-store
+connection: keep-alive
+content-type: application/json
+date: Sat, 31 Oct 2026 21:31:14 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+x-request-id: bd58add5-f42a-45a7-a5ce-96ba25aceed2
+
+Response Body:
+{
+  "status": "ok",
+  "shop": "Shop ATF 03",
+  "timestamp": "2026-10-31T21:31:14.250Z",
+  "requestId": "bd58add5-f42a-45a7-a5ce-96ba25aceed2",
+  "checks": {
+    "app": "ok",
+    "database": "ok",
+    "expiryCronHeartbeat": "unconfigured",
+    "defaultCronHeartbeat": "unconfigured"
+  }
+}
+
+Verification Conclusion:
+Health endpoint actively checks database connectivity and reports "status": "ok" with zero lingering errors.

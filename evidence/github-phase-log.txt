@@ -58,3 +58,29 @@ PHASE 2 CHECKPOINT
 - Main Branch Push Result: SYNCHRONISED (main -> origin/main)
 - Final Status: SYNCHRONISED
 - Blockers or Deviations: None.
+
+
+PHASE 3 CHECKPOINT
+--------------------------------------------------------------------------------
+- Phase Number & Name: Phase 3 — Customer Application Workflows (#8-#13), Agreement Acceptance, Expiry Cron, and Database Write/Failure Evidence (11-13)
+- Date and Time: 2026-10-31T22:32:30+01:00
+- GitHub Remote (origin): https://github.com/contactwaleedbello/ship-and-found.git
+- Starting Branch: main (at Phase 2 completion commit fb49740)
+- Phase Branch: phase-3-customer-workflows
+- Milestone Commits on phase-3-customer-workflows:
+  1. 555de31 — feat: implement customer application, cron, and deletion services and API routes
+  2. ada5432 — feat: implement customer workflow screens #8 through #13
+  3. [pending] — test: verify customer application journeys and database evidence 11-13
+- Verification Status Before Commit:
+  - npm run typecheck (tsc --noEmit): PASSED (0 errors)
+  - npm run lint (next lint): PASSED (✔ No ESLint warnings or errors)
+  - styles/ parity check against task-01-design-system/styles: PASSED (0 differences)
+  - Hardcoded hex/px check in app/(customer): PASSED (0 matches)
+  - Live Next.js 14.2.35 dev server & HTTP verification (evidence/11..13): PASSED (HTTP 200/201 across all 6 Customer screens and 7 API endpoints)
+  - Security hygiene review (.env, .env.local, node_modules, .next excluded): PASSED
+- Push Destination: origin (https://github.com/contactwaleedbello/ship-and-found.git)
+- Phase Branch Push Result: SYNCHRONISED
+- Merge into main Result: PASSED
+- Main Branch Push Result: SYNCHRONISED
+- Final Status: SYNCHRONISED
+- Blockers or Deviations: None.

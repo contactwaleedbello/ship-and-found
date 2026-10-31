@@ -81,7 +81,16 @@ export interface ApplicationDetailDto {
 }
 
 // In-memory application store for local development/scaffold fallback when Postgres is unseeded
-const inMemoryApplications = new Map<string, ApplicationDetailDto>();
+const globalForApps = globalThis as unknown as {
+  inMemoryApplications?: Map<string, ApplicationDetailDto>;
+};
+
+export const inMemoryApplications: Map<string, ApplicationDetailDto> =
+  globalForApps.inMemoryApplications ?? new Map<string, ApplicationDetailDto>();
+
+if (process.env['NODE_ENV'] !== 'production') {
+  globalForApps.inMemoryApplications = inMemoryApplications;
+}
 
 // Preload Ahmed's persona application for immediate testing
 const defaultAhmedAppId = 'app-ahmed-a15';

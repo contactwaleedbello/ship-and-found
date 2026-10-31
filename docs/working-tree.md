@@ -54,6 +54,17 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   ├── data-model.md                           # 5-domain data model navigation aid
 │   └── design-system.md                        # Design system consumption rules & anti-patterns
 ├── app/                                        # Next.js 14 App Router presentation & API layer
+│   ├── (customer)/                             # Authenticated Customer route group (Screens #8-#13)
+│   │   ├── applications/
+│   │   │   ├── [id]/
+│   │   │   │   ├── accept/page.tsx             # Screen #12: Agreement Acceptance (with SMS OTP)
+│   │   │   │   └── page.tsx                    # Screen #9: Application Status (with 24h timer)
+│   │   │   └── page.tsx                        # Screen #10: My Applications
+│   │   ├── apply/[deviceId]/page.tsx           # Screen #8: Apply for Part-Payment
+│   │   ├── contracts/[id]/
+│   │   │   ├── _components/print-contract-button.tsx
+│   │   │   └── page.tsx                        # Screen #11: Contract Detail
+│   │   └── settings/page.tsx                   # Screen #13: Account Settings & NDPA Deletion
 │   ├── (public)/                               # Unauthenticated & customer browsing route group (7 screens)
 │   │   ├── confirm-price/[deviceId]/page.tsx   # Screen #7: Confirm Current Price via WhatsApp (Template A.3)
 │   │   ├── devices/[id]/
@@ -65,6 +76,12 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   │   ├── verify-otp/page.tsx                 # Screen #5: OTP Verification (with B.6 fallback)
 │   │   └── page.tsx                            # Screen #1: Home / Inventory Listing (25 devices + filters)
 │   ├── api/                                    # HTTP route handlers (thin controllers)
+│   │   ├── applications/
+│   │   │   ├── [id]/
+│   │   │   │   ├── accept-agreement/route.ts   # POST /api/applications/:id/accept-agreement
+│   │   │   │   └── route.ts                    # GET /api/applications/:id
+│   │   │   ├── mine/route.ts                   # GET /api/applications/mine
+│   │   │   └── route.ts                        # POST /api/applications
 │   │   ├── auth/
 │   │   │   ├── accept-agreement-otp/route.ts   # POST /api/auth/accept-agreement-otp
 │   │   │   ├── forgot-password/route.ts        # POST /api/auth/forgot-password
@@ -74,6 +91,11 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   │   │   ├── reset-password/route.ts         # POST /api/auth/reset-password
 │   │   │   └── verify-otp/route.ts             # POST /api/auth/verify-otp
 │   │   ├── calculator/route.ts                 # POST /api/calculator
+│   │   ├── cron/
+│   │   │   ├── check-expiry-heartbeat/route.ts # GET /api/cron/check-expiry-heartbeat
+│   │   │   └── expire-applications/route.ts    # GET /api/cron/expire-applications
+│   │   ├── customer/
+│   │   │   └── deletion-request/route.ts       # POST /api/customer/deletion-request
 │   │   ├── devices/
 │   │   │   ├── [id]/route.ts                   # GET /api/devices/:id
 │   │   │   └── route.ts                        # GET /api/devices
@@ -103,11 +125,17 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   ├── 08-port-conflict-resolved.txt
 │   ├── 09-404-error.txt
 │   ├── 10-404-resolved.txt
+│   ├── 11-db-write-success.txt
+│   ├── 12-db-connection-failure.txt
+│   ├── 13-db-connection-recovered.txt
 │   └── github-phase-log.txt
 ├── lib/                                        # Server-side utilities, validation, & domain modules
 │   ├── services/
+│   │   ├── application-service.ts              # Part-payment submission & agreement acceptance logic
 │   │   ├── auth-service.ts                     # Auth & OTP verification business logic
-│   │   └── catalog-service.ts                  # Device filtering, lookup, & calculator math
+│   │   ├── catalog-service.ts                  # Device filtering, lookup, & calculator math
+│   │   ├── cron-service.ts                     # Overdue application expiry & heartbeat checker
+│   │   └── customer-service.ts                 # NDPA formal data deletion service
 │   ├── catalog-data.ts                         # 25 seeded Shop ATF 03 devices across 5 brands
 │   ├── constants.ts                            # Business rule thresholds & enums (BR-01..BR-20)
 │   ├── crypto.ts                               # AES-256-GCM encryption, HMAC-SHA256 blind index, NIN mask

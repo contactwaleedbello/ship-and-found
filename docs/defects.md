@@ -75,5 +75,7 @@ This document tracks actual repository, configuration, routing, styling, and run
 - **Nested-folder execution error & fix** (`evidence/05-nested-folder-error.txt`, `evidence/06-nested-folder-fixed.txt`) — **Reproduced & Verified in Phase 2**.
 - **Port conflict (`EADDRINUSE`) & resolution** (`evidence/07-port-conflict.txt`, `evidence/08-port-conflict-resolved.txt`) — **Reproduced & Verified in Phase 2**.
 - **Route 404 reproduction & resolution** (`evidence/09-404-error.txt`, `evidence/10-404-resolved.txt`) — **Reproduced & Verified in Phase 2**.
+- **Database write success & reservation lock** (`evidence/11-db-write-success.txt`) — **Verified in Phase 3**.
+- **Database connection failure & recovery simulation** (`evidence/12-db-connection-failure.txt`, `evidence/13-db-connection-recovered.txt`) — **Verified in Phase 3**.
 - **Heading-wrap typography defect & fix** (`evidence/18-heading-wrap-bad.png`, `evidence/19-heading-wrap-good.png`) — Planned for Phase 5.
 

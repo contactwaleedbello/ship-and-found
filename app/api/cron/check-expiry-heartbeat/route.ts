@@ -25,3 +25,4 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return handleApiError(error, requestId, 'GET /api/cron/check-expiry-heartbeat');
   }
 }
+

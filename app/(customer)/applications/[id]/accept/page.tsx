@@ -256,3 +256,4 @@ export default function AcceptAgreementPage({ params }: AcceptAgreementPageProps
     </div>
   );
 }
+

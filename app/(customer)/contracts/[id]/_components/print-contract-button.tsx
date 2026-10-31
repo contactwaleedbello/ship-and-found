@@ -15,3 +15,4 @@ export function PrintContractButton(): ReactNode {
     </button>
   );
 }
+

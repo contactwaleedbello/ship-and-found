@@ -1,0 +1,47 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03) — APPLICATION PAGE INVENTORY (BEFORE SPA COLLAPSE)
+================================================================================
+
+DELIVERABLE: evidence/01-page-count-before.txt
+COMMAND RUN: find app -name "page.tsx" | sort
+TOTAL PAGE COUNT: 29 pages
+
+LIST OF ALL 29 ACTIVE PAGES ACROSS APPLICATION SUITE:
+
+1.  app/(admin)/admin/applications/[id]/final-approve/page.tsx (Screen #25: Final Approval & Handover Gate)
+2.  app/(admin)/admin/applications/[id]/review/page.tsx        (Screen #23: Application Review Detail)
+3.  app/(admin)/admin/audit/page.tsx                           (Screen #28: Audit Log Viewer)
+4.  app/(admin)/admin/defaults/page.tsx                        (Screen #27: Defaults Management)
+5.  app/(admin)/admin/deletion-requests/page.tsx               (Screen #26: Deletion Requests Queue)
+6.  app/(admin)/admin/exchange-rate/page.tsx                   (Screen #22: Exchange Rate Management)
+7.  app/(admin)/admin/inventory-approvals/page.tsx             (Screen #24: Inventory Approval Queue)
+8.  app/(admin)/admin/metrics/page.tsx                         (Screen #29: Executive Metrics Dashboard)
+9.  app/(admin)/admin/page.tsx                                 (Screen #21: Owner & Co-owner Dashboard)
+10. app/(customer)/applications/[id]/accept/page.tsx           (Screen #11: Contract Signing & Agreement)
+11. app/(customer)/applications/[id]/page.tsx                  (Screen #9: Application Status Detail)
+12. app/(customer)/applications/page.tsx                       (Screen #10: My Applications List)
+13. app/(customer)/apply/[deviceId]/page.tsx                   (Screen #8: Part-Payment Application Form)
+14. app/(customer)/contracts/[id]/page.tsx                     (Screen #12: Signed Contract Viewer)
+15. app/(customer)/settings/page.tsx                           (Screen #13: Customer Account Settings)
+16. app/(public)/confirm-price/[deviceId]/page.tsx             (Screen #7: Confirm Current Price Modal)
+17. app/(public)/devices/[id]/page.tsx                         (Screen #2: Device Detail & Calculator)
+18. app/(public)/forgot-password/page.tsx                      (Screen #6: Password Reset Request) [SEPARATE AUTH ROUTE]
+19. app/(public)/login/page.tsx                                (Screen #3: Customer & Staff Login) [SEPARATE AUTH ROUTE]
+20. app/(public)/page.tsx                                      (Screen #1: Public Device Catalog Home)
+21. app/(public)/register/page.tsx                             (Screen #4: Customer Registration) [SEPARATE AUTH ROUTE]
+22. app/(public)/verify-otp/page.tsx                           (Screen #5: OTP Verification Modal/Screen)
+23. app/(worker)/worker/balance/[agreementId]/page.tsx         (Screen #17: Record Balance Payment)
+24. app/(worker)/worker/inventory/page.tsx                     (Screen #15: Worker Inventory Management)
+25. app/(worker)/worker/page.tsx                               (Screen #14: Worker Queue & Dashboard)
+26. app/(worker)/worker/reminders/page.tsx                     (Screen #19: Payment Reminders Log)
+27. app/(worker)/worker/reserved/page.tsx                      (Screen #16: Reserved Devices Queue)
+28. app/(worker)/worker/settlement/[agreementId]/page.tsx      (Screen #18: Early Settlement Calculation)
+29. app/(worker)/worker/verify/[applicationId]/page.tsx       (Screen #20: Physical Verification & Handover)
+
+================================================================================
+SEPARATE AUTH PAGES IDENTIFIED FOR SPA CONSOLIDATION:
+- app/(public)/login/page.tsx
+- app/(public)/register/page.tsx
+- app/(public)/forgot-password/page.tsx
+Target Architecture: Single consolidated route app/(public)/auth/page.tsx with ?mode=login|signup|reset
+================================================================================

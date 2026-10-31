@@ -24,7 +24,7 @@ next-env.d.ts
 .vercel
 
 # Internal generation scripts and task artifacts
-/scripts/
+!/scripts/scheduled-deletion-job.ts
 /evidence/github-phase-log.txt
 
 # Database files

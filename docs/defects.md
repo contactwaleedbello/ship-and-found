@@ -1,52 +1,66 @@
-# Defects in the product page and token build
+# Identified Defects and Resolution Log (`docs/defects.md`)
 
-Updated 2026-10-31 after the owner-provided business-context reconciliation. Resolved defects are retained for audit history; current defects are marked **Open**.
+Source: [`docs/scaffold-prompt.md`](./scaffold-prompt.md) Sections 6, 7, 12; [`AGENTS.md`](../AGENTS.md).
 
-## 1. Hard-coded breakpoints in CSS — Open
-- **What it is:** The `@media` queries in the page stylesheet use raw pixel numbers (`840px`, `600px`, `600px`) instead of reading the breakpoint tokens.
-- **Where:** `src/style.css` lines 96 (`@media (min-width: 840px)`), 298 (`@media (min-width: 600px)`) and 344 (`@media (min-width: 600px)`). `scripts/build-tokens.js` (lines 245, 753–759) skips emitting `spacing roles/breakpoint/*` as tokens and only uses `breakpoint/min-width` for the `@media` blocks in `styles/tokens/roles.css`.
-- **Why it matters:** If a breakpoint changes in `tokens/tokens.json` and the token CSS is rebuilt, `styles/tokens/roles.css` updates its `@media` queries automatically, but `src/style.css` stays at `600px` and `840px`, putting the page layout out of sync with its spacing tokens.
-- **Fix:** Generate the breakpoint queries in `src/style.css` from `tokens/tokens.json` during the build (or emit `@custom-media` / build-time breakpoint rules from `breakpoint/min-width`).
+## 1. Purpose
 
-## 2. Missing 1200px and 1600px breakpoint blocks — Open
-- **What it is:** The design system defines five breakpoint modes (Compact `<600px`, Medium `600px`, Expanded `840px`, Large `1200px`, Extra-large `1600px`), but the page stylesheet only writes layout rules for `600px` and `840px`.
-- **Where:** `styles/tokens/roles.css` defines `@media (min-width: 1200px)` at line 274 and `@media (min-width: 1600px)` at line 321, while `src/style.css` stops at `@media (min-width: 840px)` at line 96 and has no 1200px or 1600px blocks.
-- **Why it matters:** On Large (`1200px+`) and Extra-large (`1600px+`) screens, `.product-layout` keeps the `840px` equal two-column rule (`grid-template-columns: 1fr 1fr`) with `width: 100%` and no max-width or fixed-pane sizing, so the product photo box and text columns stretch across the entire wide screen.
-- **Fix:** Add `@media (min-width: 1200px)` and `@media (min-width: 1600px)` layout rules in `src/style.css`, generated from the breakpoint tokens, using `--spacing-layout-fixed-pane-width` or a constrained layout width.
+This document tracks actual repository, configuration, routing, styling, and runtime defects discovered during context inspection, scaffolding, and verification, along with their reproduction steps, severity, status, and resolution evidence. No fabricated defects are logged here; diagnostic scenarios (`evidence/05`–`10` and `18`–`19`) are added only as they are reproduced and verified.
 
-## 3. Error colour role used for a discount — Resolved
-- **What it was:** The `"Save ₦15,000"` discount badge used `--color-error-container` and `--color-on-error-container`.
-- **Where:** `src/style.css` lines 235–242 still define `.price-discount`, but it is **not used** in `src/index.html` after reconciliation. The rule now uses `--color-tertiary-container` / `--color-on-tertiary-container` if a future positive-offer badge uses it.
-- **Why it mattered:** The error role is reserved for urgent error states; a positive saving is not an error.
-- **Status:** The discount badge was removed from the page. The residual class is corrected so it cannot repeat the error-role misuse.
+---
 
-## 4. Sample product data remains on a customer-facing page — Open (reduced)
-- **What it is:** The page still shows an illustrative Samsung Galaxy A15 listing, a sample price (`₦185,000`) and sample technical specifications. The owner did not provide a product catalogue, stock quantities, prices, ratings or specifications in this reconciliation.
-- **Where:** `src/index.html` lines 52–53 (`Smartphone` / `Sample listing`), 59 (`Sample product data...`), 71 (`₦185,000`), 73 (`Sample price...`), 79 (sample description), 84 (`Key specifications (sample)`) and 87–108 (sample specs).
-- **What was removed:** `₦200,000`, `Save ₦15,000`, `Same-Day Fast Dispatch Available`, `100% Genuine Guaranteed`, `Official Samsung`, `Special Offer`, `12 months warranty`, `Pay on delivery available`, `Inspect...`, `Fast dispatch to your doorstep`, `Brand New Sealed Unit`, `12 Months Official Warranty` and `Quality guaranteed`.
-- **Why it matters:** The page must not present unverified product, price, stock or performance claims as fact. The current page is explicitly labelled as a design-system sample, but it is not a production catalogue.
-- **Fix:** Before production, replace the sample listing with owner-verified products, prices, availability and specifications. Keep the battery specification easy to find; do not add performance claims without evidence.
+## 2. Defect Register
 
-## 5. Shadow colour not bound to a variable — Open
-- **What it is:** The three shadow tokens emit a hard-coded RGB literal (`rgb(100 13 0 / ...)`) instead of referencing a colour variable.
-- **Where:** `styles/tokens/roles.css` lines 394–396 (`--shadow-hard`, `--shadow-medium`, `--shadow-soft`). In `tokens/tokens.json`, `effectStyles` leave `color` unbound in `boundVariables` (noted in `docs/shadows.md`). `scripts/build-tokens.js` lines 547–551 converts `style.color` directly into raw `rgb()`. `scripts/check-tokens.js` allows `rgb()` inside `--shadow-*` role definitions, so it does not flag this line.
-- **Why it matters:** If `--primitive-primary-20` changes, the shadows stay brown until `effectStyles[].color` is manually updated and the build is rerun.
-- **Fix:** Resolve each `shadow/*/color` alias and emit a token reference, using each shadow's own opacity (30%, 20%, 16%), for example `color-mix(in srgb, var(--primitive-primary-20) 30%, transparent)`.
+### DEF-01: Skill Folder Naming Mismatch and Leading Whitespace in `.agents/skills/`
+- **Phase Identified:** Phase 1 (Mandatory Pre-Implementation Repository Inspection)
+- **Severity:** Medium (Breaks deterministic path lookup for `.agents/skills/<skill-name>/SKILL.md`)
+- **Description:**
+  Root [`AGENTS.md`](../AGENTS.md) lines 157–159 specify three `kebab-case` skill paths:
+  - `.agents/skills/build-api-endpoint/SKILL.md`
+  - `.agents/skills/build-form-screen/SKILL.md`
+  - `.agents/skills/build-list-screen/SKILL.md`
+  However, inspecting `/Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/.agents/skills/` revealed three directories named with spaces and Title Case, including a leading space on `" Build a form screen"`:
+  - `.agents/skills/Build an API endpoint/SKILL.md`
+  - `.agents/skills/ Build a form screen/SKILL.md`
+  - `.agents/skills/Build a queue or list screen/SKILL.md`
+- **Reproduction Details:**
+  Running `ls -la ".agents/skills"` prior to Phase 1 Step 1 showed `" Build a form screen"`, `"Build a queue or list screen"`, and `"Build an API endpoint"`, while `test -f .agents/skills/build-api-endpoint/SKILL.md` exited with code `1`.
+- **Status:** **Resolved in Phase 1**
+- **Resolution & Evidence:**
+  Normalized the three directory names to `.agents/skills/build-api-endpoint/SKILL.md`, `.agents/skills/build-form-screen/SKILL.md`, and `.agents/skills/build-list-screen/SKILL.md` in Phase 1 Step 1 while preserving their exact `SKILL.md` contents. Recorded in [`evidence/02-files-created.txt`](../evidence/02-files-created.txt).
 
-## 6. Cramped 3-column spec grid inside the 2-column layout at 840px and up — Open
-- **What it is:** `.specs-grid` switches to 3 columns at `600px` and stays at 3 columns when `.product-layout` splits into a 2-column layout at `840px`, where card padding also increases to `24px`.
-- **Where:** `src/style.css` lines 298–302 (`.specs-grid` 3 columns at `600px`), combined with lines 96–103 (`.product-layout` 2 columns at `840px`) and `styles/tokens/roles.css` line 308 (`--spacing-component-card-padding: var(--primitive-space-300)`, which is `24px` at `840px`).
-- **Why it matters:** At about `900px`, each card is roughly `115px` wide with `24px` padding per side, so labels and values wrap badly.
-- **Fix:** Drop `.specs-grid` back to 2 columns inside the `840px` two-column layout until the details column is wide enough (such as `1200px+`) for 3 cards.
+---
 
-## 7. Contact destinations are placeholders pending the owner's number — Open (owner input)
-- **What it is:** `"Order on WhatsApp"` and `"Call the shop"` now use the correct `wa.me` and `tel:` schemes, but the destination is the explicit placeholder `REPLACE_WITH_OWNER_NUMBER`. The page also shows a visible note that the links are placeholders.
-- **Where:** `src/index.html` lines 120–123. Both links have descriptive `aria-label` values and `aria-describedby="contact-pending"`; the note at line 123 states that the number is pending owner confirmation. The phone number is not exposed as ordinary text.
-- **Why it matters:** The owner requires the number not to be public; the actual number was not supplied in this reconciliation. A real `wa.me`/`tel:` destination is still outstanding, and a placeholder must not be mistaken for a working contact route.
-- **Fix:** Replace `REPLACE_WITH_OWNER_NUMBER` in both links with the owner-provided number when supplied, keep the number out of visible text, and remove the pending note. Do not commit an invented number.
+### DEF-02: Missing `styles/` Directory in `Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY` Prior to Phase 1
+- **Phase Identified:** Phase 1 (Mandatory Pre-Implementation Repository Inspection)
+- **Severity:** High (Blocks all UI scaffolding under Section 5 Design-System Requirements)
+- **Description:**
+  [`docs/design-system.md`](./design-system.md) and [`docs/scaffold-prompt.md`](./scaffold-prompt.md) Section 5 require consuming the Task 1 design tokens from `styles/`. At the start of Phase 1, the verified Task 1 `styles/` directory (`fonts.css`, `fonts/*.woff2`, `tokens/index.css`, `tokens/primitives.css`, `tokens/roles.css`) existed only in the sibling repository `/Users/macbookpro/Desktop/Dev & Design To/task-01-design-system/styles/` and had not yet been copied into `Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/styles/`.
+- **Reproduction Details:**
+  Running `ls -la "/Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/styles"` returned `No such file or directory`.
+- **Status:** **Resolved in Phase 1**
+- **Resolution & Evidence:**
+  Copied `/Users/macbookpro/Desktop/Dev & Design To/task-01-design-system/styles` verbatim into `/Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/styles` and verified `0` differences via `diff -rq`. Recorded in [`evidence/02-files-created.txt`](../evidence/02-files-created.txt).
 
-## 8. Documentation and evidence gaps — Open (reduced)
-- **What it is:** The original build-agent transcript for Prompt 1 was not saved, and `evidence/08-agent-typography-answer.txt` contains only the price element snippet rather than the full written answer. `README.md`, the Figma variables/text-style evidence, and the actual 400% browser-zoom/full-Yoruba evidence were added during reconciliation, reducing the gap.
-- **Where:** `docs/prompts.md` Prompt 1/4; `evidence/08-agent-typography-answer.txt`; `README.md`; `evidence/Figma variables panel evidence.png`; `evidence/Figma text-effect style evidence.png`.
-- **Why it matters:** The assessment requires the agent's written typography answer and a four-minute task README. The README now exists; the full typography-answer transcript remains an evidence gap.
-- **Fix:** Ask the agent again in writing and save the full answer with class and line number; keep the missing build transcript transparent rather than fabricating it. The optional walkthrough is still unrecorded.
+---
+
+### DEF-03: Root-Owned Files in Global `~/.npm/_cacache` and Next.js 14.2.15 Security Advisory During `npm install`
+- **Phase Identified:** Phase 1 (`npm install` execution)
+- **Severity:** Medium (Blocks default `npm install` cache write and warns on `next@14.2.15` CVE)
+- **Description:**
+  Running `npm install` failed with `npm error code EACCES / syscall open /Users/macbookpro/.npm/_cacache/index-v5/...` due to root-owned cache entries in the global `~/.npm` directory, and emitted a security advisory deprecation warning on `next@14.2.15` along with an `EBADENGINE` notice when running under host Node `v24.19.0`.
+- **Reproduction Details:**
+  Running `npm install` against the default `~/.npm` cache exited with code `243` (`EACCES`).
+- **Status:** **Resolved in Phase 1**
+- **Resolution & Evidence:**
+  Updated `package.json` to `"next": "^14.2.35"`, `"eslint-config-next": "^14.2.35"`, and `"engines": { "node": ">=20.0.0" }`, and executed `npm --cache /tmp/dg-npm-cache install` to bypass the corrupted global `~/.npm` cache cleanly.
+
+---
+
+## 3. Pending Diagnostic & UI Defect Verifications (Phases 2–5)
+
+Per [`docs/scaffold-prompt.md`](./scaffold-prompt.md) Section 7 ("If an activity has not occurred, record it as pending in the relevant planning or tracking document. Do not create fake evidence to fill the directory"), the following diagnostic and UI checks will be logged here when executed:
+- **Nested-folder execution error & fix** (`evidence/05-nested-folder-error.txt`, `evidence/06-nested-folder-fixed.txt`) — Planned for Phase 2.
+- **Port conflict (`EADDRINUSE`) & resolution** (`evidence/07-port-conflict.txt`, `evidence/08-port-conflict-resolved.txt`) — Planned for Phase 2.
+- **Route 404 reproduction & resolution** (`evidence/09-404-error.txt`, `evidence/10-404-resolved.txt`) — Planned for Phase 2.
+- **Heading-wrap typography defect & fix** (`evidence/18-heading-wrap-bad.png`, `evidence/19-heading-wrap-good.png`) — Planned for Phase 5.
+

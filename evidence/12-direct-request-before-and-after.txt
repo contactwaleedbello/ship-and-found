@@ -1,0 +1,59 @@
+=== Step 7: Direct Request Attack Side-by-Side Comparison ===
+Workstream: task-04-server-security
+Domain: DG Tech Store (Shop ATF 03)
+Timestamp: 2026-10-31T23:31:00Z
+Endpoint: POST http://127.0.0.1:3000/api/auth/register
+
+================================================================================
+THE DIRECT REQUEST (BYPASSING CLIENT BROWSER AND FORM VALIDATION)
+================================================================================
+curl -i -X POST http://127.0.0.1:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"a","phoneNumber":"+2348039988771","email":"attacker@domain.com","password":"password123","termsAccepted":true}'
+
+================================================================================
+TASK THREE RESPONSE (DEFENCELESS ENDPOINT - ACCEPTED INVALID DATA)
+================================================================================
+HTTP/1.1 201 Created
+x-request-id: req_7c014b06-4ccc-4756-9b8b-104341ecb1e6
+Content-Type: application/json
+Date: Sat, 31 Oct 2026 23:20:14 GMT
+
+{
+  "data": {
+    "userId": "usr_7c014b06-4ccc-4756-9b8b-104341ecb1e6",
+    "fullName": "a",
+    "phoneNumber": "+2348039988771",
+    "email": "attacker@domain.com",
+    "status": "ACTIVE"
+  }
+}
+
+Explanation: Task 3 client-side validation had 8 rules blocking single-character names, but an attacker bypassed the browser completely using curl. The server had no boundary schema enforcement and inserted the junk account into the database.
+
+================================================================================
+TASK FOUR RESPONSE (SERVER AS SOURCE OF TRUTH - ATTACK REFUSED)
+================================================================================
+HTTP/1.1 422 Unprocessable Content
+Content-Type: application/json; charset=utf-8
+x-request-id: req_9435112e-8001-4607-bbc9-e6e60e889c12
+Date: Sat, 31 Oct 2026 23:33:50 GMT
+
+{
+  "error": "Unprocessable Content",
+  "message": "Server validation failed. The provided payload does not meet domain integrity constraints.",
+  "issues": [
+    {
+      "field": "fullName",
+      "message": "Full name must be at least 3 characters long.",
+      "code": "too_small"
+    },
+    {
+      "field": "fullName",
+      "message": "Full legal name must contain at least two words separated by a space (first and last name per BVN/NIN).",
+      "code": "custom"
+    }
+  ]
+}
+
+Explanation: In Task 4, Zod schema validation sits at the server boundary. The single-character name ("a") is evaluated on the server against the domain rule requiring at least 3 characters and at least two words separated by a space. The server rejects the attack with HTTP 422 before any database, password hasher, or downstream service is touched.

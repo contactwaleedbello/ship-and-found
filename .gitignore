@@ -27,6 +27,13 @@ next-env.d.ts
 /scripts/
 /evidence/github-phase-log.txt
 
+# Database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+prisma/*.db
+
 # OS metadata
 .DS_Store
 *.pem

@@ -86,3 +86,23 @@ Step 5: Record complete per-file creation, source, token, assumption, and verifi
 6. GitHub Version Control & Phased Delivery Integration: Approved Option A — connected repository to https://github.com/contactwaleedbello/ship-and-found.git continuing from Task 1 main commit b8e95be, created dedicated phase-1-scaffold branch with 5 milestone commits, appended # github-version-control-and-phased-delivery-amendment to docs/scaffold-prompt.md, and created evidence/github-phase-log.txt.
 
 
+
+================================================================================
+PHASE IDENTIFIER: Phase 2 — Database & Prisma Schema Foundation, Public & Auth Screens Scaffold, Server Startup, and Diagnostic Evidence (03–10)
+TIMESTAMP: 2026-10-31T21:49:32+01:00
+BRANCH: phase-2-database-auth (branched from main at fc2deaf)
+APPROVAL STATUS: APPROVED BY USER ("proceed, / proceeed")
+COMPLETION STATUS: IN_PROGRESS
+
+--------------------------------------------------------------------------------
+1. TASK UNDERSTANDING (PHASE 2)
+--------------------------------------------------------------------------------
+In Phase 2, on dedicated branch `phase-2-database-auth`, we implement the Prisma database schema (`prisma/schema.prisma`) mirroring PRD Section 5.1 plus the 16 additions and 6 Day 0 gap resolutions in `.agents/rules/data-and-schema.md`, the Prisma client singleton (`lib/db.ts`), the AES-256-GCM + HMAC-SHA256 encryption and NIN-masking module (`lib/crypto.ts`), the 25-device catalog and seed script (`lib/catalog-data.ts` and `prisma/seed.ts`), the 3 public inventory & calculator API endpoints (`GET /api/devices`, `GET /api/devices/[id]`, `POST /api/calculator`) plus auth route scaffolds (`app/api/auth/*`), and the remaining 6 Public & Auth screens (`Device Detail` `/devices/[id]`, `Login` `/login`, `Register` `/register`, `OTP Verification` `/verify-otp`, `Forgot Password` `/forgot-password`, and `Confirm Current Price via WhatsApp` `/confirm-price/[deviceId]`) using strictly the Task 1 design tokens in `styles/`. We then start the Next.js development server and capture real command/HTTP output for `evidence/03-server-start.txt`, `evidence/04-first-load.txt`, `evidence/05-nested-folder-error.txt`, `evidence/06-nested-folder-fixed.txt`, `evidence/07-port-conflict.txt`, `evidence/08-port-conflict-resolved.txt`, `evidence/09-404-error.txt`, and `evidence/10-404-resolved.txt`.
+
+--------------------------------------------------------------------------------
+2. IMPLEMENTATION MILESTONES & COMMITS (PHASE 2)
+--------------------------------------------------------------------------------
+1. `feat: implement Prisma database schema and seed specification` (`prisma/schema.prisma`, `prisma/seed.ts`, `lib/db.ts`, `lib/crypto.ts`, `lib/catalog-data.ts`)
+2. `feat: implement public inventory, calculator, and authentication API routes` (`app/api/devices/route.ts`, `app/api/devices/[id]/route.ts`, `app/api/calculator/route.ts`, `app/api/auth/*/route.ts`)
+3. `feat: implement public and authentication screens` (`app/(public)/page.tsx`, `app/(public)/devices/[id]/page.tsx`, `app/(public)/login/page.tsx`, `app/(public)/register/page.tsx`, `app/(public)/verify-otp/page.tsx`, `app/(public)/forgot-password/page.tsx`, `app/(public)/confirm-price/[deviceId]/page.tsx`)
+4. `test: verify Phase 2 server startup, routes, and diagnostic evidence 03-10` (`evidence/03-server-start.txt` through `evidence/10-404-resolved.txt`, `docs/defects.md`, `docs/performance-note.md`, `docs/readme-test.md`, `evidence/02-files-created.txt`, `evidence/github-phase-log.txt`)

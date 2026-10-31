@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { SEEDED_DEVICES } from '@/lib/catalog-data';
 import {
   BALANCE_WINDOW_DAYS,
   DOWN_PAYMENT_MAX_PERCENT,
@@ -18,44 +19,7 @@ import type { DeviceCardDto } from '@/lib/types';
  * - `docs/design-system.md` & `styles/tokens/roles.css` (Zero hardcoded colors, fonts, or spacing)
  */
 
-const PHASE_1_PREVIEW_DEVICES: readonly DeviceCardDto[] = [
-  {
-    id: 'dev-samsung-a55',
-    name: 'Samsung Galaxy A55 5G (256GB)',
-    brand: 'Samsung',
-    category: 'smartphone',
-    performanceTier: 'mid',
-    batteryLifeSpec: '19 hrs / 5,000 mAh',
-    dynamicPriceNaira: 485000,
-    availableStock: 4,
-    isPriceFresh: true,
-    keySpecsSummary: '8GB RAM • 256GB Storage • 6.6" Super AMOLED 120Hz',
-  },
-  {
-    id: 'dev-hp-elitebook-840',
-    name: 'HP EliteBook 840 G8 (Core i7, 16GB)',
-    brand: 'HP',
-    category: 'laptop',
-    performanceTier: 'high',
-    batteryLifeSpec: '11 hrs / 53 Wh',
-    dynamicPriceNaira: 620000,
-    availableStock: 2,
-    isPriceFresh: true,
-    keySpecsSummary: 'Intel Core i7-1165G7 • 16GB RAM • 512GB NVMe SSD • 14" FHD',
-  },
-  {
-    id: 'dev-lenovo-tab-m11',
-    name: 'Lenovo Tab M11 LTE (128GB)',
-    brand: 'Lenovo',
-    category: 'tablet',
-    performanceTier: 'entry',
-    batteryLifeSpec: '15 hrs / 7,040 mAh',
-    dynamicPriceNaira: 260000,
-    availableStock: 0,
-    isPriceFresh: true,
-    keySpecsSummary: '4GB RAM • 128GB Storage • 11" 90Hz Display • 4G LTE',
-  },
-];
+const PHASE_1_PREVIEW_DEVICES: readonly DeviceCardDto[] = SEEDED_DEVICES;
 
 function formatNaira(amount: number): string {
   return `₦${amount.toLocaleString('en-NG')}`;

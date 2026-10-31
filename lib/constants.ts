@@ -33,6 +33,10 @@ export const OTP_LENGTH = 6;
 export const OTP_TTL_MINUTES = 10;
 export const OTP_MAX_ATTEMPTS = 3;
 
+// Shop ATF 03 outbound WhatsApp recipient number (international digits without '+' for wa.me links).
+export const SHOP_WHATSAPP_NUMBER = '2348090000303';
+export const SHOP_NAME = 'DG Tech Store (Shop ATF 03)';
+
 // PRD 3.4 & .agents/rules/state-transitions.md: 10 internal application & contract statuses.
 export const APPLICATION_STATUSES = [
   'Application Pending',
@@ -67,20 +71,29 @@ export const USER_ROLES = [
   'CO_OWNER',
 ] as const;
 
-// PRD Appendix B & .agents/rules/ux-states.md: Canonical UI and API error strings.
+// PRD Appendix B & .agents/rules/ux-states.md: Canonical UI and API strings verbatim.
 export const UX_STRINGS = {
+  SESSION_EXPIRED: 'Your session has expired. Please log in again.',
+  FORBIDDEN: 'You do not have permission to view this page.',
+  NOT_FOUND: 'The page you are looking for does not exist.',
+  NETWORK_OFFLINE: 'Could not connect. Check your connection and try again.',
   GENERIC_SERVER_ERROR: 'Something went wrong on our end. Try again.',
-  EMPTY_INVENTORY: 'No devices match your filters.',
+  SUBMITTING_LABEL: 'Submitting...',
+  RATE_LIMITED: 'Too many requests. Wait a moment and try again.',
+  EMPTY_INVENTORY: 'No devices match your filters. Clear filters to see all devices.',
+  LOAD_INVENTORY_ERROR: 'Could not load devices. Check connection and try again.',
   OUT_OF_STOCK_LABEL: 'Out of Stock',
+  OUT_OF_STOCK_DETAIL: 'Out of Stock. Confirm Current Price via WhatsApp.',
+  STALE_PRICE_DETAIL: 'Price may have changed. Confirm Current Price via WhatsApp.',
+  CALCULATOR_DISCLAIMER: 'This is an estimate. Final amount is validated at application submission.',
+  LOAD_DEVICE_ERROR: 'Could not load device. Refresh to try again.',
   CONFIRM_PRICE_CTA: 'Confirm Current Price via WhatsApp',
   CONFIRM_PRICE_FALLBACK: 'Call Shop ATF 03 or visit in person.',
-  NIN_INVALID: 'NIN must be 11 digits.',
+  NIN_INVALID: 'NIN must be exactly 11 numeric digits.',
   PHONE_INVALID: 'Enter a valid Nigerian phone number.',
-  DOWN_PAYMENT_OUT_OF_RANGE: 'Down payment must be between 70% and 80% of the device price.',
   OVERPAYMENT_BLOCKED: 'Amount exceeds remaining balance.',
-  SAME_USER_FINAL_APPROVAL:
-    'Final approval must be performed by an Owner or Co-owner different from the verifying worker.',
-  CALCULATOR_DISCLAIMER:
-    'Estimates only. Final price and terms are locked when you submit a valid application.',
+  SAME_USER_FINAL_APPROVAL: 'Final approval must be by a different user than the verifier.',
+  OTP_TROUBLE_FALLBACK: 'Trouble receiving OTP? Visit Shop ATF 03 for in-person verification.',
+  OTP_EXPIRED: 'OTP expired. Request a new one.',
+  OTP_LOCKOUT: 'Too many incorrect OTP attempts. Request a new OTP.',
 } as const;
-

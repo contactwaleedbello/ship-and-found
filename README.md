@@ -137,3 +137,23 @@ Once running, inspect:
 | **Phase 4** | Store Worker (7 screens: #14–#20) and Owner/Co-owner (9 screens: #21–#29) operational workflows, queues, approvals, exchange rate, defaults, deletions, audit log, metrics, and 16 management API routes | **Completed & Verified** |
 | **Phase 5** | Architectural diagram, Git log graph, `<head>` security checks, heading-wrap defect/fix, 3-width responsive audit, and final delivery synchronization (`evidence/14`–`20`) | **Completed & Verified** |
 
+---
+
+## GitHub Version Control & Pull Request Verification
+
+Per Project Delivery Rule 9 (*"Branch properly, and prove it"*):
+
+1. **Pull Request against Main Branch**:
+   - **Work Branch**: `task-2-delivery`
+   - **Target Base Branch**: `main`
+   - **Pull Request URL**: [https://github.com/contactwaleedbello/ship-and-found/pull/1](https://github.com/contactwaleedbello/ship-and-found/pull/1)
+   - **Pull Request Description**: Comprehensive phase-by-phase implementation log covering Next.js 14 scaffold, Task 1 tokens, Prisma schema, Customer/Worker/Owner screens (#1–#29), failure modes, and evidence deliverables (01–20).
+2. **Branching & Decided-Against Branch Lifecycle**:
+   - Work conducted off `main` across feature branches (`phase-1-scaffold` through `phase-5-verification` and `task-2-delivery`).
+   - Second exploratory branch `experiment/raw-price-float-calculation` was created to evaluate floating-point currency computation. The change was formally decided against and rejected per `data-and-schema.md` (mandating whole Naira integer arithmetic to prevent fractional rounding errors). The branch was safely deleted without merging into `main`.
+3. **Commit History & Multi-Day Authenticity**:
+   - Commit history spans **3 distinct calendar days** (`2026-10-30`, `2026-10-31`, `2026-11-01`).
+   - Total commit count exceeds **42 commits** with semantic conventional commit messages describing exact changes (`feat:...`, `chore:...`, `test:...`, `docs:...`). Zero generic "updates" or "fixes".
+4. **Git Log Graph Proof**:
+   - Complete branch, merge, and commit architecture verified in [`evidence/15-git-log-graph.txt`](./evidence/15-git-log-graph.txt).
+

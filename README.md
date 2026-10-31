@@ -132,8 +132,8 @@ Once running, inspect:
 |---|---|---|
 | **Pre-Phase 1** | Root `AGENTS.md`, 32 `.agents/rules/*.md` files, 3 `.agents/skills/` procedures, and 5 context docs | **Completed & Verified** |
 | **Phase 1** | Git init, skill path normalization, Task 1 `styles/` token integration, workstream `docs/*.md`, Next.js 14 + TS strict + Tailwind v3 base scaffold, `lib/` core modules, `app/(public)/page.tsx`, `GET /api/health`, and `evidence/01` & `02` | **Completed & Verified** |
-| **Phase 2** | `prisma/schema.prisma`, `lib/db.ts`, `lib/crypto.ts`, Public & Auth screens (`Home`, `Device Detail`, `Login`, `Register`, `OTP Verification`, `Forgot Password`, `Confirm Current Price`), server startup & diagnostic evidence (`evidence/03`–`10`) | **Pending (Next Phase)** |
-| **Phase 3** | Customer screens (`Apply`, `Application Status`, `My Applications`, `Agreement Acceptance`, `Contract Detail`, `Account Settings`) and DB write/failure evidence (`evidence/11`–`13`) | **Planned** |
+| **Phase 2** | `prisma/schema.prisma`, `prisma/seed.ts`, `lib/db.ts`, `lib/crypto.ts`, `lib/templates.ts`, `lib/catalog-data.ts`, `lib/services/*`, Public & Auth screens (`Home`, `Device Detail`, `Login`, `Register`, `OTP Verification`, `Forgot Password`, `Confirm Current Price`), 10 API routes, and server startup & diagnostic evidence (`evidence/03`–`10`) | **Completed & Verified** |
+| **Phase 3** | Customer screens (`Apply`, `Application Status`, `My Applications`, `Agreement Acceptance`, `Contract Detail`, `Account Settings`) and DB write/failure evidence (`evidence/11`–`13`) | **Pending (Next Phase)** |
 | **Phase 4** | Store Worker (7 screens) and Owner/Co-owner (9 screens) operational scaffolds, Cron & Admin API routes | **Planned** |
 | **Phase 5** | Working-tree diagram, Git log graph, `<head>` route checks, heading-wrap defect/fix, and 3-width responsive verification (`evidence/14`–`20`) | **Planned** |
 

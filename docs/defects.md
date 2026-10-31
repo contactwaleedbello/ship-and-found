@@ -56,11 +56,24 @@ This document tracks actual repository, configuration, routing, styling, and run
 
 ---
 
-## 3. Pending Diagnostic & UI Defect Verifications (Phases 2–5)
+### DEF-04: Prisma CLI `P1012` Environment Lookup and `snake_case` Field Mapping in `prisma/seed.ts`
+- **Phase Identified:** Phase 2 (Milestone 1 — Prisma Schema Validation & Seed Script Typecheck)
+- **Severity:** Medium (Blocks `npx prisma validate` when only `.env.local` exists and causes TypeScript errors in `prisma/seed.ts`)
+- **Description:**
+  1. Next.js loads `.env.local` automatically, whereas the Prisma CLI (`prisma validate` / `prisma generate`) reads `.env` by default and threw `Error code: P1012: Environment variable not found: DATABASE_URL` when only `.env.local` was present.
+  2. Our initial draft of `prisma/seed.ts` used `camelCase` property names (`settingKey`, `phoneNumber`, `deviceId`) while `prisma/schema.prisma` defines exact PRD Section 5.1 `snake_case` column names (`setting_key`, `phone_number`, `device_id`).
+- **Reproduction Details:**
+  Running `./node_modules/.bin/prisma validate` exited with code `1` (`P1012`), and `npm run typecheck` reported `TS2353`/`TS2561` on `prisma/seed.ts`.
+- **Status:** **Resolved in Phase 2**
+- **Resolution & Evidence:**
+  Created local untracked `.env` alongside `.env.local` (both ignored by `.gitignore`) so Prisma CLI loads `DATABASE_URL` automatically, and updated `prisma/seed.ts` to use the exact `snake_case` model fields from `prisma/schema.prisma`. Verified with `prisma validate` (`The schema at prisma/schema.prisma is valid 🚀`) and `npm run typecheck` (`0` errors).
 
-Per [`docs/scaffold-prompt.md`](./scaffold-prompt.md) Section 7 ("If an activity has not occurred, record it as pending in the relevant planning or tracking document. Do not create fake evidence to fill the directory"), the following diagnostic and UI checks will be logged here when executed:
-- **Nested-folder execution error & fix** (`evidence/05-nested-folder-error.txt`, `evidence/06-nested-folder-fixed.txt`) — Planned for Phase 2.
-- **Port conflict (`EADDRINUSE`) & resolution** (`evidence/07-port-conflict.txt`, `evidence/08-port-conflict-resolved.txt`) — Planned for Phase 2.
-- **Route 404 reproduction & resolution** (`evidence/09-404-error.txt`, `evidence/10-404-resolved.txt`) — Planned for Phase 2.
+---
+
+## 3. Diagnostic Reproductions & Pending UI Verifications
+
+- **Nested-folder execution error & fix** (`evidence/05-nested-folder-error.txt`, `evidence/06-nested-folder-fixed.txt`) — **Reproduced & Verified in Phase 2**.
+- **Port conflict (`EADDRINUSE`) & resolution** (`evidence/07-port-conflict.txt`, `evidence/08-port-conflict-resolved.txt`) — **Reproduced & Verified in Phase 2**.
+- **Route 404 reproduction & resolution** (`evidence/09-404-error.txt`, `evidence/10-404-resolved.txt`) — **Reproduced & Verified in Phase 2**.
 - **Heading-wrap typography defect & fix** (`evidence/18-heading-wrap-bad.png`, `evidence/19-heading-wrap-good.png`) — Planned for Phase 5.
 

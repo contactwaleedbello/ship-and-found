@@ -249,3 +249,96 @@ TIMESTAMP: 2026-10-31T20:32:48+01:00
   - Verification results: Verified against `git log --graph --oneline --decorate` and `git status`.
 
 
+
+
+================================================================================
+PHASE 2 COMPLETION AUDIT: DATABASE SCHEMA, AUTHENTICATION, PUBLIC SCREENS (#1-#7), AND DIAGNOSTIC EVIDENCE (03-10)
+================================================================================
+TIMESTAMP: 2026-10-31T22:07:00+01:00
+BRANCH: phase-2-database-auth
+
+--------------------------------------------------------------------------------
+1. DATABASE SCHEMA, ENCRYPTION, TEMPLATES & SEED SPECIFICATION
+--------------------------------------------------------------------------------
+
+- File path: prisma/schema.prisma
+  - Action: Created
+  - Purpose: Defines all 14 core models from Consolidated PRD v1.3 Section 5.1 (`User`, `CustomerProfile`, `Device`, `Inventory`, `Price`, `Settings`, `PartPaymentApplication`, `Agreement`, `DownPaymentTransaction`, `BalancePaymentTransaction`, `SettlementLog`, `WhatsAppReminderLog`, `ConsentRecord`, `AuditLog`, `DataDeletionRequest`) plus `Session`, `OtpToken`, and `InventoryApproval`, with all 16 documented additions from `.agents/rules/data-and-schema.md`, `onDelete: Restrict` on every relation, whole-Naira `Int` money columns, `Decimal(10, 4)` multipliers/percents, and required indexes.
+  - Source requirements: PRD Section 5.1; `.agents/rules/data-and-schema.md`.
+  - Relevant rules & skills: `.agents/rules/data-and-schema.md`; `.agents/rules/ndpa-compliance.md`.
+  - Design references & tokens: Not applicable (database schema).
+  - Assumptions: None. Mirrors PRD Section 5.1 + `.agents/rules/data-and-schema.md` verbatim.
+  - Verification results: `npx prisma validate` (`The schema at prisma/schema.prisma is valid 🚀`) and `npx prisma generate` (`Generated Prisma Client v5.22.0`).
+
+- File path: lib/db.ts, lib/crypto.ts, lib/templates.ts, lib/catalog-data.ts, prisma/seed.ts
+  - Action: Created
+  - Purpose: PrismaClient singleton (`lib/db.ts`), AES-256-GCM field encryption/decryption + HMAC-SHA256 blind indexing + `*******1234` NIN masking (`lib/crypto.ts`), verbatim Appendix A WhatsApp & OTP SMS templates (`lib/templates.ts`), 25 seeded Shop ATF 03 devices across 5 brands, 3 categories, and 3 performance tiers (`lib/catalog-data.ts`), and `prisma/seed.ts`.
+  - Source requirements: PRD Sections 5.3, 9.3, 16.1, Appendix A; `.agents/rules/security-baseline.md`; `.agents/rules/message-templates.md`; `.agents/rules/build-plan.md`.
+  - Relevant rules & skills: `.agents/rules/code-conventions.md`; `.agents/rules/ndpa-compliance.md`.
+  - Design references & tokens: Not applicable.
+  - Assumptions: Shop ATF 03 outbound WhatsApp number set to `2348090000303` in `lib/constants.ts` for `Template A.3` deep links (`AGENTS.md` Q25).
+  - Verification results: `npm run typecheck` (`0` errors) and `npm run lint` (`✔ No ESLint warnings or errors`).
+
+--------------------------------------------------------------------------------
+2. PUBLIC INVENTORY, CALCULATOR & AUTHENTICATION SERVICES + API ROUTES (10 ENDPOINTS)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `lib/services/catalog-service.ts`
+  - `lib/services/auth-service.ts`
+  - `app/api/devices/route.ts` (`GET /api/devices`)
+  - `app/api/devices/[id]/route.ts` (`GET /api/devices/:id`)
+  - `app/api/calculator/route.ts` (`POST /api/calculator`)
+  - `app/api/auth/register/route.ts` (`POST /api/auth/register`)
+  - `app/api/auth/verify-otp/route.ts` (`POST /api/auth/verify-otp`)
+  - `app/api/auth/login/route.ts` (`POST /api/auth/login`)
+  - `app/api/auth/logout/route.ts` (`POST /api/auth/logout`)
+  - `app/api/auth/forgot-password/route.ts` (`POST /api/auth/forgot-password`)
+  - `app/api/auth/reset-password/route.ts` (`POST /api/auth/reset-password`)
+  - `app/api/auth/accept-agreement-otp/route.ts` (`POST /api/auth/accept-agreement-otp`)
+  - Action: Created
+  - Purpose: Implements the 3 public inventory/calculator endpoints and 7 authentication endpoints from `.agents/rules/api-contracts.md` (#1 and #2) with Zod validation, `x-request-id` correlation headers, PII-scrubbed structured logging, 24-hour password reset lock enforcement (`PRD 9.3`), and standard error envelopes (`api-design.md`).
+  - Source requirements: PRD Sections 3.3 (`FR-01`, `FR-02`), 7.11, 8.3, 9.3; `.agents/rules/api-contracts.md`; `.agents/rules/api-design.md`.
+  - Relevant rules & skills: `.agents/skills/build-api-endpoint/SKILL.md`; `.agents/rules/security-baseline.md`.
+  - Design references & tokens: Not applicable (API layer).
+  - Assumptions: None.
+  - Verification results: Live HTTP `200` and `404` responses verified and recorded in `evidence/04-first-load.txt`, `evidence/09-404-error.txt`, and `evidence/10-404-resolved.txt`.
+
+--------------------------------------------------------------------------------
+3. PUBLIC & AUTHENTICATION SCREENS (#1 THROUGH #7 + GLOBAL 404 BOUNDARY)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `app/(public)/page.tsx` (Screen #1: `Home / Inventory Listing` at `/`)
+  - `app/(public)/devices/[id]/page.tsx` & `app/(public)/devices/[id]/_components/part-payment-calculator.tsx` (Screen #2: `Device Detail` at `/devices/[id]`)
+  - `app/(public)/login/page.tsx` (Screen #3: `Login` at `/login`)
+  - `app/(public)/register/page.tsx` (Screen #4: `Register` at `/register`)
+  - `app/(public)/verify-otp/page.tsx` (Screen #5: `OTP Verification` at `/verify-otp`)
+  - `app/(public)/forgot-password/page.tsx` (Screen #6: `Forgot Password` at `/forgot-password`)
+  - `app/(public)/confirm-price/[deviceId]/page.tsx` (Screen #7: `Confirm Current Price via WhatsApp` at `/confirm-price/[deviceId]`)
+  - `app/not-found.tsx` (Global 404 boundary)
+  - Action: Created / Updated
+  - Purpose: Implements all 7 Public & Authentication screens from `.agents/rules/screen-inventory.md` (#1-#7) with equal visual weight for Battery Life and Price (`FR-01`), single primary CTA per screen (`PRD 3.1`), on-blur inline validation (`FR-03`), and exact verbatim strings from `.agents/rules/ux-states.md` (`B.1`, `B.2`, `B.6`) and `.agents/rules/message-templates.md` (`Template A.3`).
+  - Source requirements: PRD Sections 3.1, 3.2, 3.3 (`FR-01`, `FR-02`, `FR-12`), Appendix A, Appendix B; `.agents/rules/screen-inventory.md` Rows #1-#7.
+  - Relevant rules & skills: `.agents/skills/build-list-screen/SKILL.md`; `.agents/skills/build-form-screen/SKILL.md`; `.agents/rules/accessibility-baseline.md`; `.agents/rules/ux-states.md`.
+  - Design references & tokens: Uses exclusively Task 1 design tokens from `styles/tokens/roles.css` and `tailwind.config.ts` (`bg-surface*`, `bg-primary*`, `bg-secondary*`, `bg-tertiary*`, `bg-info*`, `bg-warning*`, `bg-error*`, `.type-headline-*`, `.type-title-*`, `.type-body-*`, `.type-label-*`, `rounded-card`, `rounded-button`, `rounded-input`, `shadow-hard`).
+  - Assumptions: None.
+  - Verification results: Verified `0` hardcoded hex/px values via `grep`, `0` TypeScript errors, `0` ESLint warnings, and HTTP `200` across all 7 screens in `evidence/04-first-load.txt`.
+
+--------------------------------------------------------------------------------
+4. DIAGNOSTIC & SERVER VERIFICATION EVIDENCE (03 THROUGH 10)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `evidence/03-server-start.txt`
+  - `evidence/04-first-load.txt`
+  - `evidence/05-nested-folder-error.txt`
+  - `evidence/06-nested-folder-fixed.txt`
+  - `evidence/07-port-conflict.txt`
+  - `evidence/08-port-conflict-resolved.txt`
+  - `evidence/09-404-error.txt`
+  - `evidence/10-404-resolved.txt`
+  - Action: Created
+  - Purpose: Records verbatim command and HTTP outputs for Next.js 14.2.35 server startup (`Ready in 2.2s`), first-load route verification, nested-folder `ENOENT` reproduction and root-directory resolution, port `3000` `EADDRINUSE` conflict and resolution, and UI/API `404` reproduction and `200` canonical route resolution.
+  - Source requirements: `docs/scaffold-prompt.md` Section 7 (`evidence/03` through `10`).
+  - Verification results: All 8 files populated from real command and server execution outputs.

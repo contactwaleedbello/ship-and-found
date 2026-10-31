@@ -1,0 +1,26 @@
+=== 1. Valid UI Device Detail Route: GET http://localhost:3000/devices/dev-a15 ===
+HTTP Status: 200 OK (2823ms)
+cache-control: no-store, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-type: text/html; charset=utf-8
+date: Sat, 31 Oct 2026 21:05:08 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch, Accept-Encoding
+Verified Heading: Samsung Galaxy A15 (128GB) present = true
+
+=== 2. Valid API Device Detail Route: GET http://localhost:3000/api/devices/dev-a15 ===
+HTTP Status: 200 OK (479ms)
+connection: keep-alive
+content-type: application/json
+date: Sat, 31 Oct 2026 21:05:10 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked
+vary: RSC, Next-Router-State-Tree, Next-Router-Prefetch
+x-request-id: req_60f24c91-b916-4dd9-a165-598e1af110bf
+{"data":{"id":"dev-a15","name":"Samsung Galaxy A15 (128GB)","brand":"Samsung","model":"Galaxy A15 (128GB)","category":"smartphone","performanceTier":"entry","batteryLifeSpec":"5000 mAh · 22 hrs active","batteryLifeHours":22,"basePriceNaira":235000,"dynamicPriceNaira":235000,"stockCount":5,"reservedCount":1,"availableStock":4,"isPriceFresh":true,"keySpecsSummary":"6.5\" Super AMOLED · 6GB RAM · 128GB Storage · Dual SIM 4G","specifications":{"Display":"6.5-inch Super AMOLED, 90Hz","Processor":"MediaTek Helio G99","Memory":"6GB RAM / 128GB Internal","Battery":"5000 mAh (22 hrs active usage, 25W fast charge)","Camera":"50MP Main + 5MP Ultrawide + 2MP Macro","Condition":"Brand New Sealed (Shop ATF 03 Warranty)"}}}
+
+=== 3. Valid Confirm Price Route: GET http://localhost:3000/confirm-price/dev-t490s ===
+HTTP Status: 200 OK (713ms)
+Verified Template A.3 present = true

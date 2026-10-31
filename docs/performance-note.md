@@ -38,8 +38,24 @@ DG Tech Store targets Nigerian customers browsing on mid-range Android devices o
 
 ---
 
-## 3. Outstanding Performance Checks for Subsequent Phases
+## 3. Runtime Performance Benchmarks Measured in Phase 2 (`evidence/03-server-start.txt` & `evidence/04-first-load.txt`)
 
-- **Phase 2:** Measure cold and warm `npm run dev` startup time (`evidence/03-server-start.txt`), first-load response time (`evidence/04-first-load.txt`), and `GET /api/devices` P95 latency against the 25-device seeded PostgreSQL database.
-- **Phase 3:** Measure `bcrypt` cost factor 12 hashing duration on local and preview environments (`AGENTS.md` Q56) and transactional lock contention during concurrent last-unit application submissions (`PRD 13.1`).
+During Phase 2 server verification on `phase-2-database-auth`, the Next.js 14.2.35 server was started and benchmarked across all 7 Public & Auth screens (`#1`–`#7`) and Public Inventory / Calculator API endpoints:
+
+| Benchmark | Measured Result | PRD 9.1 Budget | Status | Evidence File |
+|---|---|---|---|---|
+| **Next.js Dev Server Startup (`Ready in`)** | `2.2s` | N/A (Local boot) | **Verified** | [`evidence/03-server-start.txt`](../evidence/03-server-start.txt) |
+| **Cold First-Load Compile (`GET /`, 594 modules)** | `3,789 ms` (compile `3.4s`) | N/A (Cold dev compile) | **Verified** | [`evidence/03-server-start.txt`](../evidence/03-server-start.txt) |
+| **Warm Filtered Inventory Load (`GET /?brand=Samsung&category=smartphone`)** | `38 ms` | `< 1,800 ms` FCP | **Passed (`38 ms`)** | [`evidence/03-server-start.txt`](../evidence/03-server-start.txt) |
+| **Warm Empty-State Filter Load (`GET /?brand=Apple&category=tablet&battery_life=18`)** | `25 ms` | `< 1,800 ms` FCP | **Passed (`25 ms`)** | [`evidence/04-first-load.txt`](../evidence/04-first-load.txt) |
+| **Public Read API (`GET /api/devices?brand=Samsung`)** | `176 ms` | `P95 < 400 ms` | **Passed (`176 ms`)** | [`evidence/04-first-load.txt`](../evidence/04-first-load.txt) |
+| **Calculator API (`POST /api/calculator`)** | `247 ms` | `P95 < 400 ms` | **Passed (`247 ms`)** | [`evidence/04-first-load.txt`](../evidence/04-first-load.txt) |
+| **Health Endpoint (`GET /api/health`)** | `219 ms` | `< 2,000 ms` | **Passed (`219 ms`)** | [`evidence/04-first-load.txt`](../evidence/04-first-load.txt) |
+
+---
+
+## 4. Outstanding Performance Checks for Subsequent Phases
+
+- **Phase 3:** Measure customer application submission (`POST /api/applications`) transactional lock latency (`P95 < 800 ms` budget) and concurrent last-unit stock reservation (`PRD 13.1`).
+- **Phase 4 & 5:** Measure `GET /api/admin/audit` pagination (`50 rows/page`, `P95 < 1,000 ms`) and production build bundle sizes (`npm run build`).
 

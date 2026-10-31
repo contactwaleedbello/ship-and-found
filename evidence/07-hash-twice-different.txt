@@ -1,0 +1,15 @@
+=== Step 4.1: Password Hashing with Salt Non-Collision Proof ===
+Workstream: task-04-server-security
+Domain: DG Tech Store (Shop ATF 03)
+Timestamp: 2026-10-31T23:26:14.942Z
+Algorithm: Argon2id (v=19, m=65536, t=3, p=4)
+Input Password: "BanexCustomer#2026"
+
+Output Hash #1:
+$argon2id$v=19$m=65536,p=4,t=3$UcvCOsWxpF+IEfdA/Xu/bQ$s4fzglFlOxpu9LrrrFD5lok7YSKWkFehFf6U1mezm8M
+
+Output Hash #2:
+$argon2id$v=19$m=65536,p=4,t=3$A0SssQzV7O+BN7J/+quLlg$Cz5GXKeqeG2po/UH/5PYUBq7wTIgSuqHMmJSfsbvARY
+
+Why They Differ (One-Line Explanation):
+Argon2id automatically generates a unique, cryptographically random 16-byte salt for every hash invocation, ensuring identical passwords yield completely distinct ciphertexts to eliminate precomputed rainbow table attacks.

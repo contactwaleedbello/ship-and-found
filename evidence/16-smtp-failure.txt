@@ -1,0 +1,25 @@
+=== Step 10: SMTP Mailer Initial Failure & Resolution ===
+Workstream: task-04-server-security
+Domain: DG Tech Store (Shop ATF 03)
+Timestamp: 2026-10-31T23:32:00Z
+Mailer Host: smtp.gmail.com:587 (TLS)
+
+--- 1. Initial Attempt: Ordinary Account Password (Failure) ---
+Configuration:
+  host: "smtp.gmail.com"
+  port: 587
+  secure: false
+  auth:
+    user: "dispatch@dgtechstore.ng"
+    pass: "StandardAccountPassword123"
+
+Captured Error Log:
+[Error: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at 535 5.7.8 https://support.google.com/mail/?p=BadCredentials - gsmtp] {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. Learn more at 535 5.7.8 https://support.google.com/mail/?p=BadCredentials - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+
+Root Cause:
+Google Mail and modern enterprise SMTP gateways enforce Multi-Factor Authentication and reject ordinary user login passwords for programmatic SMTP relay.

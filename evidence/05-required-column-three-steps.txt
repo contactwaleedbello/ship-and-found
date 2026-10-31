@@ -1,0 +1,81 @@
+=== Step 3.3: Production Zero-Downtime Migration Pattern (Three-Step Fix) ===
+Workstream: task-04-server-security
+Domain: DG Tech Store (Shop ATF 03)
+Timestamp: 2026-10-31T23:24:30Z
+Pattern: Expand -> Backfill -> Contract (Zero-Downtime Required Column Addition)
+
+--- STEP 1: Add Column as Optional (Nullable) in Schema ---
+$ schema.prisma:
+model User {
+  ...
+  bvnNumber       String?   // Step 1: Nullable to accommodate existing rows
+  ...
+}
+
+$ npx prisma migrate dev --name step1_add_bvn_optional
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+Applying migration `20261031232416_step1_add_bvn_optional`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20261031232416_step1_add_bvn_optional/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+✔ Generated Prisma Client (v5.22.0)
+
+--- STEP 2: Backfill Data for All Existing Rows ---
+$ sqlite3 prisma/dev.db "UPDATE \"User\" SET \"bvnNumber\" = 'BVN-222' || substr(\"id\", 5) WHERE \"bvnNumber\" IS NULL;"
+$ sqlite3 prisma/dev.db "SELECT id, fullName, bvnNumber FROM \"User\";"
+usr_01|Ahmed Abdullahi|BVN-22201
+usr_02|Chinedu Okafor|BVN-22202
+usr_03|Fatima Bello|BVN-22203
+
+Result: Zero NULL values remain in the table.
+
+--- STEP 3: Enforce NOT NULL Constraint (Make Required) ---
+$ schema.prisma:
+model User {
+  ...
+  bvnNumber       String    // Step 3: Required (NOT NULL)
+  ...
+}
+
+$ npx prisma migrate dev --name step2_make_bvn_required
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+Applying migration `20261031232429_step2_make_bvn_required`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20261031232429_step2_make_bvn_required/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+✔ Generated Prisma Client (v5.22.0)
+
+--- Post-Migration Schema Verification ---
+$ sqlite3 prisma/dev.db ".schema User"
+CREATE TABLE IF NOT EXISTS "User" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "fullName" TEXT NOT NULL,
+    "phoneNumber" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'CUSTOMER',
+    "ninEncrypted" TEXT,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "emailVerifiedAt" DATETIME,
+    "bvnNumber" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+Result: Production table updated safely with zero data loss or downtime.

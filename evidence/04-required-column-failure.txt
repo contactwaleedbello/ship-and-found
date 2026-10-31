@@ -1,0 +1,39 @@
+=== Step 3.2: Required Column Migration Failure on Populated Table ===
+Workstream: task-04-server-security
+Domain: DG Tech Store (Shop ATF 03)
+Timestamp: 2026-10-31T23:23:56Z
+Action: Attempting to add NOT NULL column `bvnNumber String` to populated `User` table
+
+--- 1. Pre-migration Database State Verification ---
+$ sqlite3 prisma/dev.db "SELECT id, fullName, email FROM \"User\";"
+usr_01|Ahmed Abdullahi|ahmed@gmail.com
+usr_02|Chinedu Okafor|chinedu@yahoo.com
+usr_03|Fatima Bello|fatima@outlook.com
+
+Total existing populated rows: 3
+
+--- 2. Schema Change Introduced ---
+model User {
+  ...
+  emailVerifiedAt DateTime?
+  bvnNumber       String   // <-- Required column (NOT NULL) without default value
+  createdAt       DateTime @default(now())
+  ...
+}
+
+--- 3. Terminal Execution & Captured Prisma Migration Failure ---
+$ npx prisma migrate dev --name add_required_bvn
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "dev.db" at "file:./dev.db"
+
+Error: 
+⚠️ We found changes that cannot be executed:
+
+  • Step 0 Added the required column `bvnNumber` to the `User` table without a default value. There are 3 rows in this table, it is not possible to execute this step.
+
+You can use prisma migrate dev --create-only to create the migration file, and manually modify it to address the underlying issue(s).
+Then run prisma migrate dev to apply it and verify it works.
+
+--- 4. Root Cause Analysis ---
+Relational engines (SQLite, PostgreSQL, MySQL) strictly reject altering a table to add a NOT NULL constraint to an existing populated table unless a DEFAULT value is declared or all existing rows already have values for that column. Attempting this against a live production database results in an immediate table lock and aborted transaction.

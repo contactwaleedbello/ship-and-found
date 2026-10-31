@@ -1,0 +1,53 @@
+/* Self-hosted Fira Sans and Noto Sans fallback. OFL licensed; see styles/fonts/OFL-*.txt.
+   Text subsets cover the page copy plus the Hausa, Yoruba and Naira glyphs used in evidence/glyph-test.html. */
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/fira-sans-400-text.woff2') format('woff2');
+  unicode-range: U+20-7e, U+c0-c1, U+c8-c9, U+cc-cd, U+d2-d3, U+d9-da, U+dd, U+e0-e1, U+e8-e9, U+ec-ed, U+f2-f3, U+f9-fa, U+fd, U+106-107, U+139-13a, U+143-144, U+154-155, U+15a-15b, U+179-17a, U+180-183, U+18a-18c, U+198-199, U+1b3-1b4, U+1f4-1f5, U+1f8-1f9, U+253, U+257, U+300-301, U+323, U+1e04-1e05, U+1e0c-1e0d, U+1e24-1e25, U+1e30-1e33, U+1e36-1e37, U+1e3e-1e3f, U+1e42-1e43, U+1e46-1e47, U+1e54-1e55, U+1e5a-1e5b, U+1e62-1e63, U+1e6c-1e6d, U+1e7e-1e83, U+1e88-1e89, U+1e92-1e93, U+1ea0-1ea1, U+1eb8-1eb9, U+1eca-1ecd, U+1ee4-1ee5, U+1ef2-1ef5, U+2013-2014, U+2019, U+201c-201d, U+2022, U+2026, U+20a6;
+}
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/fira-sans-500-text.woff2') format('woff2');
+  unicode-range: U+20-7e, U+c0-c1, U+c8-c9, U+cc-cd, U+d2-d3, U+d9-da, U+dd, U+e0-e1, U+e8-e9, U+ec-ed, U+f2-f3, U+f9-fa, U+fd, U+106-107, U+139-13a, U+143-144, U+154-155, U+15a-15b, U+179-17a, U+180-183, U+18a-18c, U+198-199, U+1b3-1b4, U+1f4-1f5, U+1f8-1f9, U+253, U+257, U+300-301, U+323, U+1e04-1e05, U+1e0c-1e0d, U+1e24-1e25, U+1e30-1e33, U+1e36-1e37, U+1e3e-1e3f, U+1e42-1e43, U+1e46-1e47, U+1e54-1e55, U+1e5a-1e5b, U+1e62-1e63, U+1e6c-1e6d, U+1e7e-1e83, U+1e88-1e89, U+1e92-1e93, U+1ea0-1ea1, U+1eb8-1eb9, U+1eca-1ecd, U+1ee4-1ee5, U+1ef2-1ef5, U+2013-2014, U+2019, U+201c-201d, U+2022, U+2026, U+20a6;
+}
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/fira-sans-600-text.woff2') format('woff2');
+  unicode-range: U+20-7e, U+c0-c1, U+c8-c9, U+cc-cd, U+d2-d3, U+d9-da, U+dd, U+e0-e1, U+e8-e9, U+ec-ed, U+f2-f3, U+f9-fa, U+fd, U+106-107, U+139-13a, U+143-144, U+154-155, U+15a-15b, U+179-17a, U+180-183, U+18a-18c, U+198-199, U+1b3-1b4, U+1f4-1f5, U+1f8-1f9, U+253, U+257, U+300-301, U+323, U+1e04-1e05, U+1e0c-1e0d, U+1e24-1e25, U+1e30-1e33, U+1e36-1e37, U+1e3e-1e3f, U+1e42-1e43, U+1e46-1e47, U+1e54-1e55, U+1e5a-1e5b, U+1e62-1e63, U+1e6c-1e6d, U+1e7e-1e83, U+1e88-1e89, U+1e92-1e93, U+1ea0-1ea1, U+1eb8-1eb9, U+1eca-1ecd, U+1ee4-1ee5, U+1ef2-1ef5, U+2013-2014, U+2019, U+201c-201d, U+2022, U+2026, U+20a6;
+}
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/fira-sans-700-text.woff2') format('woff2');
+  unicode-range: U+20-7e, U+c0-c1, U+c8-c9, U+cc-cd, U+d2-d3, U+d9-da, U+dd, U+e0-e1, U+e8-e9, U+ec-ed, U+f2-f3, U+f9-fa, U+fd, U+106-107, U+139-13a, U+143-144, U+154-155, U+15a-15b, U+179-17a, U+180-183, U+18a-18c, U+198-199, U+1b3-1b4, U+1f4-1f5, U+1f8-1f9, U+253, U+257, U+300-301, U+323, U+1e04-1e05, U+1e0c-1e0d, U+1e24-1e25, U+1e30-1e33, U+1e36-1e37, U+1e3e-1e3f, U+1e42-1e43, U+1e46-1e47, U+1e54-1e55, U+1e5a-1e5b, U+1e62-1e63, U+1e6c-1e6d, U+1e7e-1e83, U+1e88-1e89, U+1e92-1e93, U+1ea0-1ea1, U+1eb8-1eb9, U+1eca-1ecd, U+1ee4-1ee5, U+1ef2-1ef5, U+2013-2014, U+2019, U+201c-201d, U+2022, U+2026, U+20a6;
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/noto-sans-400-text.woff2') format('woff2');
+  unicode-range: U+20-7e, U+c0-c1, U+c8-c9, U+cc-cd, U+d2-d3, U+d9-da, U+dd, U+e0-e1, U+e8-e9, U+ec-ed, U+f2-f3, U+f9-fa, U+fd, U+106-107, U+139-13a, U+143-144, U+154-155, U+15a-15b, U+179-17a, U+180-183, U+18a-18c, U+198-199, U+1b3-1b4, U+1f4-1f5, U+1f8-1f9, U+253, U+257, U+300-301, U+323, U+1e04-1e05, U+1e0c-1e0d, U+1e24-1e25, U+1e30-1e33, U+1e36-1e37, U+1e3e-1e3f, U+1e42-1e43, U+1e46-1e47, U+1e54-1e55, U+1e5a-1e5b, U+1e62-1e63, U+1e6c-1e6d, U+1e7e-1e83, U+1e88-1e89, U+1e92-1e93, U+1ea0-1ea1, U+1eb8-1eb9, U+1eca-1ecd, U+1ee4-1ee5, U+1ef2-1ef5, U+2013-2014, U+2019, U+201c-201d, U+2022, U+2026, U+20a6;
+}
+
+/* Noto Sans is declared at weight 400 only (styles/fonts/noto-sans-400-text.woff2);
+   weights 500, 600 and 700 are not locally hosted, so bold fallback at 500/600/700
+   may be synthesised by the browser if fallback to Noto Sans ever occurs.
+   All required Hausa (Ɓɓ Ɗɗ Ƙƙ Ƴƴ), Yoruba (Ẹ́ ẹ́ Ẹ̀ ẹ̀ Ọ́ ọ́ Ọ̀ ọ̀ Ṣ́ ṣ́) and Naira (₦185,000)
+   characters were verified directly in Fira Sans across weights 400, 500, 600 and 700. */

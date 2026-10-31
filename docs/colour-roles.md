@@ -4,7 +4,7 @@ Task 1, design system. Business: the phone shop whose receipt is the source of t
 
 ## 1. Where the brand colour came from
 
-The brand colour comes from the logo printed on the phone shop's own sales receipt (a photo of the receipt is in my evidence). The logo has an orange-red "DG" monogram and a dark grey arc. I sampled the logo pixels and corrected for the dim photo by white-balancing against the white paper. That gave about #CA5E4C to #D05336 for the orange-red and about #726E67 for the grey arc, which is unreliable because the arc is thin. These are estimates from a compressed phone photo, not print values.
+The brand colour comes from the logo printed on the phone shop's own sales receipt. The logo has an orange-red "DG" monogram and a dark grey arc. I sampled the logo pixels and corrected for the dim photo by white-balancing against the white paper. That gave about #CA5E4C to #D05336 for the orange-red and about #726E67 for the grey arc, which is unreliable because the arc is thin. These are estimates from a compressed phone photo, not print values. The receipt photo is not reproduced in this public repository.
 
 Two deliberate changes:
 - Primary: I darkened the sampled orange-red to #C4452B so white text on it passes. The sampled orange scored 4.0 to 4.2 with white text, below the 4.5 minimum. #C4452B scores 4.96.
@@ -24,7 +24,7 @@ Note: the page text says 14 tones, but two of its image descriptions say 13. I f
 
 Primary 40 is pinned to the brand colour #C4452B. Its real HCT tone is 47.2, not 40. Without the pin, tone 40 for this hue and chroma would be #AC341B (white text 6.44:1) and the brand colour would not appear in the palette at all. With the pin, white text on it scores 4.96:1, and tones 40 and 50 (#CE4C31) are nearly the same colour.
 
-[TO WRITE YOURSELF: one paragraph on the visible difference between your two screenshots, evidence/01-palette-before-pin.png and evidence/02-palette-after-pin.png. Only tone 40 changes, so say what you actually see.]
+Comparing `evidence/01-palette-before-pin.png` and `evidence/02-palette-after-pin.png`, thirteen of the fourteen swatches (`0`–`30` and `50`–`100`) stay identical in colour, hex value, and contrast ratio, and only tone `40` changes. Before pinning (`01-palette-before-pin.png`), tone `40` is a darker, brick-red `#AC341B` (`white 6.44`) that steps evenly between dark tone `30` (`#8A1B05`) and brighter tone `50` (`#CE4C31`). After pinning (`02-palette-after-pin.png`), tone `40` jumps up to the brighter orange-red brand colour `#C4452B` (`white 4.96`), creating a sharper visual step up from tone `30` while sitting almost flush with tone `50` (`#CE4C31`, `white 4.47`) so the two middle swatches look nearly the same shade side by side.
 
 ## 4. Extra tones beyond 14
 
@@ -35,7 +35,7 @@ So neutral has 21 tones, primary has 14, and the other seven palettes have 15.
 
 ## 5. Roles
 
-A role is a job, not a colour. I used 39 roles (the Material roles page lists 26 standard ones in six groups; I added success, warning and info groups because the shop shows warranty and balance states, and I left out the add-on roles the page says most products should ignore). Contrast is WCAG ratio, computed from the hex values. Figma collection: "colour roles", modes Light and Dark, every role an alias of a tone in "key colors".
+A role is a job, not a colour. I used 39 roles (the Material roles page lists 26 standard ones in six groups; I added success, warning and info groups because the shop shows warranty and balance states, and I left out the add-on roles the page says most products should ignore). Contrast is WCAG ratio, computed from the hex values. Figma collection: "colour roles", modes Light and Dark, every role an alias of a tone in "key colors". The Figma variables panel and collection counts are captured in `evidence/Figma variables panel evidence.png`.
 
 | Role | Job | Light tone | Light hex | Dark tone | Dark hex |
 |---|---|---|---|---|---|

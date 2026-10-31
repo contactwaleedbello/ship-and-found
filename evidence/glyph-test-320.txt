@@ -1,0 +1,14 @@
+Typography test frame at 320 CSS pixels
+Date/time: 2026-10-31 06:10 WAT
+Method: the current `evidence/glyph-test.html` was loaded in a same-origin 320px iframe
+with the real local fonts and tokens. The document width, scroll width and each
+`.type-display-large` block were measured after load. File-check method only; no
+browser-zoom claim.
+
+- documentElement.clientWidth: 320
+- documentElement.scrollWidth: 320
+- Horizontal overflow: none
+- Hausa block: clientWidth/scrollWidth 288/288; height 160
+- Yoruba block (all ten combinations): clientWidth/scrollWidth 288/288; height 160
+- Naira block: clientWidth/scrollWidth 288/288; height 80
+- Result: the responsive test frame fits below 360px; no horizontal overflow.

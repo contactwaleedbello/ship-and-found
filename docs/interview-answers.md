@@ -4,7 +4,7 @@
 I split my tokens into two layers generated from `tokens/tokens.json` by `scripts/build-tokens.js`: raw values in `styles/tokens/primitives.css` and semantic roles in `styles/tokens/roles.css`, imported in that order by `styles/tokens/index.css`.
 
 In `tokens/tokens.json`, six collections hold 382 variables in total:
-- `Primitives`: 182 variables in total—140 colour tones across eight palettes, 21 spacing steps, 10 corner radii, 5 border widths, and 6 elevation levels (`--primitive-*`).
+- `Primitives`: 182 variables in total—140 colour tones across nine palettes, 21 spacing steps, 10 corner radii, 5 border widths, and 6 elevation levels (`--primitive-*`).
 - `colour roles`: 39 `--color-*` roles across two modes (`Light` and `Dark`).
 - `spacing roles`: 44 variables across five breakpoint modes (`Compact`, `Medium`, `Expanded`, `Large`, `Extra-large`), emitting 41 `--spacing-*` properties per mode and using the 3 `breakpoint/*` variables for `@media` rules.
 - `shape roles`: 21 `--radius-*` and `--border-width-*` aliases.
@@ -74,10 +74,10 @@ See: `docs/colour-roles.md`.
 Semantic HTML gives browsers, screen readers, and keyboard users the role, hierarchy, and behaviour of each element without extra JavaScript. Landmarks let screen-reader users jump straight to page regions, headings (`<h1>` to `<h3>`) build a navigable outline, and native interactive elements handle focus and keyboard activation.
 
 In `src/index.html`, the page uses:
-- Landmarks: `<aside aria-label="Announcement">` (line 12), `<header>` (line 21), `<main>` (line 34), and `<footer>` (line 139). There is no `<nav>` element because this is a single product screen with no site navigation.
-- Headings: one `<h1>` for the store name (`DG Tech-Store`, line 24), an `<h2>` for the phone title (`Samsung Galaxy A15, 128GB`, line 59), and `<h3>` headings for `Colours` (line 80) and `About this phone` (line 90).
-- Inline semantics: `<s class="type-title-medium price-original">₦200,000</s>` (line 73) announces the struck-through price, and `role="img"` with `aria-label` describes the placeholder photo box (line 38).
-- Actions: `"Order on WhatsApp"` and `"Call the shop"` (lines 131–132) are `<a href="#">` links because they open external WhatsApp and `tel:` destinations, though in `src/index.html` their `href` attributes are still `#` placeholders.
+- Landmarks: `<aside aria-label="Announcement">` (line 13), `<header>` (20), `<main>` (33), and `<footer>` (129). There is no `<nav>` element because this is a single product screen with no site navigation.
+- Headings: one `<h1>` for the store name (`DG Tech Store`, line 23), an `<h2>` for the phone title (`Samsung Galaxy A15, 128GB`, line 58), and `<h3>` headings for `About this phone` (78) and `Key specifications` (84).
+- Inline semantics: `role="img"` with `aria-label` describes the sample photo placeholder (line 37).
+- Actions: `"Order on WhatsApp"` and `"Call the shop"` (lines 120–121) are `<a>` links using `wa.me` and `tel:` schemes. The destinations are explicit `REPLACE_WITH_OWNER_NUMBER` placeholders pending owner input, with `aria-label` and a visible note.
 
 See: `src/index.html`.
 
@@ -103,25 +103,27 @@ To stop it in Prompt 3 (`evidence/10-screen-with-system.txt`), I gave the agent 
 - An instruction to stop and report any missing token rather than inventing a value.
 - A mandatory `node scripts/check-tokens.js` verification step before finishing.
 
+The final reconciled page removes the unverified sales claims and labels the remaining product data as sample; the baseline screenshot remains historical, while `evidence/10-screen-with-system.png` is the current screen.
+
 See: `docs/prompts.md`, `evidence/09-screen-without-system.png`, `evidence/10-screen-with-system.png`, `evidence/10-screen-with-system.txt`.
 
 ## 10. Why that exact line height for display large, and not one step either side?
 In `docs/type-scale.md`, `display-large` has a font size of 57px and a line height of 80px. That comes from multiplying 57px by the 1.4 heading multiplier (`57 × 1.4 = 79.8`, rounded to the nearest whole pixel, 80px).
 
-My brief defines three line-height multipliers across the 15 styles: 1.4 for display, headline, and `title-large`; 1.5 for smaller titles, `body-small`, and labels; and 1.6 for reading text (`body-large` and `body-medium`).
+My type scale defines three line-height multipliers across the 15 styles: 1.4 for display, headline, and `title-large`; 1.5 for smaller titles, `body-small`, and labels; and 1.6 for reading text (`body-large` and `body-medium`).
 
-I did not go lower toward the Material 3 default of 64px (a 1.12 ratio) because the shop serves Nigerian customers where Yoruba and Igbo tone marks and sub-dots sit above and below letters and collide when leading is tight.
+I did not go lower toward the Material 3 default of 64px (a 1.12 ratio) because the owner-provided responses (`docs/owner-answers.txt`) say that alongside English and Hausa, a Yoruba-speaking co-owner receives orders in Yoruba, where tone marks and sub-dots (`ẹ́`, `ẹ̀`, `ọ́`, `ọ̀`, `ṣ`) sit above and below letters and collide when leading is tight.
 
-I did not go one step higher to the 1.5 multiplier (86px) or 1.6 multiplier (91px) because large display type needs less relative leading than body text, and even at 80px, two lines of `display-large` take 160px of vertical height and eat too much of a 360px phone screen.
+The next multiplier steps, 1.5 (86px) and 1.6 (91px), would give large display type more relative leading than it needs, and even at 80px, two lines of `display-large` take 160px of vertical height and eat too much of a 360px phone screen.
 
 See: `docs/type-scale.md`, `docs/divergences.md`.
 
 ## 11. What in your own token structure would you build differently?
 I would change two parts of my token build that are listed in `docs/defects.md`, and each comes with a trade-off.
 
-First, in `styles/tokens/roles.css` (lines 394–396), the three shadows emit a raw colour (`rgb(100 13 0 / ...)`) read from `effectStyles` in `tokens/tokens.json`, while `scripts/build-tokens.js` (line 761) skips all 21 per-variable tokens in `shadow roles`, including `shadow/*/color` (`{Primitives:primary/20}`). If `--primitive-primary-20` changes, the shadows stay brown. I would update `scripts/build-tokens.js` to resolve `shadow/*/color` and emit `color-mix(in srgb, var(--primitive-primary-20) 30%, transparent)`. The cost is that `color-mix()` is more complex CSS than a plain `box-shadow` string and no longer mirrors Figma's unbound `effectStyles` export one-for-one.
+First, in `styles/tokens/roles.css` (lines 394–396), the three shadows emit a raw colour (`rgb(100 13 0 / ...)`) read from `effectStyles` in `tokens/tokens.json`, while `scripts/build-tokens.js` (line 761) skips all 21 per-variable tokens in `shadow roles`, including `shadow/*/color` (`{Primitives:primary/20}`). If `--primitive-primary-20` changes, the shadows stay brown. I would update `scripts/build-tokens.js` to resolve `shadow/*/color` and emit `color-mix()` using each shadow's own opacity (30%, 20%, 16%). The cost is that `color-mix()` is more complex CSS than a plain `box-shadow` string and no longer mirrors Figma's unbound `effectStyles` export one-for-one.
 
-Second, `scripts/build-tokens.js` skips the `breakpoint/*` variables as tokens because standard CSS `@media` queries cannot read `var(--...)`, which forced `src/style.css` (lines 96, 291, 337) to hard-code `840px` and `600px`. I would generate the `@media` queries in `src/style.css` from `tokens/tokens.json` during the build. The cost is adding a build step for application CSS, so `src/style.css` is no longer plain hand-edited CSS.
+Second, `scripts/build-tokens.js` skips the `breakpoint/*` variables as tokens because standard CSS `@media` queries cannot read `var(--...)`, which forced `src/style.css` (lines 96, 298, 344) to hard-code `840px` and `600px`. I would generate the `@media` queries in `src/style.css` from `tokens/tokens.json` during the build. The cost is adding a build step for application CSS, so `src/style.css` is no longer plain hand-edited CSS.
 
 See: `docs/defects.md`, `docs/shadows.md`, `scripts/build-tokens.js`, `styles/tokens/roles.css`.
 

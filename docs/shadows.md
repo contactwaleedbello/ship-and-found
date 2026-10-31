@@ -20,8 +20,8 @@ Colour: primary/20 (#640D00), at the opacity below. Not black.
 
 Hard is small and sharp (close). Soft is large and diffuse (far). That follows the M3 rule above.
 
-## Why a brand-coloured shadow reads differently from black — YOUR two sentences
-[TO WRITE YOURSELF. Look at the two rows in the "Shadows" section: primary-based on top, black below. Say what you actually see on the white card and the warm background.]
+## Why a brand-coloured shadow reads differently from black
+On the white card over the warm surface, the `primary/20` (`#640D00`) shadows in the top row cast a warm espresso-brown tint that blends into the cream background like natural ambient light, especially on the wide `soft` shadow. In the bottom row, the pure black (`#000000`) shadows turn into a cold, muddy grey halo against the warm background, making the card edges look dirty rather than lifted.
 
 ## In Figma
 - Primitives: `elevation/level-0` to `level-5` (M3 dp values).

@@ -1,0 +1,65 @@
+Typography browser-zoom verification — DG Tech Store Task 1
+Date/time: 2026-10-31 06:08–06:16 WAT (metrics at 06:08; window/page captures through 06:16)
+Browser: Brave Browser 153.1.95.102
+Browser engine: Chrome/153.0.8010.48 (CDP /json/version)
+User agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36
+URL: http://127.0.0.1:8800/evidence/glyph-test.html
+Method: headful Brave window; browser UI zoom set to 400% with Cmd+Plus on the active glyph tab; 400% zoom bubble visible in the screenshots. This is actual browser zoom, not a deviceScaleFactor override.
+
+Initial state at 100% zoom
+- innerWidth: 1440
+- innerHeight: 829
+- outerWidth: 1448
+- outerHeight: 837
+- screen.width / screen.height: 1680 / 1050
+- devicePixelRatio: 1
+- visualViewport.scale: 1
+- documentElement.clientWidth / scrollWidth: 1440 / 1440
+- Horizontal overflow: none
+
+Actual 400% browser zoom
+- innerWidth: 360
+- innerHeight: 207
+- outerWidth: 368
+- outerHeight: 215
+- screen.width / screen.height reported by the browser: 1280 / 800
+- devicePixelRatio: 4
+- visualViewport.scale: 1
+- visualViewport.width: 360
+- documentElement.clientWidth / scrollWidth: 360 / 360
+- document.body.clientWidth / scrollWidth: 360 / 360
+- documentElement.scrollHeight: 720
+- Horizontal overflow: none
+- Zoom bubble in screenshots: 400%
+
+Font rendering at 400%
+- Computed body/display stack: "Fira Sans", "Noto Sans", system-ui, sans-serif
+- Canvas stack width: 1041.732
+- Canvas Fira Sans width: 1041.732
+- Canvas system-ui width: 1024.859
+- Conclusion: the rendered text uses Fira Sans, not system-ui.
+- Fira Sans 400: loaded
+- Fira Sans 500: loaded
+- Fira Sans 600: unloaded on this test page because the page uses display-large 700, not 600
+- Fira Sans 700: loaded
+- Noto Sans 400: declared and loads on demand; only 400 is declared; no 500/600/700 Noto faces. Bold fallback may be synthesised if a missing Fira glyph falls back.
+- Noto Sans fallback test: a temporary DOM test in the same browser loaded `document.fonts.load('57px "Noto Sans"', ...)`, `document.fonts.check(...)` returned true, and the full requested set rendered without tofu. This is a fallback-coverage check; the page itself uses Fira Sans for the tested strings.
+
+Glyph blocks at 400%
+- Hausa block `Ɓɓ Ɗɗ / Ƙƙ Ƴƴ`: clientWidth/scrollWidth 336/336; clientHeight/scrollHeight 160/160; no overflow or clipping.
+- Yoruba block `Ẹ́ ẹ́ Ẹ̀ ẹ̀ Ọ́ / ọ́ Ọ̀ ọ̀ Ṣ́ ṣ́`: clientWidth/scrollWidth 336/336; clientHeight/scrollHeight 160/160; all ten requested combinations visible across two lines; no clipping or overlap observed.
+- Naira block `₦185,000`: clientWidth/scrollWidth 336/336; clientHeight/scrollHeight 80/80; readable; Naira crossbars close to the leading 1 but not clipped.
+- Missing glyph/tofu: none observed.
+- Horizontal overflow: none.
+
+Screenshots (new, distinct from the old evidence/glyph-test-hausa-yoruba-400.png)
+- evidence/glyph-test-browser-zoom-400-hausa.png — 3104 × 2156 browser-window capture; URL, 400% zoom bubble, top/Hausa block.
+- evidence/glyph-test-browser-zoom-400-hausa-page.png — 1440 × 829 actual-400% page capture; full Hausa `Ɓɓ Ɗɗ Ƙƙ Ƴƴ` set.
+- evidence/glyph-test-browser-zoom-400-yoruba.png — 3104 × 2156 browser-window capture; URL, 400% zoom bubble, all ten Yoruba combinations on two lines.
+- evidence/glyph-test-browser-zoom-400-naira.png — 3104 × 2156 browser-window capture; URL, 400% zoom bubble, Naira and expected-result note.
+
+Note: The screenshots show the active glyph tab and a second ChatGPT tab title; the page content is the local glyph test. No project files were changed to take these screenshots.
+
+Scope note: this is the Task 1 typography/glyph verification page, not the product UI.
+The product screen itself was checked separately at a 360 CSS/DPR4 equivalent viewport;
+that check is not a substitute for the actual browser-zoom evidence above.

@@ -69,8 +69,8 @@ body {
 }
 
 .status-pill {
-  background-color: var(--color-success-container);
-  color: var(--color-on-success-container);
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
   border-radius: var(--radius-badge);
   padding: var(--spacing-padding-xs) var(--spacing-padding-sm);
   display: inline-flex;
@@ -197,9 +197,9 @@ body {
   align-items: center;
 }
 
-.status-stock {
-  background-color: var(--color-success-container);
-  color: var(--color-on-success-container);
+.status-availability {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
 }
 
 .status-warranty {
@@ -223,6 +223,7 @@ body {
 
 .price-current {
   color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .price-original {
@@ -230,13 +231,19 @@ body {
   text-decoration: line-through;
 }
 
+/* Reserved for future discount badges. Positive offer, so not the error role. */
 .price-discount {
-  background-color: var(--color-error-container);
-  color: var(--color-on-error-container);
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
   border-radius: var(--radius-badge);
   padding: var(--spacing-padding-xs) var(--spacing-padding-sm);
   display: inline-flex;
   align-items: center;
+}
+
+.price-note {
+  flex-basis: 100%;
+  color: var(--color-on-surface-variant);
 }
 
 .colours-section {
@@ -365,6 +372,11 @@ body {
   color: var(--color-on-surface);
   border: var(--border-width-outline-emphasis) solid var(--color-outline);
   box-shadow: var(--shadow-hard);
+}
+
+.contact-note {
+  color: var(--color-on-surface-variant);
+  text-align: center;
 }
 
 /* Footer */

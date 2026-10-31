@@ -1,7 +1,8 @@
 # prompts.md: prompts I gave the agent, word for word
 
 How to read this file. Each entry has the prompt, the evidence file that holds the agent's reply, and two notes:
-what went wrong and what I changed. The notes are mine. Failures stay in.
+what went wrong and what I changed. The notes are mine. Failures stay in. The prompts are historical
+process records; the final reconciled page is described in `README.md` and `docs/reconciliation.md`.
 
 
 ---
@@ -9,7 +10,7 @@ what went wrong and what I changed. The notes are mine. Failures stay in.
 ## Prompt 1: convert tokens.json to CSS (build-tokens.js and check-tokens.js)
 
 Where it ran: inside the project. Output: styles/tokens/*.css, scripts/build-tokens.js, scripts/check-tokens.js.
-Agent reply saved in: [add the file name, or "pasted in chat"]
+Agent reply: not preserved as a separate transcript. This is a documentation gap; the build is reproducible with `node scripts/build-tokens.js`. The prompt itself is retained verbatim below.
 
 ```
 You are working in my project repo. Write a Node script that converts a design-token JSON file into CSS custom properties. Do not edit the JSON, and do not type any token value by hand. Every value in the CSS must come from the JSON.
@@ -141,21 +142,22 @@ What went wrong:
 
 What went right: the agent’s check passed, and my search found zero raw colours and no --primitive-* in src/. The brand colour appeared.
 
-What I changed: nothing in src/ yet. I chose to record the problems in defects.md and fix them later, because evidence 07, 08 and 10 point to the current lines.
+What I changed after reconciliation: the final page removes the unverified discount, dispatch, guarantee and warranty claims, labels the remaining product data as sample, and uses explicit contact placeholders. The historical prompt is kept verbatim; see `docs/reconciliation.md` and `docs/defects.md`.
 
 
 ---
-`
+
 ## Prompt 4: which type style did the agent use?
 
-Agent reply saved in: evidence/08-agent-typography-answer.txt
+Agent reply saved in: `evidence/08-agent-typography-answer.txt` — this currently contains only the element snippet, not the full written answer. The written-answer transcript is still an evidence gap.
 
 ```
 Which typography style did you use for the price ₦185,000 in src/index.html? Give the class name and the line number. If you did not use one of the 15 type styles for it, say so.
 ```
 
-What went wrong: The type-headline-large at src/index.html:72. I expected the agent to choose the most appropriate style from the 15 available type styles, not use M3 design rules.
-What I changed: i have given all headlines,teeading, and titles a bolder weight than it was suggested by M3 design style guide
+What happened: the reported answer was `type-headline-large` at `src/index.html:72` at the time; the element is now line 71 after the reconciliation edits. The agent chose one of the 15 styles; I had expected `display-small`. The answer is a valid design-system choice, but the full written answer was not preserved as a separate transcript.
+
+What I changed: the class remains `type-headline-large`; the bold weights remain a deliberate divergence. The open item is evidence, not the implementation.
 
 ---
 
@@ -163,10 +165,18 @@ What I changed: i have given all headlines,teeading, and titles a bolder weight 
 
 Saved in: evidence/07-raw-value-search.txt
 
-I ran these three searches myself, from inside task-01-design-system:
+I ran these searches myself, from inside task-01-design-system:
 
 ```
-grep -rnE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' . --exclude-dir=.git --exclude-dir=node_modules
-grep -rnE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|var\(--primitive-' src styles --exclude=primitives.css
+grep -rnE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' . --exclude-dir=.git --exclude-dir=node_modules --exclude='*.png' --exclude='*.woff2' --exclude='07-raw-value-search.txt'
+grep -rnE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' src
+grep -rn 'var(--primitive' src
 grep -nE '[0-9.]+(px|rem|em)' src/style.css src/index.html
+grep -rnE '\+?234[0-9]{8,}|0[789][01][0-9]{8}' src docs README.md
 ```
+
+What it found: zero raw hex/rgb/hsl colours and zero `var(--primitive-*)` references in `src/index.html` and `src/style.css`. In `styles/tokens/roles.css`, it surfaced the primitive role aliases and the three `rgb(100 13 0 / ...)` shadow definitions (lines 394–396); in `src/style.css` the px search surfaced the three hard-coded `@media (min-width: ...px)` breakpoints at lines 96 (`840px`), 298 (`600px`), and 344 (`600px`). The repository-wide search also finds raw values in `tokens/tokens.json`, `evidence/05-tokens-incomplete.json`, `evidence/06-tokens-complete.json` and documentation, which is expected; the interface-only searches return no matches.
+
+The final reconciliation run is saved in `evidence/07-raw-value-search.txt` and includes `pwd`, date, commit, `git status`, all commands and their outputs. `src` searches exit 1 (no matches); the phone-number search exits 1 (no number found).
+
+Transcript history: the committed 1,993-line version in `HEAD` was produced before the repository restructure. It contained binary screenshot matches, stale nested Design System and Evidence copies, and the transcript itself recursively. The current clean transcript (`evidence/07-raw-value-search.txt`) excludes binary images/fonts and self-matches while including all text matches in the current tree. Raw values in `tokens/tokens.json`, `evidence/05-tokens-incomplete.json` and `evidence/06-tokens-complete.json` are expected source/export exceptions; the `src`-only searches are empty. The reduction is therefore structural, not omitted intended output.

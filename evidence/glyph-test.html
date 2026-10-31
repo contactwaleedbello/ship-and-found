@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glyph verification — DG Tech Store Task 1</title>
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles/tokens/index.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 12px;
+      background: var(--color-surface);
+      color: var(--color-on-surface);
+      font-family: var(--type-body-medium-family);
+    }
+    .frame {
+      width: 100%;
+      max-width: 336px;
+    }
+    .test-block {
+      margin-bottom: 24px;
+    }
+    .test-label {
+      color: var(--color-on-surface-variant);
+      margin-bottom: 6px;
+    }
+    .display {
+      width: 100%;
+      overflow-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="type-body-small test-label">
+      Typography verification page for Task 1. Designed for a 360 CSS-pixel
+      viewport; responsive below 360px. Not part of the product UI.
+    </p>
+
+    <div class="test-block">
+      <p class="type-label-small test-label">Hausa: Ɓɓ Ɗɗ Ƙƙ Ƴƴ</p>
+      <div class="type-display-large display" lang="ha">Ɓɓ Ɗɗ<br>Ƙƙ Ƴƴ</div>
+    </div>
+
+    <div class="test-block">
+      <p class="type-label-small test-label">Yoruba: all ten requested combinations, two lines</p>
+      <div class="type-display-large display" lang="yo">Ẹ́ ẹ́ Ẹ̀ ẹ̀ Ọ́<br>ọ́ Ọ̀ ọ̀ Ṣ́ ṣ́</div>
+    </div>
+
+    <div class="test-block">
+      <p class="type-label-small test-label">Naira sign at display size</p>
+      <div class="type-display-large display">₦185,000</div>
+    </div>
+
+    <p class="type-body-small test-label">
+      Expected: hooked Hausa letters remain distinct, all Yoruba marks are
+      present and do not collide across the two lines, and the Naira crossbars
+      stay clear of the leading digit.
+    </p>
+  </div>
+</body>
+</html>

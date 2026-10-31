@@ -17,7 +17,33 @@ export interface DeletionRequestDto {
   reason?: string;
 }
 
-const deletionRequests = new Map<string, DeletionRequestDto>();
+const globalForDeletion = globalThis as unknown as {
+  inMemoryDeletionRequests?: Map<string, DeletionRequestDto>;
+};
+
+export const deletionRequests: Map<string, DeletionRequestDto> =
+  globalForDeletion.inMemoryDeletionRequests ?? new Map<string, DeletionRequestDto>();
+
+if (process.env['NODE_ENV'] !== 'production') {
+  globalForDeletion.inMemoryDeletionRequests = deletionRequests;
+}
+
+// Pre-seed a pending deletion request for testing admin workflows
+if (deletionRequests.size === 0) {
+  deletionRequests.set('del-demo-01', {
+    requestId: 'del-demo-01',
+    customerId: 'user-customer-zainab',
+    requestDate: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+    status: 'PENDING',
+    reason: 'Account closed, no outstanding contracts. Requesting full data erasure under NDPA Section 37.',
+  });
+}
+
+export function getAllDeletionRequests(): DeletionRequestDto[] {
+  return Array.from(deletionRequests.values()).sort(
+    (a, b) => new Date(b.requestDate).getTime() - new Date(a.requestDate).getTime()
+  );
+}
 
 export async function submitDataDeletionRequest(
   customerId: string,

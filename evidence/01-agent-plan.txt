@@ -168,3 +168,64 @@ In Phase 3, on dedicated branch `phase-3-customer-workflows`, we implement:
 - Live HTTP 200/201 checks across all 6 Customer screens and 7 API routes: PASSED (`evidence/11-db-write-success.txt`)
 - Database connection failure & recovery simulation (`evidence/12` & `13`): PASSED
 
+
+
+================================================================================
+PHASE IDENTIFIER: Phase 4 — Store Worker & Owner/Co-owner Management Workflows, Queues, Approvals, and Administrative Endpoints
+================================================================================
+TIMESTAMP: 2026-10-31T22:38:45+01:00
+BRANCH: phase-4-management-workflows (branched from main at 75a8c19)
+APPROVAL STATUS: APPROVED BY USER ("proceed")
+COMPLETION STATUS: COMPLETED & VERIFIED (All 7 Worker screens, 9 Owner screens, 16 management endpoints verified with 0 errors)
+
+--------------------------------------------------------------------------------
+1. TASK UNDERSTANDING (PHASE 4)
+--------------------------------------------------------------------------------
+In Phase 4, on dedicated branch `phase-4-management-workflows`, we implement:
+1. Operational Management Services (`lib/services/worker-service.ts` & `lib/services/admin-service.ts`):
+   - Store Worker capabilities:
+     - Worker dashboard queues: 'Payments to Verify', 'Reminders', 'Reserved Units', 'Inventory Updates'.
+     - Down payment verification (`recordDownPaymentVerification` recording verifier IP, payment method [Cash/Transfer], and mandatory attestation checkbox per FR-05, BR-06, BR-19).
+     - Balance payment recording on active contracts (`recordBalancePayment` enforcing FR-08 overpayment block "Amount exceeds remaining balance." and setting status to 'Completed' when remaining_amount == 0).
+     - Settlement payment recording on defaulted contracts (`recordSettlementPayment` per FR-08).
+     - Manual WhatsApp reminder send logging (`logWhatsAppReminder` writing to WhatsAppReminderLog per FR-07).
+     - In-person OTP resend trigger (`resendOtpInPerson` per PRD 7.8).
+     - Worker inventory update proposal (`submitInventoryUpdate` per FR-13).
+   - Owner / Co-owner capabilities:
+     - Application review: `approveForVerification` and `rejectApplication` (requiring non-empty `rejection_reason` per FR-04).
+     - Final approval activation (`finalApproveApplication` inside atomic transaction enforcing all 3 activation checks per BR-13: Worker verification exists, OTP acceptance exists, approverUserId !== verifierUserId, plus required device_serial input and BR-19 IP collision alert).
+     - Global exchange-rate multiplier update (`updateExchangeRate` updating dynamic prices per FR-13).
+     - Default resolution (`resolveDefaultedContract` requiring remaining_amount == 0 per FR-09).
+     - Deletion request review (`decideDeletionRequest` per FR-10).
+     - Worker inventory approval (`approveInventoryUpdate` / `rejectInventoryUpdate` per FR-13).
+     - Immutable audit log query (`getAuditLogs` paginated 50 rows/page per FR-11).
+     - Success metrics calculation (`getSuccessMetrics` for the 5 business metrics per PRD 1.8).
+2. Store Worker Screens (#14 through #20 under `app/(worker)/`):
+   - Screen #14: `Worker Dashboard` (`/worker`) — Queue tabs with counts (Payments to Verify, Reminders, Reserved Units, Inventory).
+   - Screen #15: `Verify Down Payment` (`/worker/verify/[applicationId]`) — Cash/transfer verification with mandatory attestation checkbox (FR-05, BR-06) and WhatsApp Template A.5/A.6 helper.
+   - Screen #16: `Record Balance Payment` (`/worker/balance/[agreementId]`) — Enforcing FR-08 overpayment block ("Amount exceeds remaining balance.").
+   - Screen #17: `Record Settlement Payment` (`/worker/settlement/[agreementId]`) — Recording defaulted contract settlement (FR-08).
+   - Screen #18: `Reminder Checklist` (`/worker/reminders`) — T-7, T-3, T-1, T-0, T+1 with wa.me deep links and 'Mark as Sent' logging (FR-07).
+   - Screen #19: `Reserved Units` (`/worker/reserved`) — Reservation timers and physical tag confirmation (PRD 7.4).
+   - Screen #20: `Inventory Update` (`/worker/inventory`) — Submitting stock/price updates for Owner review (FR-13).
+3. Owner & Co-owner Screens (#21 through #29 under `app/(admin)/`):
+   - Screen #21: `Owner Dashboard` (`/admin`) — Non-dismissible health/security alert banners (ux-states.md B.8) and 5 Success Metrics summary cards (PRD 15.1).
+   - Screen #22: `Review Application` (`/admin/applications/[id]/review`) — Customer details, decrypted NIN (logging NIN_ACCESS), and Approve/Reject actions (FR-04).
+   - Screen #23: `Final Approval` (`/admin/applications/[id]/final-approve`) — Enforcing 3-condition activation check (BR-13), required device_serial input (BR-08), and IP collision alert.
+   - Screen #24: `Exchange Rate Settings` (`/admin/exchange-rate`) — Multiplier input with live dynamic price preview (FR-13).
+   - Screen #25: `Defaulted Contracts` (`/admin/defaults`) — Defaulted contracts list and 'Mark Resolved' (FR-09).
+   - Screen #26: `Deletion Requests` (`/admin/deletion-requests`) — NDPA deletion decision recorder (FR-10).
+   - Screen #27: `Inventory Approvals` (`/admin/inventory-approvals`) — Review pending Worker stock/price changes (FR-13).
+   - Screen #28: `Audit Log` (`/admin/audit`) — 50 rows/page immutable audit trail (FR-11).
+   - Screen #29: `Success Metrics` (`/admin/metrics`) — Dedicated view of the 5 business metrics (PRD 1.8).
+4. Management API Endpoints:
+   - Worker endpoints: `/api/worker/queues`, `/api/worker/verify-payment`, `/api/worker/record-balance`, `/api/worker/record-settlement`, `/api/worker/log-reminder`, `/api/worker/inventory-update`, `/api/worker/resend-otp`.
+   - Admin endpoints: `/api/admin/applications/[id]/review`, `/api/admin/applications/[id]/final-approve`, `/api/admin/exchange-rate`, `/api/admin/defaults/[id]/resolve`, `/api/admin/deletion-requests/[id]/decide`, `/api/admin/inventory-approvals/[id]/decide`, `/api/admin/audit-logs`, `/api/admin/metrics`.
+5. Verification, Documentation & GitHub Release Checkpoint:
+   - Typecheck, lint, design token audit (0 hardcoded hex/px).
+   - Live HTTP 200 checks across all Worker and Admin screens & endpoints.
+   - Update README.md, docs/defects.md, docs/working-tree.md, evidence/02-files-created.txt, and evidence/github-phase-log.txt.
+   - Dedicated commits: Milestone 1 (services & API), Milestone 2 (worker screens), Milestone 3 (admin screens), Milestone 4 (verification & integration).
+   - Push phase branch, merge into main, push main.
+
+

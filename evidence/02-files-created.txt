@@ -417,3 +417,94 @@ BRANCH: phase-3-customer-workflows
   - Purpose: Records live command outputs for atomic application reservation write, database connection failure / 503 simulation, and health endpoint recovery verification.
   - Source requirements: `docs/scaffold-prompt.md` Section 7 (`evidence/11` through `13`).
   - Verification results: All 3 files populated from real execution outputs.
+
+
+
+================================================================================
+PHASE IDENTIFIER: Phase 4 — Store Worker & Owner/Co-owner Management Workflows, Queues, Approvals, and Administrative Endpoints
+================================================================================
+TIMESTAMP: 2026-10-31T22:52:15+01:00
+BRANCH: phase-4-management-workflows
+
+--------------------------------------------------------------------------------
+1. STORE WORKER & ADMINISTRATIVE MANAGEMENT SERVICES
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `lib/services/worker-service.ts`
+  - `lib/services/admin-service.ts`
+  - `lib/services/audit-service.ts`
+  - Action: Created
+  - Purpose:
+    - `worker-service.ts`: Implements operational queues (Payments to Verify, Reminders Due, Reserved Units, Inventory Updates), down payment counter verification (`recordDownPaymentVerification`) with verifier IP and mandatory BR-06 attestation checkbox, balance installment recording (`recordBalancePayment`) enforcing FR-08 overpayment block ("Amount exceeds remaining balance."), settlement payment recording on defaulted contracts (`recordSettlementPayment`), WhatsApp reminder log writing to WhatsAppReminderLog (`logWhatsAppReminder`), in-person customer OTP dispatch (`resendOtpInPerson`), and stock adjustment proposals (`submitInventoryUpdate`).
+    - `admin-service.ts`: Implements owner application review (`approveForVerification`, `rejectApplication` requiring non-empty `rejection_reason` per FR-04 and releasing stock hold), dual-control final approval (`finalApproveApplication`) enforcing all 3 BR-13 activation preconditions (down payment verified, OTP accepted, approver !== verifier) plus mandatory `device_serial` assignment (BR-08) and IP collision alert (BR-19), global exchange-rate multiplier updating dynamic prices across catalog (`updateExchangeRateMultiplier`), defaulted contract resolution requiring `remaining_amount == 0` (`resolveDefaultedContract`), NDPA Section 37 data deletion decisions (`decideDeletionRequest`), worker inventory proposal decisions (`decideInventoryUpdate`), decrypted NIN inspection logging `NIN_ACCESS` (`viewDecryptedNin`), and PRD 1.8 / 15.1 success metrics calculation (`getSuccessMetrics`).
+    - `audit-service.ts`: Implements immutable append-only audit trail and 50 rows/page pagination (`getAuditLogs`) with action filtering per FR-11 and PRD 5.1/8.4.
+  - Source requirements: PRD Sections 3.3 (FR-04, FR-05, FR-07, FR-08, FR-09, FR-10, FR-11, FR-13), 4.1 (BR-06, BR-08, BR-13, BR-19), 5.1, 7.1-7.8, 8.4, 15.1.
+  - Relevant rules & skills: `.agents/rules/business-rules.md`, `.agents/rules/state-transitions.md`, `.agents/rules/permission-matrix.md`, `.agents/skills/build-api-endpoint/SKILL.md`.
+  - Design references & tokens: Not applicable (service layer).
+  - Verification results: Verified via `npm run typecheck`, `npm run lint` (0 errors), and live integration execution.
+
+--------------------------------------------------------------------------------
+2. WORKER & ADMIN API ROUTE HANDLERS (16 ENDPOINTS)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - Worker API endpoints:
+    - `app/api/worker/queues/route.ts` (`GET /api/worker/queues`)
+    - `app/api/worker/verify-payment/route.ts` (`POST /api/worker/verify-payment`)
+    - `app/api/worker/record-balance/route.ts` (`POST /api/worker/record-balance`)
+    - `app/api/worker/record-settlement/route.ts` (`POST /api/worker/record-settlement`)
+    - `app/api/worker/log-reminder/route.ts` (`POST /api/worker/log-reminder`)
+    - `app/api/worker/inventory-update/route.ts` (`POST /api/worker/inventory-update`)
+    - `app/api/worker/resend-otp/route.ts` (`POST /api/worker/resend-otp`)
+  - Admin API endpoints:
+    - `app/api/admin/applications/[id]/review/route.ts` (`POST /api/admin/applications/:id/review`)
+    - `app/api/admin/applications/[id]/final-approve/route.ts` (`POST /api/admin/applications/:id/final-approve`)
+    - `app/api/admin/applications/[id]/view-nin/route.ts` (`POST /api/admin/applications/:id/view-nin`)
+    - `app/api/admin/exchange-rate/route.ts` (`POST /api/admin/exchange-rate`)
+    - `app/api/admin/defaults/[id]/resolve/route.ts` (`POST /api/admin/defaults/:id/resolve`)
+    - `app/api/admin/deletion-requests/[id]/decide/route.ts` (`POST /api/admin/deletion-requests/:id/decide`)
+    - `app/api/admin/inventory-approvals/[id]/decide/route.ts` (`POST /api/admin/inventory-approvals/:id/decide`)
+    - `app/api/admin/audit-logs/route.ts` (`GET /api/admin/audit-logs`)
+    - `app/api/admin/metrics/route.ts` (`GET /api/admin/metrics`)
+  - Action: Created
+  - Purpose: Full RESTful controller API routes with Zod schema validation, correlation headers (`x-request-id`), standard JSON response envelopes, and error mapping via `handleApiError`.
+  - Source requirements: `.agents/rules/api-contracts.md` (#4, #5, #6, #7, #8, #9, #11); PRD Section 8.3.
+  - Verification results: Verified via live HTTP curl test suite; all endpoints returned HTTP 200/201, overpayment attempt correctly returned HTTP 400 OVERPAYMENT_BLOCKED, and activation gate check correctly returned PRECONDITION_FAILED.
+
+--------------------------------------------------------------------------------
+3. STORE WORKER OPERATIONAL SCREENS (#14 THROUGH #20)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `app/(worker)/layout.tsx` (Store Worker navigation header and shift badge)
+  - `app/(worker)/worker/page.tsx` (Screen #14: `Worker Dashboard` with 4 operational queues)
+  - `app/(worker)/worker/verify/[applicationId]/page.tsx` (Screen #15: `Verify Down Payment` with BR-06 attestation and WhatsApp helper)
+  - `app/(worker)/worker/balance/[agreementId]/page.tsx` (Screen #16: `Record Balance Payment` with FR-08 overpayment block)
+  - `app/(worker)/worker/settlement/[agreementId]/page.tsx` (Screen #17: `Record Settlement Payment`)
+  - `app/(worker)/worker/reminders/page.tsx` (Screen #18: `Reminder Checklist` with wa.me deep links and Mark as Sent)
+  - `app/(worker)/worker/reserved/page.tsx` (Screen #19: `Reserved Units` with 24h countdown and shelf tags)
+  - `app/(worker)/worker/inventory/page.tsx` (Screen #20: `Inventory Update` proposing adjustments for Owner review)
+  - Action: Created
+  - Purpose: Full Store Worker operational suite under Shop ATF 03 counter protocol.
+  - Verification results: Verified zero hardcoded hex/px values, zero TypeScript errors, zero ESLint warnings, and HTTP 200 across all 7 screens.
+
+--------------------------------------------------------------------------------
+4. OWNER & CO-OWNER MANAGEMENT SCREENS (#21 THROUGH #29)
+--------------------------------------------------------------------------------
+
+- File paths:
+  - `app/(admin)/layout.tsx` (Executive governance navigation and Owner badge)
+  - `app/(admin)/admin/page.tsx` (Screen #21: `Owner Dashboard` with non-dismissible alerts and 5 KPI cards)
+  - `app/(admin)/admin/applications/[id]/review/page.tsx` (Screen #22: `Review Application` with decrypted NIN access and mandatory rejection reason)
+  - `app/(admin)/admin/applications/[id]/final-approve/page.tsx` (Screen #23: `Final Approval` enforcing BR-13 3-condition gate and mandatory device serial)
+  - `app/(admin)/admin/exchange-rate/page.tsx` (Screen #24: `Exchange Rate Settings` with live dynamic price preview)
+  - `app/(admin)/admin/defaults/page.tsx` (Screen #25: `Defaulted Contracts` with ₦0 balance resolution gate)
+  - `app/(admin)/admin/deletion-requests/page.tsx` (Screen #26: `Deletion Requests` with NDPA Section 37 governance)
+  - `app/(admin)/admin/inventory-approvals/page.tsx` (Screen #27: `Inventory Approvals` reviewing worker proposals)
+  - `app/(admin)/admin/audit/page.tsx` (Screen #28: `Audit Log` with 50 rows/page immutable trail and action filtering)
+  - `app/(admin)/admin/metrics/page.tsx` (Screen #29: `Success Metrics` deep dive into the 5 PRD business KPIs)
+  - Action: Created
+  - Purpose: Full Owner & Co-owner executive governance suite.
+  - Verification results: Verified zero hardcoded hex/px values, zero TypeScript errors, zero ESLint warnings, and HTTP 200 across all 9 screens.
+

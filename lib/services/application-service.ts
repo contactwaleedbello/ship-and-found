@@ -78,6 +78,17 @@ export interface ApplicationDetailDto {
   dueDate?: string | null;
   deviceSerial?: string | null;
   rejectionReason?: string | null;
+  customerNinRaw?: string;
+  downPaymentVerifiedAt?: string | null;
+  downPaymentVerifierId?: string | null;
+  downPaymentVerifierIp?: string | null;
+  downPaymentMethod?: 'CASH' | 'TRANSFER' | null;
+  activatedAt?: string | null;
+  activatedByUserId?: string | null;
+  activatedByIp?: string | null;
+  settledAt?: string | null;
+  defaultResolvedAt?: string | null;
+  resolutionNotes?: string | null;
 }
 
 // In-memory application store for local development/scaffold fallback when Postgres is unseeded
@@ -179,6 +190,7 @@ export async function submitApplication(
     customerName: input.fullName.trim(),
     customerPhone: input.phone.trim(),
     customerNinMasked: maskNin(input.nin.trim()),
+    customerNinRaw: input.nin.trim(),
     guarantorName: input.guarantorName.trim(),
     guarantorPhone: input.guarantorPhone.trim(),
     personalDetails: input.personalDetails.trim(),

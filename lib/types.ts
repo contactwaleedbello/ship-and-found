@@ -20,15 +20,36 @@ export interface DeviceCardDto {
   id: string;
   name: string;
   brand: string;
+  model: string;
   category: DeviceCategory;
   performanceTier: PerformanceTier;
   /** Battery endurance specification displayed at equal visual weight to dynamicPriceNaira (FR-01). */
   batteryLifeSpec: string;
+  /** Numeric battery endurance hours used for filter evaluation. */
+  batteryLifeHours: number;
+  /** Base price in whole Naira before multiplier. */
+  basePriceNaira: number;
   /** Dynamic price in whole Naira (Int), displayed at equal visual weight to batteryLifeSpec (FR-01). */
   dynamicPriceNaira: number;
+  stockCount: number;
+  reservedCount: number;
   availableStock: number;
   isPriceFresh: boolean;
   keySpecsSummary: string;
+  specifications: Record<string, string>;
+}
+
+export interface CalculatorResultDto {
+  deviceId: string;
+  deviceName: string;
+  lockedPriceEstimateNaira: number;
+  downPaymentPercent: number;
+  downPaymentAmountNaira: number;
+  remainingBalanceNaira: number;
+  completionWindowDays: number;
+  interestRatePercent: number;
+  lateFeesNaira: number;
+  disclaimer: string;
 }
 
 export interface ApiErrorEnvelope {

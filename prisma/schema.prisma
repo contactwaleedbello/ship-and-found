@@ -1,0 +1,326 @@
+// ============================================================================
+// DG TECH STORE (SHOP ATF 03) — PRISMA SCHEMA
+// Source: Consolidated PRD v1.3 Section 5.1 + .agents/rules/data-and-schema.md
+// Rules:
+// - Every foreign key uses onDelete: Restrict (no Cascade, no SetNull).
+// - Money columns use Int (whole Naira ₦).
+// - Fractional multipliers and percentages use Decimal(10, 4).
+// - AuditLog is insert-only at the PostgreSQL permission level.
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id         String    @id @default(uuid())
+  role            String
+  phone_number    String    @unique
+  password_hash   String
+  otp_verified_at DateTime?
+  account_status  String    @default("ACTIVE")
+  locked_until    DateTime?
+  created_at      DateTime  @default(now())
+
+  customer_profile              CustomerProfile?
+  sessions                      Session[]
+  otp_tokens                    OtpToken[]
+  updated_inventories           Inventory[]                 @relation("InventoryUpdatedByWorker")
+  approved_inventories          Inventory[]                 @relation("InventoryApprovedByOwner")
+  proposed_inventory_approvals  InventoryApproval[]         @relation("InventoryProposedByWorker")
+  reviewed_inventory_approvals  InventoryApproval[]         @relation("InventoryReviewedByOwner")
+  reviewed_applications         PartPaymentApplication[]    @relation("ApplicationReviewedByOwner")
+  recorded_down_payments        DownPaymentTransaction[]    @relation("DownPaymentRecordedByWorker")
+  recorded_balance_payments     BalancePaymentTransaction[] @relation("BalancePaymentRecordedByWorker")
+  recorded_settlements          SettlementLog[]             @relation("SettlementRecordedByUser")
+  sent_whatsapp_reminders       WhatsAppReminderLog[]       @relation("ReminderSentByWorker")
+  reviewed_deletion_requests    DataDeletionRequest[]       @relation("DeletionReviewedByOwner")
+  audit_logs                    AuditLog[]                  @relation("AuditActor")
+
+  @@index([role, account_status])
+}
+
+model Session {
+  session_id    String   @id @default(uuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  created_at    DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Restrict)
+
+  @@index([user_id])
+}
+
+model OtpToken {
+  otp_id        String    @id @default(uuid())
+  user_id       String
+  purpose       String
+  otp_hash      String
+  attempt_count Int       @default(0)
+  expires_at    DateTime
+  consumed_at   DateTime?
+  created_at    DateTime  @default(now())
+
+  user User @relation(fields: [user_id], references: [user_id], onDelete: Restrict)
+
+  @@index([user_id, purpose])
+}
+
+model CustomerProfile {
+  customer_id      String  @id @default(uuid())
+  user_id          String  @unique
+  full_name        String
+  nin              String
+  nin_hash         String
+  phone_number     String
+  phone_hash       String
+  personal_details String
+  guarantor_name   String
+  guarantor_phone  String
+
+  user              User                     @relation(fields: [user_id], references: [user_id], onDelete: Restrict)
+  applications      PartPaymentApplication[]
+  consent_records   ConsentRecord[]
+  deletion_requests DataDeletionRequest[]
+
+  @@index([user_id])
+  @@index([nin_hash])
+  @@index([phone_hash])
+}
+
+model Device {
+  device_id         String @id @default(uuid())
+  brand             String
+  category          String
+  performance_tier  String
+  battery_life_spec String
+  model             String
+
+  inventory           Inventory?
+  price               Price?
+  applications        PartPaymentApplication[]
+  inventory_approvals InventoryApproval[]
+
+  @@index([brand, category, performance_tier])
+}
+
+model Inventory {
+  inventory_id         String  @id @default(uuid())
+  device_id            String  @unique
+  stock_count          Int
+  reserved_count       Int     @default(0)
+  base_price           Int
+  inventory_status     String  @default("APPROVED")
+  updated_by_worker_id String?
+  approved_by_owner_id String?
+
+  device            Device @relation(fields: [device_id], references: [device_id], onDelete: Restrict)
+  updated_by_worker User?  @relation("InventoryUpdatedByWorker", fields: [updated_by_worker_id], references: [user_id], onDelete: Restrict)
+  approved_by_owner User?  @relation("InventoryApprovedByOwner", fields: [approved_by_owner_id], references: [user_id], onDelete: Restrict)
+
+  @@index([device_id])
+}
+
+model InventoryApproval {
+  approval_id          String    @id @default(uuid())
+  device_id            String
+  proposed_stock_count Int
+  proposed_base_price  Int
+  status               String    @default("PENDING")
+  proposed_by_id       String
+  reviewed_by_id       String?
+  created_at           DateTime  @default(now())
+  reviewed_at          DateTime?
+
+  device      Device @relation(fields: [device_id], references: [device_id], onDelete: Restrict)
+  proposed_by User   @relation("InventoryProposedByWorker", fields: [proposed_by_id], references: [user_id], onDelete: Restrict)
+  reviewed_by User?  @relation("InventoryReviewedByOwner", fields: [reviewed_by_id], references: [user_id], onDelete: Restrict)
+
+  @@index([device_id, status])
+}
+
+model Price {
+  price_id                 String   @id @default(uuid())
+  device_id                String   @unique
+  exchange_rate_multiplier Decimal  @db.Decimal(10, 4)
+  dynamic_price            Int
+  last_updated_at          DateTime @default(now())
+
+  device Device @relation(fields: [device_id], references: [device_id], onDelete: Restrict)
+
+  @@index([device_id])
+}
+
+model Settings {
+  setting_key          String    @id
+  setting_value        String
+  updated_by           String?
+  updated_at           DateTime  @default(now())
+  last_expiry_cron_at  DateTime?
+  last_default_cron_at DateTime?
+}
+
+model PartPaymentApplication {
+  application_id       String    @id @default(uuid())
+  customer_id          String
+  device_id            String
+  locked_price         Int
+  down_payment_amount  Int
+  down_payment_percent Decimal   @db.Decimal(10, 4)
+  remaining_amount     Int
+  application_status   String    @default("Application Pending")
+  created_at           DateTime  @default(now())
+  expires_at           DateTime
+  reviewed_by          String?
+  approved_at          DateTime?
+  rejection_reason     String?
+
+  customer                  CustomerProfile          @relation(fields: [customer_id], references: [customer_id], onDelete: Restrict)
+  device                    Device                   @relation(fields: [device_id], references: [device_id], onDelete: Restrict)
+  reviewer                  User?                    @relation("ApplicationReviewedByOwner", fields: [reviewed_by], references: [user_id], onDelete: Restrict)
+  agreement                 Agreement?
+  down_payment_transactions DownPaymentTransaction[]
+
+  @@index([customer_id])
+  @@index([device_id])
+  @@index([application_status])
+  @@index([application_status, expires_at])
+}
+
+model Agreement {
+  agreement_id            String    @id @default(uuid())
+  application_id          String    @unique
+  terms                   String
+  locked_price            Int
+  remaining_amount        Int
+  due_date                DateTime?
+  agreement_status        String    @default("Application Pending")
+  device_serial           String?
+  customer_accepted_at    DateTime?
+  acceptance_otp_verified Boolean   @default(false)
+
+  application                  PartPaymentApplication      @relation(fields: [application_id], references: [application_id], onDelete: Restrict)
+  balance_payment_transactions BalancePaymentTransaction[]
+  settlement_logs              SettlementLog[]
+  whatsapp_reminder_logs       WhatsAppReminderLog[]
+
+  @@index([application_id])
+  @@index([agreement_status])
+  @@index([agreement_status, due_date])
+}
+
+model DownPaymentTransaction {
+  transaction_id                        String   @id @default(uuid())
+  application_id                        String
+  payment_method                        String
+  amount                                Int
+  received_at                           DateTime
+  recorded_by_worker_id                 String
+  receiving_account_or_drawer_reference String
+  receipt_image_url                     String?
+  verification_checkbox                 Boolean
+  verified_at                           DateTime @default(now())
+  verifier_ip                           String
+
+  application PartPaymentApplication @relation(fields: [application_id], references: [application_id], onDelete: Restrict)
+  worker      User                   @relation("DownPaymentRecordedByWorker", fields: [recorded_by_worker_id], references: [user_id], onDelete: Restrict)
+
+  @@index([application_id])
+}
+
+model BalancePaymentTransaction {
+  transaction_id                        String   @id @default(uuid())
+  agreement_id                          String
+  payment_method                        String
+  amount                                Int
+  received_at                           DateTime
+  recorded_by_worker_id                 String
+  receiving_account_or_drawer_reference String
+
+  agreement       Agreement       @relation(fields: [agreement_id], references: [agreement_id], onDelete: Restrict)
+  worker          User            @relation("BalancePaymentRecordedByWorker", fields: [recorded_by_worker_id], references: [user_id], onDelete: Restrict)
+  settlement_logs SettlementLog[]
+
+  @@index([agreement_id])
+}
+
+model SettlementLog {
+  settlement_id  String   @id @default(uuid())
+  agreement_id   String
+  transaction_id String
+  recorded_at    DateTime @default(now())
+  recorded_by    String
+
+  agreement   Agreement                 @relation(fields: [agreement_id], references: [agreement_id], onDelete: Restrict)
+  transaction BalancePaymentTransaction @relation(fields: [transaction_id], references: [transaction_id], onDelete: Restrict)
+  recorder    User                      @relation("SettlementRecordedByUser", fields: [recorded_by], references: [user_id], onDelete: Restrict)
+
+  @@index([agreement_id])
+  @@index([transaction_id])
+}
+
+model WhatsAppReminderLog {
+  reminder_id     String   @id @default(uuid())
+  agreement_id    String
+  trigger_type    String
+  sent_at         DateTime @default(now())
+  sent_by         String
+  message_content String
+
+  agreement Agreement @relation(fields: [agreement_id], references: [agreement_id], onDelete: Restrict)
+  sender    User      @relation("ReminderSentByWorker", fields: [sent_by], references: [user_id], onDelete: Restrict)
+
+  @@index([agreement_id])
+  @@index([agreement_id, trigger_type])
+}
+
+model ConsentRecord {
+  consent_id   String    @id @default(uuid())
+  customer_id  String
+  consent_type String
+  granted_at   DateTime  @default(now())
+  revoked_at   DateTime?
+
+  customer CustomerProfile @relation(fields: [customer_id], references: [customer_id], onDelete: Restrict)
+
+  @@index([customer_id])
+}
+
+model AuditLog {
+  audit_id    String   @id @default(uuid())
+  actor_id    String
+  action      String
+  entity_type String
+  entity_id   String
+  timestamp   DateTime @default(now())
+  ip_address  String
+  metadata    String
+
+  actor User @relation("AuditActor", fields: [actor_id], references: [user_id], onDelete: Restrict)
+
+  @@index([actor_id])
+  @@index([entity_type, entity_id])
+  @@index([timestamp(sort: Desc)])
+}
+
+model DataDeletionRequest {
+  request_id        String    @id @default(uuid())
+  customer_id       String
+  request_date      DateTime  @default(now())
+  reviewer_id       String?
+  decision          String    @default("PENDING")
+  decision_reason   String?
+  anonymized_fields String?
+  anonymized_at     DateTime?
+
+  customer CustomerProfile @relation(fields: [customer_id], references: [customer_id], onDelete: Restrict)
+  reviewer User?           @relation("DeletionReviewedByOwner", fields: [reviewer_id], references: [user_id], onDelete: Restrict)
+
+  @@index([customer_id])
+}

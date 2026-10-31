@@ -54,13 +54,34 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 │   ├── data-model.md                           # 5-domain data model navigation aid
 │   └── design-system.md                        # Design system consumption rules & anti-patterns
 ├── app/                                        # Next.js 14 App Router presentation & API layer
-│   ├── (public)/                               # Unauthenticated & customer browsing route group
-│   │   └── page.tsx                            # Screen #1: Home / Inventory Listing scaffold
+│   ├── (public)/                               # Unauthenticated & customer browsing route group (7 screens)
+│   │   ├── confirm-price/[deviceId]/page.tsx   # Screen #7: Confirm Current Price via WhatsApp (Template A.3)
+│   │   ├── devices/[id]/
+│   │   │   ├── _components/part-payment-calculator.tsx # Interactive FR-02 70%-80% calculator
+│   │   │   └── page.tsx                        # Screen #2: Device Detail
+│   │   ├── forgot-password/page.tsx            # Screen #6: Forgot Password (24-hour lock notice)
+│   │   ├── login/page.tsx                      # Screen #3: Login
+│   │   ├── register/page.tsx                   # Screen #4: Register (Terms & WhatsApp consent)
+│   │   ├── verify-otp/page.tsx                 # Screen #5: OTP Verification (with B.6 fallback)
+│   │   └── page.tsx                            # Screen #1: Home / Inventory Listing (25 devices + filters)
 │   ├── api/                                    # HTTP route handlers (thin controllers)
+│   │   ├── auth/
+│   │   │   ├── accept-agreement-otp/route.ts   # POST /api/auth/accept-agreement-otp
+│   │   │   ├── forgot-password/route.ts        # POST /api/auth/forgot-password
+│   │   │   ├── login/route.ts                  # POST /api/auth/login
+│   │   │   ├── logout/route.ts                 # POST /api/auth/logout
+│   │   │   ├── register/route.ts               # POST /api/auth/register
+│   │   │   ├── reset-password/route.ts         # POST /api/auth/reset-password
+│   │   │   └── verify-otp/route.ts             # POST /api/auth/verify-otp
+│   │   ├── calculator/route.ts                 # POST /api/calculator
+│   │   ├── devices/
+│   │   │   ├── [id]/route.ts                   # GET /api/devices/:id
+│   │   │   └── route.ts                        # GET /api/devices
 │   │   └── health/
 │   │       └── route.ts                        # GET /api/health endpoint
 │   ├── globals.css                             # Global stylesheet importing fonts & tokens
-│   └── layout.tsx                              # Root Server Component layout
+│   ├── layout.tsx                              # Root Server Component layout
+│   └── not-found.tsx                           # Global 404 boundary (verbatim ux-states.md string)
 ├── docs/                                       # Required workstream documentation (9 files)
 │   ├── defects.md
 │   ├── false-success.md
@@ -74,13 +95,31 @@ Source: [`.agents/rules/code-conventions.md`](../.agents/rules/code-conventions.
 ├── evidence/                                   # Verifiable execution & audit records
 │   ├── 01-agent-plan.txt
 │   ├── 02-files-created.txt
+│   ├── 03-server-start.txt
+│   ├── 04-first-load.txt
+│   ├── 05-nested-folder-error.txt
+│   ├── 06-nested-folder-fixed.txt
+│   ├── 07-port-conflict.txt
+│   ├── 08-port-conflict-resolved.txt
+│   ├── 09-404-error.txt
+│   ├── 10-404-resolved.txt
 │   └── github-phase-log.txt
 ├── lib/                                        # Server-side utilities, validation, & domain modules
+│   ├── services/
+│   │   ├── auth-service.ts                     # Auth & OTP verification business logic
+│   │   └── catalog-service.ts                  # Device filtering, lookup, & calculator math
+│   ├── catalog-data.ts                         # 25 seeded Shop ATF 03 devices across 5 brands
 │   ├── constants.ts                            # Business rule thresholds & enums (BR-01..BR-20)
+│   ├── crypto.ts                               # AES-256-GCM encryption, HMAC-SHA256 blind index, NIN mask
+│   ├── db.ts                                   # PrismaClient singleton
 │   ├── env.ts                                  # Zod-validated environment configuration
 │   ├── errors.ts                               # AppError class & standard error envelope mapper
 │   ├── logger.ts                               # Structured JSON logger with PII scrubbing
+│   ├── templates.ts                            # Verbatim Appendix A WhatsApp & OTP SMS templates
 │   └── types.ts                                # Domain status unions, roles, and DTO contracts
+├── prisma/
+│   ├── schema.prisma                           # 14 PRD 5.1 models + Session, OtpToken, InventoryApproval
+│   └── seed.ts                                 # Development/Preview seed script (Settings, 7 users, 25 devices)
 ├── styles/                                     # Approved Task 1 design system tokens & fonts
 │   ├── fonts/
 │   │   ├── OFL-FiraSans.txt

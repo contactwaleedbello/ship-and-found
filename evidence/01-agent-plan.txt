@@ -1,0 +1,88 @@
+================================================================================
+DG TECH STORE — EVIDENCE 01: AGENT PHASE PLANS & APPROVAL LOG
+================================================================================
+
+PHASE IDENTIFIER: Phase 1 — Repository Foundation, Design System Token Integration, Workstream Documentation Baseline, and Next.js 14 App Shell Scaffold
+TIMESTAMP: 2026-10-31T20:23:04+01:00
+APPROVAL STATUS: APPROVED BY USER ("yes i do approvee, everything, don't forget to create the evidence files too, so we get everything as it is supposed to be")
+COMPLETION STATUS: COMPLETED (2026-10-31T21:05:54+01:00 — All Phase 1 deliverables created, npm install succeeded with 644 packages, tsc --noEmit passed with 0 errors, and diff -rq confirmed 0 differences against task-01-design-system/styles)
+
+--------------------------------------------------------------------------------
+1. TASK UNDERSTANDING
+--------------------------------------------------------------------------------
+This workstream requires progressively scaffolding the DG Tech Store (Shop ATF 03) repository (/Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY) as a controlled, verifiable proof-of-concept using Next.js 14 (App Router), TypeScript (strict), Tailwind CSS v3 mapped strictly to the Task 1 design tokens, and PostgreSQL/Prisma, while maintaining the required workstream documentation (README.md and docs/*.md) and real execution evidence (evidence/01 through 20). In Phase 1, we initialize the Git repository at the project root, align the .agents/skills/ folder names with AGENTS.md, integrate the approved Task 1 design tokens and self-hosted fonts (Fira Sans and Noto Sans) into styles/, create the foundational workstream documentation (README.md, docs/model-choices.md, docs/working-tree.md, docs/information-design.md, docs/false-success.md, docs/performance-note.md, docs/defects.md, docs/readme-test.md, docs/interview-answers.md), initialize the evidence tracking files (evidence/01-agent-plan.txt and evidence/02-files-created.txt), and scaffold the Next.js 14 + TypeScript + Tailwind v3 base configuration (package.json, .nvmrc, tsconfig.json, next.config.mjs, tailwind.config.ts, postcss.config.js, .env.example, .eslintrc.json, .prettierrc, app/layout.tsx, app/globals.css, app/(public)/page.tsx, lib/env.ts, lib/logger.ts, lib/errors.ts, lib/constants.ts, lib/types.ts, and app/api/health/route.ts). Excluded from Phase 1 are live database migrations/writes (scheduled for Phase 2/3), remaining multi-persona screens (scheduled for Phases 2-4), all MVP exclusions in .agents/rules/out-of-scope.md, and evidence files whose underlying runtime/database activities occur in Phases 2-5.
+
+--------------------------------------------------------------------------------
+2. SOURCES INSPECTED
+--------------------------------------------------------------------------------
+- Root instruction file: /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/AGENTS.md (286 lines)
+- Consolidated PRD: /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/Context files/DG Tech Store PRD.md (1,569 lines, v1.3)
+- Rules directory: /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/.agents/rules/*.md (all 32 rule files inspected and verified)
+- Skills directory: /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/.agents/skills/ (3 skill files: build-api-endpoint, build-form-screen, build-list-screen)
+- Context & Prompt Docs: docs/architecture.md, docs/data-model.md, docs/design-system.md, docs/assumptions-and-open-questions.md, docs/scaffold-prompt.md
+- Task 1 Design System Tokens & Fonts: /Users/macbookpro/Desktop/Dev & Design To/task-01-design-system/styles/ (fonts.css, fonts/*.woff2, tokens/index.css, tokens/primitives.css, tokens/roles.css) and tokens/tokens.json
+
+--------------------------------------------------------------------------------
+3. APPROVED SCOPE & DELIVERABLE MATRIX SUMMARY (PHASE 1)
+--------------------------------------------------------------------------------
+- Pre-existing & Verified (Preserved):
+  - AGENTS.md
+  - Context files/DG Tech Store PRD.md
+  - .agents/rules/*.md (32 files)
+  - docs/architecture.md, docs/data-model.md, docs/design-system.md, docs/assumptions-and-open-questions.md, docs/scaffold-prompt.md
+- Normalized in Phase 1:
+  - .agents/skills/build-api-endpoint/SKILL.md
+  - .agents/skills/build-form-screen/SKILL.md
+  - .agents/skills/build-list-screen/SKILL.md
+- Created in Phase 1:
+  - styles/fonts.css, styles/fonts/*.woff2 (7 font files), styles/tokens/index.css, styles/tokens/primitives.css, styles/tokens/roles.css
+  - README.md
+  - docs/model-choices.md
+  - docs/working-tree.md
+  - docs/information-design.md
+  - docs/false-success.md
+  - docs/performance-note.md
+  - docs/readme-test.md
+  - docs/defects.md
+  - docs/interview-answers.md
+  - .gitignore, .nvmrc, .env.example, .eslintrc.json, .prettierrc
+  - package.json, tsconfig.json, next.config.mjs, postcss.config.js, tailwind.config.ts
+  - lib/env.ts, lib/logger.ts, lib/errors.ts, lib/constants.ts, lib/types.ts
+  - app/globals.css, app/layout.tsx, app/(public)/page.tsx, app/api/health/route.ts
+  - evidence/01-agent-plan.txt, evidence/02-files-created.txt
+- Planned for Later Phases (Phases 2-5):
+  - Phase 2: prisma/schema.prisma, prisma/seed.ts, lib/db.ts, lib/crypto.ts, Public & Auth screens, server startup & diagnostic evidence (evidence/03 through 10)
+  - Phase 3: Customer screens & application workflow, database write & failure evidence (evidence/11 through 13)
+  - Phase 4: Store Worker (7 screens) & Owner/Co-owner (9 screens) workflows, Cron & Admin endpoints
+  - Phase 5: Architectural working-tree diagram, Git graph, HEAD checks, heading-wrap defect/fix, and 3-width responsive checks (evidence/14 through 20, plus optional 21)
+
+--------------------------------------------------------------------------------
+4. IMPLEMENTATION STEPS (PHASE 1)
+--------------------------------------------------------------------------------
+Step 1: Initialize Git repository on branch main and normalize .agents/skills/ folder names to match AGENTS.md lines 157-159.
+Step 2: Copy verified Task 1 design system styles/ (fonts.css, fonts/*.woff2, tokens/*.css) into styles/ and verify zero diff.
+Step 3: Create README.md and the 8 workstream documentation files in docs/ (model-choices.md, working-tree.md, information-design.md, false-success.md, performance-note.md, readme-test.md, defects.md, interview-answers.md).
+Step 4: Scaffold Next.js 14 + TypeScript strict + Tailwind CSS v3 configuration, core lib/ modules (env.ts, logger.ts, errors.ts, constants.ts, types.ts), root layout.tsx, globals.css, public landing scaffold app/(public)/page.tsx, and GET /api/health endpoint app/api/health/route.ts; install approved packages and verify TypeScript compilation.
+Step 5: Record complete per-file creation, source, token, assumption, and verification audit in evidence/02-files-created.txt and update completion status in evidence/01-agent-plan.txt.
+
+--------------------------------------------------------------------------------
+5. VERIFICATION CRITERIA (PHASE 1)
+--------------------------------------------------------------------------------
+- git status confirms initialized repository on branch main.
+- ls .agents/skills confirms exact kebab-case paths from AGENTS.md.
+- diff -rq against task-01-design-system/styles confirms 100% token and font parity.
+- npx tsc --noEmit passes with zero TypeScript errors under all 7 strict flags from .agents/rules/code-conventions.md.
+- Style audit confirms zero hardcoded hex colors or arbitrary pixel spacing in app/.
+- All created docs/*.md and evidence/01, 02 files are populated with factual, non-placeholder content.
+
+--------------------------------------------------------------------------------
+6. OPEN QUESTIONS & APPROVED RESOLUTIONS
+--------------------------------------------------------------------------------
+1. Root Directory Path: Approved placing all workstream deliverables directly at /Users/macbookpro/Desktop/Dev & Design To/Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/ (avoiding nested folder anti-pattern).
+2. Skill Directory Naming: Approved renaming .agents/skills/ folders to kebab-case (build-api-endpoint, build-form-screen, build-list-screen) per AGENTS.md and logging the pre-existing path defect in docs/defects.md.
+3. Design System Tokens Source: Approved copying verified styles/ from /Users/macbookpro/Desktop/Dev & Design To/task-01-design-system/styles/ into Task-02-SCAFFOLD-IT-SHIP-THE-REPOSITORY/styles/.
+4. Stack Package Installation & Day 0 Picks: Approved installing the stack.md baseline packages (Next.js 14, React 18, TypeScript 5, Tailwind v3, Prisma 5, NextAuth v4, @auth/prisma-adapter, bcryptjs, zod, date-fns, lucide-react, clsx, @sentry/nextjs, vitest).
+5. Database & Prisma Scope: Approved keeping Phase 1 database-free (GET /api/health reports database status honestly) and proceeding with the 6 default schema resolutions from data-and-schema.md in Phase 2.
+6. GitHub Version Control & Phased Delivery Integration: Approved Option A — connected repository to https://github.com/contactwaleedbello/ship-and-found.git continuing from Task 1 main commit b8e95be, created dedicated phase-1-scaffold branch with 5 milestone commits, appended # github-version-control-and-phased-delivery-amendment to docs/scaffold-prompt.md, and created evidence/github-phase-log.txt.
+
+

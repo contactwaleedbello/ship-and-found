@@ -1,0 +1,32 @@
+@import '../styles/fonts.css';
+@import '../styles/tokens/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--type-body-medium-family);
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: var(--border-width-focus-ring) solid var(--color-primary);
+    outline-offset: var(--primitive-space-50);
+  }
+}
+

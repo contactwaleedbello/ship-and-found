@@ -1,1 +1,0 @@
- <span class="type-headline-large price-current">₦185,000</span>

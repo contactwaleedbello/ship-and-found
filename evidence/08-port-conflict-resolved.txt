@@ -1,5 +1,0 @@
-=== Port 3000 Conflict Resolution Verification ===
-1. Primary Next.js 14.2.35 dev server PID 7480 verified active and serving HTTP 200 on http://localhost:3000/api/health:
-{"status":"ok","shop":"Shop ATF 03","timestamp":"2026-10-31T21:05:10.074Z","requestId":"c214d1b4-5068-46ec-9fd3-10bd2e28a531","checks":{"app":"ok","database":"ok","expiryCronHeartbeat":"unconfigured","defaultCronHeartbeat":"unconfigured"}}
-2. Duplicate process exited cleanly on EADDRINUSE without corrupting primary server state.
-3. Primary server cleanly terminated via SIGTERM after verification.

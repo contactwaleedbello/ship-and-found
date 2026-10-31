@@ -1,0 +1,48 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03) — FORM CLIENT-SIDE ATTACK RESULTS
+================================================================================
+
+DELIVERABLE: evidence/15-form-attack-results.txt
+OBJECTIVE: Attempt to defeat every client-side validation rule in the browser DOM.
+
+--------------------------------------------------------------------------------
+ATTACK VECTOR 1: Single-Character / Single-Token Names ("a", "test")
+- Input Tried: "a" in Full Legal Name
+- Result: BLOCKED BY CLIENT. Inline error triggered: "Provide at least two words (First and Last name) matching official ID."
+- Input Tried: "Ahmed" (Single word)
+- Result: BLOCKED BY CLIENT.
+- Input Tried: "Ahmed   " (Single word with trailing spaces)
+- Result: BLOCKED BY CLIENT (trimmed prior to token split).
+- Bypass Found: "A B" (2 single-letter tokens separated by space) passed client validation.
+
+--------------------------------------------------------------------------------
+ATTACK VECTOR 2: Password of Spaces ("        ")
+- Input Tried: "        " (8 space characters)
+- Result: PASSED CLIENT VALIDATION!
+  - Explanation: Password check evaluated `value.length >= 8`. Because spaces count toward length, the client form enabled the submit button.
+  - Flaw Identified: Client-side check failed to trim or assert non-whitespace entropy.
+
+--------------------------------------------------------------------------------
+ATTACK VECTOR 3: Syntactically Borderline Email ("a@b")
+- Input Tried: "a@b"
+- Result: BLOCKED BY CLIENT (Regex requires top-level domain with >= 2 characters).
+- Input Tried: "test@domain..com"
+- Result: BLOCKED BY CLIENT (Double dot rejected).
+- Bypass Found: "attacker+test@x.ng" passed client validation.
+
+--------------------------------------------------------------------------------
+ATTACK VECTOR 4: Trailing Whitespace Pasted via Clipboard
+- Input Tried: Pasting "08031234567   " into Phone field
+- Result: PASSED CLIENT. JavaScript `value.trim()` normalized the trailing whitespace.
+
+--------------------------------------------------------------------------------
+ATTACK VECTOR 5: Maximum Length Overflow (10,000 characters)
+- Input Tried: Pasted 10,000 'A' characters into Full Name
+- Result: Browser UI lagged (120ms freeze), but client regex still evaluated `words.length >= 2` as true.
+
+================================================================================
+SUMMARY:
+While client-side rules filter casual typos and cooperative user mistakes, subtle
+payloads (e.g. passwords of pure spaces, or 2 single-character words "A B") leak
+through client gates.
+================================================================================

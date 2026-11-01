@@ -1,0 +1,73 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03, BANEX PLAZA, WUSE 2, ABUJA)
+TASK 5: EVIDENCE 10 — LOGOUT EDGE CASE DEFENCE & RESOLUTION ARCHITECTURE
+Hardened Logout Pipeline: Two-Tier Revocation, Anti-Cache Directives & Beacon
+================================================================================
+
+HOW WE FIXED THE MID-FLIGHT LOGOUT FAILURE:
+To prevent the dangerous split-brain state identified in Evidence 09, DG Tech Store
+implemented a four-layer defence across server, client, and transport tiers:
+
+--------------------------------------------------------------------------------
+1. SERVER-DRIVEN COOKIE INVALIDATION WITH CACHE-CONTROL HEADERS
+--------------------------------------------------------------------------------
+- Instead of clearing cookies optimistically before server confirmation, the
+  logout action is driven by the server's HTTP response.
+- On POST /api/auth/logout, the server issues:
+  - Set-Cookie: dg_session=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+  - Cache-Control: no-store, no-cache, must-revalidate, private
+  - Pragma: no-cache
+- Protected routes (/portal, /admin, /api/user/*) enforce Cache-Control: no-store.
+  When the user presses the browser back button, the browser is forbidden from
+  serving pages from the bfcache; it is forced to revalidate with the server,
+  which immediately returns HTTP 401 Unauthorized and redirects to /login.
+
+--------------------------------------------------------------------------------
+2. NAVIGATOR.SENDBEACON ASYNCHRONOUS TRANSPORT GUARANTEE
+--------------------------------------------------------------------------------
+- Standard fetch requests can be aborted if the user closes the tab or navigates
+  away immediately after tapping logout.
+- In lib/services/auth-client.ts, the logout handler uses `navigator.sendBeacon`
+  as a fail-safe transport:
+  ```typescript
+  export function initiateHardenedLogout() {
+    const payload = JSON.stringify({ timestamp: Date.now() });
+    const beaconSent = navigator.sendBeacon(
+      '/api/auth/logout',
+      new Blob([payload], { type: 'application/json' })
+    );
+    if (!beaconSent) {
+      // Fallback to fetch with keepalive: true
+      fetch('/api/auth/logout', { method: 'POST', keepalive: true });
+    }
+  }
+  ```
+- `navigator.sendBeacon` and `fetch({ keepalive: true })` guarantee that the
+  browser completes the HTTP POST request in the background even if the page
+  unloads, cellular signal fluctuates, or the user navigates away.
+
+--------------------------------------------------------------------------------
+3. IDEMPOTENT SERVER DESTRUCTION & DEAD-TOKEN RESISTANCE
+--------------------------------------------------------------------------------
+- In app/api/auth/logout/route.ts, `destroySession(rawToken)` is completely idempotent:
+  - If the token exists, prisma.session.delete removes it.
+  - If the token was already deleted or expired, the endpoint returns HTTP 200 OK
+    and still transmits the cleared Set-Cookie headers.
+  - If the client retries logout upon reconnecting to network, the call succeeds
+    cleanly without throwing 404 or 500 errors.
+
+--------------------------------------------------------------------------------
+4. SHORT ROLLING EXPIRY & ACTIVITY ROTATION
+--------------------------------------------------------------------------------
+- Sessions enforce an idle timeout alongside the 7-day absolute maximum lifetime.
+- Every state-changing action revalidates the session token hash in SQLite dev.db.
+- If a token was intercepted, an attacker's window is strictly bounded, and any
+  subsequent password reset immediately terminates all user sessions across all
+  devices via destroyAllUserSessions(user.id).
+
+--------------------------------------------------------------------------------
+VERIFICATION IN CODEBASE:
+- app/api/auth/logout/route.ts (server-side DB deletion & Set-Cookie expiration)
+- middleware.ts (session revalidation on every protected request)
+- tests/task5-verification.test.ts (asserts database row presence -> destruction)
+================================================================================

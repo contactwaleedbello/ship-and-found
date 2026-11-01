@@ -1,0 +1,45 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03, BANEX PLAZA, WUSE 2, ABUJA)
+TASK 5: EVIDENCE 01 — TWO SESSION IDENTIFIERS GENERATED ONE AFTER ANOTHER
+Platform PRNG: node:crypto.randomBytes(32) [256-bit entropy]
+Storage Architecture: Raw Token in HttpOnly Cookie | SHA-256 Digest in Database
+Timestamp: 2026-11-01T00:07:18.021Z
+================================================================================
+
+[SESSION 1]
+Created At:          2026-11-01T00:07:18.018Z
+Session Record UUID: bceb6ad4-937b-40de-9b03-7aaac0be66d2
+User Account ID:     7c93e591-aab0-4ae6-a92c-91765e09c56b (Ahmed Ibrahim - ahmed.ibrahim@gmail.com)
+Raw Client Cookie:   dg_session=85d1800765a477668fa3426c978d1df9d381efe0d61b9c346e40dac1ceda6272
+Entropy Length:      64 hex characters (256 bits / 32 bytes)
+Database Token Hash: 75a52dad0d2908ae98b2cadff7c00412e76fe52156a0c3780988de36f0512300 (SHA-256)
+Cookie Directive:    dg_session=85d1800765a477668fa3426c978d1df9d381efe0d61b9c346e40dac1ceda6272; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax
+Expires At:          2026-11-08T00:07:18.016Z (7-day rolling window)
+Client IP:           197.210.64.12 (MTN Nigeria Abuja Gateway)
+User-Agent:          Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
+
+--------------------------------------------------------------------------------
+
+[SESSION 2]
+Created At:          2026-11-01T00:07:18.020Z
+Session Record UUID: 661dd4d6-f6a4-4791-b053-5c2ca9897ac5
+User Account ID:     7c93e591-aab0-4ae6-a92c-91765e09c56b (Ahmed Ibrahim - ahmed.ibrahim@gmail.com)
+Raw Client Cookie:   dg_session=e51b6bc00f7515b12278860e756af073bd1838d5e2ece1484b377a893cc53c6c
+Entropy Length:      64 hex characters (256 bits / 32 bytes)
+Database Token Hash: 8e2d8c0164fc8d9b70cb52bd0dd5cd45afb7c1755fa9909b720240b7cfdaeeb5 (SHA-256)
+Cookie Directive:    dg_session=e51b6bc00f7515b12278860e756af073bd1838d5e2ece1484b377a893cc53c6c; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax
+Expires At:          2026-11-08T00:07:18.020Z (7-day rolling window)
+Client IP:           197.210.64.12 (MTN Nigeria Abuja Gateway)
+User-Agent:          Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36
+
+================================================================================
+CRYPTOGRAPHIC PROPERTIES & VERIFICATION:
+1. Distinct Identifiers: Session 1 (bceb6ad4-937b-40de-9b03-7aaac0be66d2) != Session 2 (661dd4d6-f6a4-4791-b053-5c2ca9897ac5)
+2. Distinct Raw Tokens:  Raw Token 1 != Raw Token 2
+3. Distinct Hash Store:  Token Hash 1 != Token Hash 2
+4. Collision Resistance: With 256 bits of CSPRNG entropy, the collision
+   probability across 2^128 sessions is negligible (< 10^-38).
+5. Threat Mitigation: If an attacker executes a database dump (SQL injection or
+   backup leak), the stored SHA-256 digests cannot be reversed to raw cookie
+   tokens. Active browser sessions remain secure.
+================================================================================

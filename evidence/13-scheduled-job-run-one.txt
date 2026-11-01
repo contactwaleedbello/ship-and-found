@@ -1,0 +1,18 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03, BANEX PLAZA, WUSE 2, ABUJA)
+NIGHTLY DATA RETENTION & COMPLIANCE JOB — RUN ONE (ACTIVE PROCESSING)
+Schedule: 02:00 WAT Daily Cron | Legal Framework: NDPA 2023 s.34 & FIRS CITA s.55
+Database: SQLite dev.db | Backup Synchronization Window: 24 Hours
+================================================================================
+[RETENTION-JOB] >>> Starting scheduled account deletion & anonymization job at 2026-11-01T00:12:22.125Z
+[RETENTION-JOB] Grace Period Threshold: 7 Days (Accounts requested before 2026-10-25T00:12:22.126Z)
+[RETENTION-JOB] CONFLICT DETECTED FOR USER 7bbf2ae0-2374-424f-abb3-804521457ec7:
+               - Privacy Mandate: NDPA 2023 s.34 Right to Erasure requested.
+               - Fiscal Mandate:  FIRS CITA s.55 & FCCPC Consumer Lending Regulation mandates 6-year ledger retention.
+               - Ledger Rows:     1 settled payments, 1 payment attempts.
+               - Resolution:      IRREVERSIBLE ANONYMIZATION APPLIED (PII wiped, foreign key integrity preserved).
+[RETENTION-JOB] Status for 7bbf2ae0-2374-424f-abb3-804521457ec7 changed to ANONYMIZED_PRESERVED_FOR_AUDIT.
+--------------------------------------------------------------------------------
+[RETENTION-JOB] Summary: 1 examined | 1 anonymised | 0 deleted | 0 skipped.
+[RETENTION-JOB] <<< Completed scheduled retention job cleanly in 6ms at 2026-11-01T00:12:22.131Z
+================================================================================

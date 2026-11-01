@@ -73,3 +73,4 @@ Developers often argue that writing manual `if (!body.email || !body.email.inclu
    - Zod strictly strips unparsed properties (`strip`), rejects invalid primitives, and validates deeply nested objects deterministically.
 3. **Inconsistent Error Formats**:
    - Procedural route handlers return idiosyncratic error messages and varying HTTP status codes. Zod produces structured, machine-readable issue arrays (`{ field, message, code }`) that client applications and VoiceOver screen readers can parse reliably.
+

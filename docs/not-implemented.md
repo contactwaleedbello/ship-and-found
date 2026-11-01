@@ -72,3 +72,4 @@ Below are **five enterprise security controls** we actively considered, evaluate
   2. **Zero Need for Public Retail Endpoints**: mTLS is designed for machine-to-machine banking APIs and internal microservices, not consumer e-commerce.
 - **What Would Have to Change to Add It**:
   - We would implement mTLS exclusively on internal store worker POS hardware terminals dedicated to physical device IMEI verification at Banex Plaza.
+

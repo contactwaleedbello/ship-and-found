@@ -2,14 +2,14 @@
   "name": "dg-tech-store",
   "version": "0.1.0",
   "private": true,
-  "description": "DG Tech Store (Shop ATF 03) — Device Inventory & Flexi-Pay Part-Payment Platform",
+  "description": "DG Tech Store (Shop ATF 03) \u2014 Device Inventory & Flexi-Pay Part-Payment Platform",
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node init && next dev",
+    "build": "node init && next build",
+    "start": "node init && next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
@@ -44,4 +44,3 @@
     "vitest": "^2.0.5"
   }
 }
-

@@ -37,3 +37,4 @@ Adapting an established regulatory template is the only defensible engineering c
 - **Judicial Enforceability**: Custom, amateur contract text written from scratch by developers or prompt engineers routinely fails the legal test of unconscionability or violates statutory disclosure requirements under the Hire Purchase Act of 1968 (Laws of the Federation of Nigeria).
 - **Audit Readiness**: In the event of a regulatory inspection by the Nigeria Data Protection Commission (NDPC) or FCCPC, referencing an established, vetted industry template protects the merchant from statutory non-compliance penalties.
 - **Fairness to the Consumer**: Standardized terms ensure the consumer is presented with clear, predictable rights regarding down-payment recovery, price locking, and data deletion rights (`docs/false-success.md`).
+

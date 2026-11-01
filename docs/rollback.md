@@ -35,3 +35,4 @@ b13822e (origin/phase-5-verification) chore(deliverables): align exact evidence 
 > Naming an exact SHA-1 commit hash anchors the rollback to an immutable cryptographic snapshot of the repository, guaranteeing that Git computes the exact mathematical inverse diff without ambiguity or loss of unrelated work. 
 > 
 > In contrast, describing a desired rollback in natural language invites an AI agent or human collaborator to guess the previous file state, routinely hallucinating missing lines, re-introducing previously resolved bugs, or accidentally destroying adjacent work that was never intended to be touched.
+

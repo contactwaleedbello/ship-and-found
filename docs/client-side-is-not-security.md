@@ -84,3 +84,4 @@ In Task 4, we will implement **defense-in-depth security controls** that treat e
    - Implement IP-based and subnet-based rate limiting (e.g. maximum 5 registration attempts per 15 minutes per IP) to neutralize automated bot flooding.
 4. **Honeypot Fields**:
    - Introduce hidden honeypot form fields invisible to human users via CSS (`display: none; visibility: hidden; opacity: 0; position: absolute; left: -9999px`) that automated scraping bots fill out automatically, allowing the server to silently drop bot submissions.
+

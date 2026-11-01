@@ -25,17 +25,20 @@ model User {
   role            String           @default("CUSTOMER")
   ninEncrypted    String?
   isVerified      Boolean          @default(false)
-  emailVerifiedAt DateTime?
-  bvnNumber       String
-  creditScore     Int              @default(700)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  emailVerifiedAt     DateTime?
+  bvnNumber           String
+  creditScore         Int              @default(700)
+  accountStatus       String           @default("ACTIVE")
+  deletionRequestedAt DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
 
   sessions        Session[]
   payments        Payment[]
   paymentAttempts PaymentAttempt[]
 
   @@index([role])
+  @@index([accountStatus])
 }
 
 model Session {

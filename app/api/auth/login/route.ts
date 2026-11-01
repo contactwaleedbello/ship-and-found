@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 
 import { serverLoginSchema } from '@/lib/schemas/auth-schema';
 import { checkRateLimit } from '@/lib/security/rate-limiter';
+import { createSession } from '@/lib/security/session-service';
 import { prisma } from '@/lib/db';
 
 /**
@@ -82,18 +83,51 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    return NextResponse.json(
+    // 4. Compliance check: Account pending deletion
+    if (user.accountStatus === 'DELETION_PENDING') {
+      return NextResponse.json(
+        {
+          error: 'Forbidden',
+          message: 'This account is pending deletion and cannot be accessed.',
+          accountStatus: user.accountStatus,
+        },
+        { status: 403, headers: { 'x-request-id': requestId } }
+      );
+    }
+
+    // 5. Gating check: Hard gating (Email/Phone verification mandatory)
+    if (!user.isVerified) {
+      return NextResponse.json(
+        {
+          error: 'Forbidden',
+          message: 'Account verification required before login. Please complete OTP verification.',
+          requiresVerification: true,
+          userId: user.id,
+        },
+        { status: 403, headers: { 'x-request-id': requestId } }
+      );
+    }
+
+    // 6. Cryptographically secure session issuance
+    const userAgent = request.headers.get('user-agent') ?? 'Unknown Browser';
+    const session = await createSession(user.id, clientIp, userAgent);
+
+    const response = NextResponse.json(
       {
         data: {
           userId: user.id,
           fullName: user.fullName,
           email: user.email,
           role: user.role,
+          sessionId: session.sessionId,
           message: 'Authentication successful.',
         },
       },
       { status: 200, headers: { 'x-request-id': requestId } }
     );
+
+    response.headers.set('Set-Cookie', session.cookieHeader);
+    return response;
   } catch {
     return NextResponse.json(
       { error: 'Bad Request', message: 'Malformed JSON payload.' },

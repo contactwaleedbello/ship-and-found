@@ -1,0 +1,66 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03, BANEX PLAZA, WUSE 2, ABUJA)
+TASK 5: EVIDENCE 09 — LOGOUT NETWORK FAILURE EDGE CASE ANALYSIS
+Incident Scenario: Logout Network Request Drops Mid-Flight / Flaky Cellular Data
+================================================================================
+
+THE FAILURE SCENARIO:
+A customer, Ahmed Ibrahim, is using DG Tech Store's Flexi-Pay portal on his phone
+while connected to an MTN mobile data connection near Banex Plaza Gate 2.
+He finishes inspecting his installment schedule and taps "Logout".
+The browser client immediately clears document.cookie / local session state,
+and sends a POST /api/auth/logout request over the wire.
+However, right as the packet leaves the phone, cellular coverage blips (common in
+congested Abuja commercial zones) and the TCP connection resets mid-flight before
+reaching the server.
+
+--------------------------------------------------------------------------------
+1. WHAT DOES THE BROWSER BELIEVE?
+--------------------------------------------------------------------------------
+- The browser believes the user is completely logged out.
+- The client-side application transitions to the public login screen.
+- If the cookie was deleted optimistically by JavaScript or client storage,
+  the browser believes no session exists.
+- The user feels safe putting their phone down or handing it to someone else.
+
+--------------------------------------------------------------------------------
+2. WHAT DOES THE SERVER BELIEVE?
+--------------------------------------------------------------------------------
+- The server NEVER received the POST /api/auth/logout request.
+- In SQLite prisma/dev.db, the Session row remains completely ACTIVE.
+- The session token's SHA-256 digest is still valid, unrevoked, and has an
+  expiration timestamp set 7 days into the future.
+- The server believes Ahmed is still authenticated and authorized to perform
+  state changes (e.g., initiating flexi-pay financing orders).
+
+--------------------------------------------------------------------------------
+3. WHAT HAPPENS IF THE USER PRESSES THE BACK BUTTON?
+--------------------------------------------------------------------------------
+- Without proper server-side cache control headers, the browser's Back-Forward
+  Cache (bfcache) will render the cached HTML of the protected /portal page
+  directly from browser memory, showing Ahmed's BVN, credit score, phone number,
+  and transaction history, without making a network request.
+- If the user taps a link or triggers an action that initiates a fetch request:
+  - If the cookie was cleared locally, the request sends no cookie and the server
+    returns HTTP 401 Unauthorized.
+  - If the cookie deletion was tied to the fetch response (which never arrived),
+    the cookie is still in the browser jar, so the back button continues to
+    execute authenticated actions!
+
+--------------------------------------------------------------------------------
+4. WHAT HAPPENS IF AN ATTACKER HAS ALREADY INTERCEPTED THAT SESSION TOKEN?
+--------------------------------------------------------------------------------
+- If an adversary intercepted the session token earlier (e.g. via rogue Banex Wi-Fi,
+  misconfigured proxy, or malware on a shared computer):
+- Because the server never received the logout signal, the session row is intact.
+- The attacker can continue using the stolen token to impersonate Ahmed for the full
+  remaining lifespan of the session (up to 7 days).
+- The attacker can view sensitive financial records, apply for hire-purchase devices,
+  or modify delivery addresses. Ahmed has no idea the session is still live.
+
+--------------------------------------------------------------------------------
+SUMMARY OF CRITICAL VULNERABILITY:
+Optimistic client-side logout creates a severe split-brain state between client
+perception and server authorization. In financial applications, server revocation
+must be made robust against network disconnects.
+================================================================================

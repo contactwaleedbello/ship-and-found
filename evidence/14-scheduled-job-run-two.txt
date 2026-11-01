@@ -1,0 +1,12 @@
+================================================================================
+DG TECH STORE (SHOP ATF 03, BANEX PLAZA, WUSE 2, ABUJA)
+NIGHTLY DATA RETENTION & COMPLIANCE JOB — RUN TWO (IDEMPOTENCY VERIFICATION)
+Schedule: 02:00 WAT Daily Cron | Legal Framework: NDPA 2023 s.34 & FIRS CITA s.55
+Database: SQLite dev.db | Backup Synchronization Window: 24 Hours
+================================================================================
+[RETENTION-JOB] >>> Starting scheduled account deletion & anonymization job at 2026-11-01T00:12:22.131Z
+[RETENTION-JOB] Grace Period Threshold: 7 Days (Accounts requested before 2026-10-25T00:12:22.132Z)
+--------------------------------------------------------------------------------
+[RETENTION-JOB] Summary: 0 examined | 0 anonymised | 0 deleted | 0 skipped.
+[RETENTION-JOB] <<< Completed scheduled retention job cleanly in 1ms at 2026-11-01T00:12:22.132Z
+================================================================================

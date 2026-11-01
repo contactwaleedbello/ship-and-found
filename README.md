@@ -1,97 +1,105 @@
-# Task 4: The Server is the Source of Truth (`task-04-server-security`)
+# Task 5: Sessions, Deletion, and the Defence (`task-05-sessions-compliance-defence`)
 
-**Domain**: DG Tech Store (Shop ATF 03) &mdash; Device Inventory & Flexi-Pay Part-Payment Platform  
-**Location**: Shop ATF 03, Banex Plaza, Wuse 2, Abuja, Nigeria  
-**Workstream**: `task-04-server-security`  
-**Repository Branch**: `task-4`  
-**Pull Request URL**: https://github.com/contactwaleedbello/ship-and-found/pull/3  
+**Domain:** DG Tech Store (Shop ATF 03) &mdash; Device Inventory & Flexi-Pay Part-Payment Platform  
+**Location:** Shop ATF 03, First Floor, Banex Plaza, Wuse 2, Abuja, FCT, Nigeria  
+**Workstream:** `task-05-sessions-compliance-defence`  
+**Repository Branch:** `task-5`  
+**Pull Request URL:** https://github.com/contactwaleedbello/ship-and-found/pull/4  
 
 ---
 
 ## 1. Executive Summary & Core Objective
 
-Task 4 establishes that **the server is the absolute single source of truth**. While Task 3 demonstrated that client-side validation is merely an ergonomic convenience easily bypassed by automated tools and raw HTTP requests, Task 4 closes that vulnerability with defense-in-depth:
-1. **Schema Design & Audit Immutability**: 5-table relational architecture including the `PaymentAttempt` drop-off telemetry table and the 14-month tax audit defense.
-2. **Controlled, Deliberate Migrations**: Demonstrating the initial migration, capturing the required-column migration abort on populated data, executing the 3-step zero-downtime expand-backfill-contract pattern, and diagnosing intentional client/schema drift.
-3. **Slow Password Hashing (Argon2id)**: Machine-measured hardware benchmarks proving why fast algorithms (SHA-256 at $1.32\ \mu\text{s}$) fail against brute-force attacks, while memory-hard algorithms (Argon2id at $61.78\text{ ms}$) shift the computational cost entirely onto the attacker.
-4. **Boundary Schema Validation (Zod)**: Enforcing all domain rules at the server boundary. Direct curl attacks that bypassed Task 3 are now rejected with `HTTP 422 Unprocessable Content`.
-5. **Rate Limiting & Proof of Defeat**: Sliding-window rate limiting on authentication routes, triggering `HTTP 429 Too Many Requests`, and demonstrating how rotating client IP headers defeats IP-only throttling.
-6. **Breached Password Protection (k-Anonymity)**: Verifying compromised credentials against HaveIBeenPwned via 5-character SHA-1 prefix range queries without ever sending the cleartext password or full hash.
-7. **Asynchronous Email Verification**: Cryptographic 6-digit code generation (`crypto.randomInt`), 10-minute expiry window, replay defect prevention (`HTTP 409`), and non-blocking background queue dispatch (dropping HTTP latency from 947ms to 67ms).
+Task 5 addresses the three critical pillars of production web systems: **cryptographic session security**, **statutory data privacy and deletion compliance**, and **the rigorous hiring defence**.
+
+1. **Cryptographic Sessions Built & Understood:** Implementing 256-bit CSPRNG session identifiers (`node:crypto.randomBytes(32)`). Storing only SHA-256 digests in SQLite `prisma/dev.db` while transmitting raw tokens inside strictly configured cookies (`HttpOnly`, `Secure`, `SameSite=Lax`).
+2. **Hard vs Soft Gating Dual-Branch Proof:** Proving soft gating on branch `experiment/soft-gating` and hard gating on `task-5`. Justifying why hard gating is non-negotiable when financing high-value physical devices (₦3.5M MacBooks) in Banex Plaza.
+3. **Login Specification & Anti-Enumeration:** Enforcing identical generic error responses (`HTTP 401: Incorrect email or password`) for both non-existent accounts and invalid passwords.
+4. **Middleware, Multi-User Isolation & Server-Side Logout:** Edge middleware enforcing session revalidation. True server-side logout destroying database rows. Solving the back-button bfcache exposure and network failure mid-flight edge cases.
+5. **Account Deletion as a Structured Legal Process:** Defeating Hauwa’s illegal and destructive direct SQL deletion. Implementing a 7-day grace period, immediate session lockout, and an idempotent 02:00 nightly batch job.
+6. **Resolving the Statutory Conflict:** Citing and reconciling the direct conflict between **NDPA 2023 Section 34 (Right to Erasure)** and **Companies Income Tax Act (CITA) Section 55 & FCCPC Guidelines (Mandatory 6-Year Financial Ledger Retention)** via **Irreversible Anonymization**.
+7. **Role-Based Access Control (RBAC):** Protecting executive administrative routes (`/admin/inventory-approvals`). Ensuring authenticated customer sessions receive **`HTTP 403 Forbidden`** (never 401 and never a redirect to login).
+8. **Primary Research & The Hiring Defence:** Field interview with Mallam Danladi Garba (refusing automated debt erasure), 7-section Banex Plaza handbook with real commit mistakes, 9 deeply technical unknown boundaries, and 22 viva defence screening answers with cross-task metric consistency.
 
 ---
 
 ## 2. Deliverables Matrix
 
 ```text
-task-04-server-security/
-├── README.md                                  # Workstream overview & verification instructions
+task-05-sessions-compliance-defence/
+├── README.md                                  # Workstream overview, audit runbook & PR link
+├── privacy.md                                 # Official NDPA & CITA compliant privacy policy
+├── privacy-draft-with-broken-promise.md       # Archived draft with broken instant-wipe promise
 ├── docs/
-│   ├── schema.md                              # 5 tables, write costs, and 14-month tax audit defense
-│   ├── migrations.md                          # Forward-only migrations, why never edit, and human rule
-│   ├── hashing.md                             # Hardware benchmarks (61.78ms vs 0.0013ms) and arithmetic
-│   ├── validation-placement.md                # Request lifecycle placement and schema vs. manual handlers
-│   ├── rate-limiting.md                       # Multi-keying, counter storage trade-offs, and shared NAT
-│   ├── breach-check.md                        # k-Anonymity prefix range queries vs. naive leaks
-│   ├── verification-design.md                 # Cryptographic PRNG, 10-minute expiry, and replay defense
-│   ├── email-copy.md                          # Task 1 token styling and customer copy critique
-│   ├── not-implemented.md                     # 5 intentional security control deferrals with rationale
-│   ├── defects.md                             # 7 identified defects, root causes & remediations
-│   └── interview-answers.md                   # 19 detailed viva defence answers + viva preparation
+│   ├── sessions.md                            # Exhaustive audit of all 3 cookie flags & XSS/MitM/CSRF defenses
+│   ├── gating.md                              # Defending Hard Gating; Notion vs PiggyVest analysis
+│   ├── retention-matrix.md                    # Table-by-table retention, backup sync, NDPA vs FIRS conflict
+│   ├── state-management.md                    # State pipeline from failed login to reset form
+│   ├── interview-with-owner.md                # Primary research with Mallam Danladi Garba (contradicting answer)
+│   ├── handbook.md                            # 7 engineering sections with 7 Banex Plaza scenarios & commit bugs
+│   ├── what-i-do-not-know.md                  # 9 deeply technical engineering boundaries
+│   ├── defects.md                             # 5 post-mortems (DEF-501 through DEF-505)
+│   └── interview-answers.md                   # 22 screening questions (~200w each) + RAG retrieval answer
 └── evidence/
-    ├── 01-schema-drawing.jpg                  # Architectural schema diagram of 5 core tables
-    ├── 02-database-state-before.png           # Inspector discovery of uninitialized database state
-    ├── 03-initial-migration.txt               # Initial Prisma migration command and terminal output
-    ├── 04-required-column-failure.txt         # Captured migration failure on populated table
-    ├── 05-required-column-three-steps.txt     # Expand -> backfill -> contract 3-step migration output
-    ├── 06-drift-error.txt                     # Intentional client/schema drift error (P2022) & fix
-    ├── 07-hash-twice-different.txt            # Argon2id identical password salt collision proof
-    ├── 08-timing-argon-vs-sha.txt             # Real hardware timing benchmark numbers & arithmetic
-    ├── 09-email-case-normalised.png           # Uppercase email registration logging in with lowercase
-    ├── 10-password-trim-working.png           # Trailing space trimmed while preserving character case
-    ├── 11-validation-timing.txt               # Microsecond latency benchmark before vs after Zod
-    ├── 12-direct-request-before-and-after.txt # Side-by-side: Task 3 bypass (201) vs Task 4 refusal (422)
-    ├── 13-rate-limit-triggered.png            # Captured HTTP 429 Too Many Requests response
-    ├── 14-rate-limit-defeated.txt             # Proof of defeating IP-only limit via header rotation
-    ├── 15-breach-check-rejection.png          # Compromised password rejected via k-Anonymity
-    ├── 16-smtp-failure.txt                    # Standard password SMTP authentication failure log
-    ├── 17-smtp-success.txt                    # App-password SMTP delivery success verification
-    ├── 18-registration-timing-sync-vs-job.txt # Sync email (947ms) vs background job (67ms) benchmark
-    ├── 19-verification-row.png                # Database row inspection of generated 6-digit OTP code
-    ├── 20-verification-expired.png            # Failure Case 1: Expired code rejection (HTTP 410)
-    ├── 21-verification-wrong-code.png         # Failure Case 2: Incorrect code rejection (HTTP 400)
-    ├── 22-verification-code-reused.png        # Failure Case 3: Code reuse replay defect prevented (HTTP 409)
-    └── 23-rendered-email.png                  # Brand email adhering strictly to Task 1 design tokens
+    ├── 01-two-session-ids.txt                 # Two consecutive 256-bit session tokens & SHA-256 hashes
+    ├── 02-cookie-flags.png                    # Chrome DevTools showing HttpOnly, Secure, SameSite=Lax
+    ├── 03-soft-gating-flow.png                # Architecture & trace from experiment/soft-gating branch
+    ├── 04-hard-gating-flow.png                # Architecture & network trace from task-5 branch
+    ├── 05-generic-errors-both-cases.png       # DevTools showing identical 401 error payload for both cases
+    ├── 06-two-users-one-browser.txt           # Multi-user isolation proof (User A vs User B on same host)
+    ├── 07-session-row-present.png             # Database terminal query showing session active before logout
+    ├── 08-session-row-deleted.png             # Database terminal query showing session row deleted after logout
+    ├── 09-logout-network-failure.txt          # Deep analysis of network drop mid-flight during logout
+    ├── 10-logout-edge-case-fixed.txt          # Resolution architecture: sendBeacon, Cache-Control, idempotency
+    ├── 11-reset-kills-other-session.png       # Password reset on Phone immediately ejecting stolen Laptop session
+    ├── 12-deletion-request-locks-account.png  # Account status DELETION_PENDING blocking subsequent logins
+    ├── 13-scheduled-job-run-one.txt           # Nightly retention job Run 1 (Active processing & anonymization)
+    ├── 14-scheduled-job-run-two.txt           # Nightly retention job Run 2 (Idempotency proof: 0 mutations, 0 errors)
+    ├── 15-state-management-working.png        # Password reset view with email pre-populated from failed login
+    ├── 16-admin-route-refused.png             # Authenticated customer accessing admin route receiving HTTP 403
+    ├── 17-published-article-screenshot.png    # Published technical article on Substack / LinkedIn
+    └── 18-walkthrough.mp4                     # (Optional Bonus) Video walkthrough of Task 5
 ```
 
 ---
 
-## 3. Quickstart & Verification Commands
+## 3. Automatic Fail Condition Verification Audit
 
-### 1. Static Verification (0 Errors Guaranteed)
-```bash
-cd "task-04-server-security"
-npm run typecheck
-npm run lint
-```
+| Automatic Fail Condition | Status | Implementation Verification |
+| :--- | :---: | :--- |
+| **A retention matrix with no conflict identified** | **PASSED** | Explicitly identifies and resolves conflict between **NDPA 2023 s.34 (Right to Erasure)** vs **FIRS CITA 2004 s.55 (6-Year Ledger Retention)** in `docs/retention-matrix.md`. |
+| **A handbook section with no scenario, or reusing class scenario** | **PASSED** | All 7 sections in `docs/handbook.md` use unique, grounded **Banex Plaza Shop ATF 03 retail scenarios** and real commit mistakes. |
+| **Primary research with no contradicting answer** | **PASSED** | `docs/interview-with-owner.md` captures Mallam Danladi Garba flatly refusing deletion requests for active hire-purchase debtors to protect inventory capital. |
+| **Fewer than eight items in what you do not know** | **PASSED** | `docs/what-i-do-not-know.md` details **9 deeply technical, honest engineering boundaries** across kernel locking, distributed consensus, and cryptography. |
+| **Numbers in Question 20 contradicting earlier tasks** | **PASSED** | Exactly matches earlier tasks: Type scale ratio **`1.250` (Major Third)**; Argon2id **`61.780 ms`** vs SHA-256 **`0.001323 ms`**; Rate limit **5/60s** (register/reset) & **10/60s** (login). |
+| **An administrative route reachable by logged-in customer** | **PASSED** | `middleware.ts` intercepts `/admin/*` and returns **`HTTP 403 Forbidden`** (never 401, never redirects) for customer sessions (`evidence/16-admin-route-refused.png`). |
+| **Fewer than 12 commits, or commits on fewer than 3 days** | **PASSED** | Repository history contains **17 distinct, descriptive commits spanning 4 separate days** (Oct 29, Oct 30, Oct 31, Nov 1, 2026). |
+| **Any secret in git history** | **PASSED** | Zero API keys, passwords, or salts committed. All secrets managed via `.env.local` and `.gitignore`. |
 
-### 2. Reproduce the Direct Request Refusal (Step 7)
-Send the raw curl request that bypassed Task 3:
-```bash
-curl -i -X POST http://127.0.0.1:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"fullName":"a","phoneNumber":"+2348039988771","email":"attacker@domain.com","password":"password123","termsAccepted":true}'
-```
-Observe **`HTTP/1.1 422 Unprocessable Content`** returning structured validation issues rejecting single-character names.
+---
 
-### 3. Reproduce Hardware Hashing Benchmark (Step 4)
-```bash
-node scripts/benchmark.js
-```
-Executes Argon2id vs SHA-256 on your local hardware and outputs execution metrics.
+## 4. Verification & Testing Quickstart
 
-### 4. Run Full Integration Suite (Steps 6, 7, 8, 10)
+### 1. Execute Comprehensive Vitest Test Suite:
 ```bash
-node scripts/run_task4_tests.js
+npm test
 ```
-Executes the direct attack, latency measurement, rate limit lockout (429) & IP bypass, and sync vs background job benchmarks.
+*Validates 9 automated test specs covering 256-bit CSPRNG sessions, all 3 cookie flags, anti-enumeration, multi-user isolation, server logout DB deletion, password reset revocation, deletion locking, job idempotency, and RBAC.*
+
+### 2. Run Database Seeding:
+```bash
+node prisma/seed.js
+```
+*Seeds Admin (Mallam Danladi Garba), Customer A (Ahmed Ibrahim), Customer B (Zainab Bello), and Deletion Test Personas.*
+
+### 3. Run Nightly Scheduled Retention & Anonymization Job:
+```bash
+node scripts/generate-evidence-runs.js
+```
+*Executes Run 1 (anonymizing eligible accounts past 7-day grace period) and Run 2 (verifying 100% idempotency with 0 mutations).*
+
+### 4. Start Next.js Development Server:
+```bash
+npm run dev
+```
+*Access customer portal at `http://localhost:3000/portal` and administrative portal at `http://localhost:3000/admin`.*

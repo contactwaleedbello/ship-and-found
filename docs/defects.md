@@ -1,39 +1,56 @@
-# Task 4 Defects Log & Remediation History (`docs/defects.md`)
+# Task 5 Engineering Defect Log & Resolutions
 
-**Workstream**: `task-04-server-security/`  
-**Domain**: DG Tech Store (Shop ATF 03)  
-**Standard**: Step 10 & 12 (Defect Forensic Documentation)  
-
----
-
-## Defect Inventory & Diagnostic Summary
-
-| Defect ID | Severity | Category | Description | Root Cause | Architectural Remediation |
-| :--- | :---: | :---: | :--- | :--- | :--- |
-| **DEF-T4-01** | **CRITICAL** | Security | Defenceless endpoint: Direct curl request bypassed client validation, inserting single-character names into DB. | Missing server-side boundary schema enforcement. | Introduced Zod `serverRegisterSchema` rejecting malformed data with `HTTP 422 Unprocessable Content`. |
-| **DEF-T4-02** | **HIGH** | Database | Required column migration failure (`P3006`) when attempting to add `NOT NULL` column to populated table. | Relational engines abort altering populated tables without defaults or values. | Implemented 3-step zero-downtime migration: (1) add nullable, (2) backfill data, (3) enforce required. |
-| **DEF-T4-03** | **HIGH** | Security | Verification code replay vulnerability: Same valid 6-digit OTP code accepted multiple times. | Missing consumption state tracking in verification store. | Added atomic `consumedAt` timestamp, returning `HTTP 409 Conflict: Code Already Consumed` on reuse. |
-| **DEF-T4-04** | **HIGH** | Architecture | Client/Schema drift error (`P2022: Column does not exist`) causing runtime query crash. | Generating Prisma Client updated TypeScript types without migrating physical database catalog. | Established strict governance: schema edits must execute `npx prisma migrate dev` before client invocation. |
-| **DEF-T4-05** | **MEDIUM** | Performance | Synchronous email transmission inside HTTP registration thread caused 947ms latency. | Awaiting remote SMTP TCP/TLS handshakes synchronously inside the HTTP response loop. | Refactored email dispatch to an asynchronous background worker queue (`enqueueEmailJob`), dropping latency to 67ms. |
-| **DEF-T4-06** | **CRITICAL** | Cryptography | Fast algorithm vulnerability: Fast hashing (SHA-256) enables billions of guesses/sec on consumer GPUs. | Treating password hashing as a file integrity problem rather than an authentication problem. | Standardized on Argon2id (`m=64MB, t=3, p=4`), forcing attacker work factor penalty of ~46,683x. |
-| **DEF-T4-07** | **MEDIUM** | Information | Account enumeration leak: Login route distinguishing between "User not found" and "Incorrect password". | Differentiated error messages disclosing registered email addresses. | Unified login failure response to generic `"Incorrect email or password"` (`HTTP 401 Unauthorized`). |
+**Application:** DG Tech Store (Shop ATF 03, Banex Plaza, Wuse 2, Abuja)  
+**Document:** `docs/defects.md`  
+**Task:** Task 5 — Sessions, Deletion, and the Defence  
 
 ---
 
-## Detailed Forensic Deep-Dives
+## Defect Summary
 
-### 1. DEF-T4-01: Direct Endpoint Bypass
-- **Discovery**: In Task 3 Step 8, executing `curl -i -X POST http://127.0.0.1:3000/api/auth/register -d '{"fullName":"a",...}'` returned `HTTP 201 Created`.
-- **Diagnosis**: The server route assumed the browser form had already validated the data. Because curl does not execute browser JavaScript, all 8 client-side rules were ignored.
-- **Remediation**: In `app/api/auth/register/route.ts`, the incoming payload is parsed via `serverRegisterSchema.safeParse(rawBody)`. If any domain rule fails, the request is terminated with `HTTP 422` before reaching any backend service.
+| Defect ID | Severity | Category | Component | Status | Resolution |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **DEF-501** | CRITICAL | Security | `POST /api/auth/logout` | **RESOLVED** | Implemented true server-side DB session deletion using `destroySession(rawToken)`. |
+| **DEF-502** | HIGH | RBAC Boundary | `middleware.ts` | **RESOLVED** | Returned `HTTP 403 Forbidden` for non-admin users attempting to access `/admin/*`. |
+| **DEF-503** | CRITICAL | Compliance / DB | Account Deletion | **RESOLVED** | Replaced raw SQL deletion with **Irreversible Anonymization** under FIRS CITA s.55. |
+| **DEF-504** | MEDIUM | Reliability | `scheduled-deletion-job.ts` | **RESOLVED** | Made query filter idempotent (`accountStatus == 'DELETION_PENDING'`), yielding 0 mutations on re-run. |
+| **DEF-505** | HIGH | Privacy | Protected Routes | **RESOLVED** | Added `Cache-Control: no-store, no-cache, must-revalidate, private` to prevent bfcache replay. |
 
-### 2. DEF-T4-02: Required Column Migration Abort
-- **Discovery**: Adding `bvnNumber String` to populated `User` table resulted in Prisma abort: `We found changes that cannot be executed: Step 0 Added the required column bvnNumber without a default value.`
-- **Remediation**: Executed the expand-backfill-contract pattern:
-  1. Add `bvnNumber String?` $\rightarrow$ Migration `step1_add_bvn_optional`
-  2. SQL backfill: `UPDATE "User" SET "bvnNumber" = 'BVN-222' || substr("id", 5) WHERE "bvnNumber" IS NULL;`
-  3. Alter `bvnNumber String` $\rightarrow$ Migration `step2_make_bvn_required`
+---
 
-### 3. DEF-T4-03: Verification Code Replay Defect
-- **Discovery**: Submitting a previously verified OTP code `749201` a second time within its 10-minute validity window returned `HTTP 200 OK`, allowing potential credential re-hijacking.
-- **Remediation**: In `lib/security/otp-service.ts`, the verification function marks `record.consumedAt = Date.now()` upon the first successful validation. Subsequent calls detect `consumedAt !== null` and reject with `HTTP 409 Conflict`.
+## Detailed Post-Mortems
+
+### DEF-501: Client-Only Cookie Deletion Left Active Session in Database
+- **Root Cause:** The inherited Task 4 logout endpoint simply called `response.cookies.delete('dg_session')`. While the browser stopped sending the cookie, the session token record remained completely active and valid inside SQLite `Session` table. An attacker who had intercepted the token could continue using it to make authenticated API requests for up to 7 days.
+- **Fix:** Updated `app/api/auth/logout/route.ts` to read the cookie value, compute its SHA-256 hash, and execute `await prisma.session.delete({ where: { sessionToken } })` before sending cleared cookie headers.
+- **Verification:** Captured before-and-after database terminal states in `evidence/07-session-row-present.png` and `evidence/08-session-row-deleted.png`. Automated in `tests/task5-verification.test.ts`.
+
+---
+
+### DEF-502: Middleware Redirecting Unauthorized Customers Instead of 403 Forbidden
+- **Root Cause:** When an ordinary customer navigated to `/admin/inventory-approvals`, early middleware code called `NextResponse.redirect('/login')`. This confused authentication with authorization, masking the RBAC boundary and suggesting to the customer that their session had expired.
+- **Fix:** Refactored `middleware.ts` to inspect `user.role`. If the user is authenticated but `user.role !== 'ADMIN'`, the middleware halts execution and returns a dedicated, styled `HTTP 403 Forbidden` response.
+- **Verification:** Captured failed customer access in `evidence/16-admin-route-refused.png`. Verified by unit test assertion `expect(customerAccess.status).toBe(403)`.
+
+---
+
+### DEF-503: Foreign Key Crash on Hard Deletion of Users with Financial Records
+- **Root Cause:** Attempting to execute `DELETE FROM User WHERE id = ?` on a user with hire-purchase transaction records caused Prisma to throw `P2003: Foreign key constraint failed on the field: userId (onDelete: Restrict)`.
+- **Fix:** Updated `scripts/scheduled-deletion-job.ts` to check `user.payments.length`. If financial records exist, the user's personal PII is overwritten with synthetic anonymized values (`REDACTED_ANONYMIZED_CUSTOMER`), severing the link to the living individual while keeping foreign keys and accounting ledgers intact per FIRS CITA Section 55.
+- **Verification:** Captured in `evidence/13-scheduled-job-run-one.txt`.
+
+---
+
+### DEF-504: Scheduled Deletion Job Failed Idempotency on Second Run
+- **Root Cause:** Early prototypes of the scheduled retention job updated all records unconditionally, causing the second execution to throw exceptions or log misleading mutation counts.
+- **Fix:** Constrained the selection filter strictly to accounts with `accountStatus === 'DELETION_PENDING'` and `deletionRequestedAt <= (now - 7 days)`. Once processed, the user's status transitions to `ANONYMIZED_PRESERVED_FOR_AUDIT`.
+- **Verification:** Consecutive runs documented in `evidence/13-scheduled-job-run-one.txt` (1 examined, 1 anonymised) and `evidence/14-scheduled-job-run-two.txt` (0 examined, 0 anonymised, 0 errors in 1ms).
+
+---
+
+### DEF-505: Back-Button History Exposed Account State After Logout
+- **Root Cause:** After logging out, tapping the browser back button served cached HTML from the browser's Back-Forward Cache (bfcache), revealing customer credit scores and past orders.
+- **Fix:** Configured HTTP response headers across all authenticated routes and logout responses:  
+  `Cache-Control: no-store, no-cache, must-revalidate, private`  
+  `Pragma: no-cache`
+- **Verification:** Documented in `evidence/09-logout-network-failure.txt` and `evidence/10-logout-edge-case-fixed.txt`.

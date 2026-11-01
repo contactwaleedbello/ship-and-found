@@ -94,3 +94,4 @@ CRYPTOGRAPHIC PROPERTIES & VERIFICATION:
 }
 
 main().catch(console.error).finally(() => prisma.$disconnect());
+

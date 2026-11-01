@@ -64,3 +64,4 @@ Optimistic client-side logout creates a severe split-brain state between client
 perception and server authorization. In financial applications, server revocation
 must be made robust against network disconnects.
 ================================================================================
+

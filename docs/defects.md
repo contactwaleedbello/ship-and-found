@@ -54,3 +54,4 @@
   `Cache-Control: no-store, no-cache, must-revalidate, private`  
   `Pragma: no-cache`
 - **Verification:** Documented in `evidence/09-logout-network-failure.txt` and `evidence/10-logout-edge-case-fixed.txt`.
+

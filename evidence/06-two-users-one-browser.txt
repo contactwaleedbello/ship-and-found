@@ -95,3 +95,4 @@ MULTI-USER ISOLATION PROOF & VERIFICATION:
    - Tampering / swapping tokens immediately fails SHA-256 hash lookup in database.
    - Vitest suite assertion: expect(validatedA.user.id).not.toBe(validatedB.user.id) -> PASS.
 ================================================================================
+

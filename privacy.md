@@ -59,3 +59,4 @@ We enforce strict cryptographic controls to protect your data:
 - All administrative routes enforce strict Role-Based Access Control (RBAC), returning `HTTP 403 Forbidden` for unauthorized customer sessions.
 
 For inquiries or to exercise your NDPA data rights, contact our Data Protection Officer at `compliance@dgtechstore.ng`.
+

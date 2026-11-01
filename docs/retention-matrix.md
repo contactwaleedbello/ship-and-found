@@ -169,3 +169,4 @@ Under the **Nigeria Data Protection Act (NDPA) 2023, Section 65 (Interpretation 
    Refers to processing personal data in such a manner that the data subject can **no longer be identified**, directly or indirectly, by any means reasonably likely to be used, either by the data controller or by any third party, without the possibility of reversal.  
    - Crucially, under NDPA Section 3(2), **truly anonymized data ceases to be "personal data"**. Once personal identifiers (name, phone, BVN, NIN, IP) are irreversibly redacted, the remaining non-identifiable numerical attributes (amount: ₦250,000, date: 2026-10-15, item: MacBook) fall outside the scope of data protection restrictions.
    - Anonymisation satisfies the legal mandate of Section 34 (Right to Erasure) because the data subject's privacy is permanently secured, while simultaneously satisfying fiscal record-keeping laws because the mathematical ledger is preserved.
+

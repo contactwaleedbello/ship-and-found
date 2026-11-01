@@ -56,3 +56,4 @@ I understand HTTP/2 multiplexing, headers, and cookie transport. However, I do n
 
 ### 9. Proprietary In-App Webview Memory Heuristics & BFcache Invalidation
 While I implemented standard `Cache-Control: no-store` headers to prevent browser back-button session caching, I do not know the undocumented, non-standard memory caching heuristics used by proprietary in-app webviews (such as WhatsApp, Instagram, or TikTok built-in browsers) on various operating system forks, which often ignore standard HTTP caching headers and retain DOM snapshots in unmanaged native memory.
+

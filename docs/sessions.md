@@ -104,3 +104,4 @@ Machine evidence confirming these properties:
 - `evidence/01-two-session-ids.txt`: Confirms 256-bit CSPRNG entropy and SHA-256 database hashing.
 - `evidence/02-cookie-flags.png`: Chrome DevTools Application tab screenshot displaying `HttpOnly`, `Secure`, and `SameSite=Lax` flags active on `localhost:3000`.
 - `tests/task5-verification.test.ts`: Automated vitest asserting all three flags on every issued cookie.
+

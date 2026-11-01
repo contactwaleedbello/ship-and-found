@@ -290,3 +290,4 @@ To prepare for the oral viva evaluation regarding our Retrieval-Augmented Genera
 
 ### Viva Explanation:
 This chunk is embedded and stored in the database to allow our automated support and compliance assistant to answer legal inquiries regarding data deletion. When a customer or auditor asks *"Why was my payment record preserved after I deleted my account?"*, the RAG pipeline retrieves this chunk, citing Section 55 of CITA and Section 34 of the NDPA, providing mathematically sound, legally defensible justifications directly from our verified store policies.
+

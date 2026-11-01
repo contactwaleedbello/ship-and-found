@@ -82,3 +82,4 @@ Every server route and client component can assume that any authenticated reques
 - `evidence/04-hard-gating-flow.png`: Architecture and network trace from main branch `task-5`.
 - `lib/security/session-service.ts`: Enforces session generation strictly upon successful verification.
 - `app/api/auth/login/route.ts`: Rejects unverified accounts with `HTTP 403 Forbidden` (`requiresVerification: true`).
+

@@ -69,3 +69,4 @@ Mallam Danladi's response provides critical **primary research validation** that
    - For settled customers, the system applies **irreversible anonymization** rather than deletion: personal PII is redacted while financial ledgers are preserved for 6 years per FIRS CITA Section 55.
 3. **The 7-Day Grace Period:**  
    Rather than instant deletion, all valid deletion requests enter a 7-day `DELETION_PENDING` hold. Sessions are revoked immediately to freeze activity, allowing store staff to verify accounting books before permanent anonymization occurs.
+

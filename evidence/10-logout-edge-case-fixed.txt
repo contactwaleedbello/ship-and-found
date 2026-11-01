@@ -71,3 +71,4 @@ VERIFICATION IN CODEBASE:
 - middleware.ts (session revalidation on every protected request)
 - tests/task5-verification.test.ts (asserts database row presence -> destruction)
 ================================================================================
+

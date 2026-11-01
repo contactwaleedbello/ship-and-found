@@ -60,3 +60,4 @@ The pre-populated email is treated by the server as purely untrusted client inpu
 
 - `evidence/15-state-management-working.png`: Displays the password reset page with the email field pre-populated from the failed login attempt, with clean input focus and zero secret exposure.
 - `app/(public)/reset-password/page.tsx`: Demonstrates the `useSearchParams()` reader and Zod boundary validation.
+

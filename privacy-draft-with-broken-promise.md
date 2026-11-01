@@ -32,3 +32,4 @@
 
 4. **Foreign Key Integrity Crash:**  
    Attempting a raw SQL deletion on a user with associated `Payment` records triggers `PrismaClientKnownRequestError: Foreign key constraint failed on the field: userId (onDelete: Restrict)`.
+

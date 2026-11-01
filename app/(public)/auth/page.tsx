@@ -66,7 +66,11 @@ function AuthContent(): ReactNode {
     } else {
       setActiveMode('signup');
     }
-  }, [modeParam]);
+    const emailParam = searchParams.get('email') || searchParams.get('identifier');
+    if (emailParam) {
+      setResetPhone(emailParam);
+    }
+  }, [modeParam, searchParams]);
 
   function switchMode(newMode: AuthMode): void {
     setActiveMode(newMode);
@@ -257,17 +261,16 @@ function AuthContent(): ReactNode {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          phoneNumber: trimmedId,
+          email: trimmedId,
           password: loginPassword,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        // Step 5: Do not leak which half was wrong
-        setLoginError('Incorrect phone number or password details.');
+        setLoginError(data.message || 'Incorrect email or password.');
       } else {
-        router.push(data.redirectUrl || '/');
+        router.push(data.redirectUrl || '/portal');
       }
     } catch {
       setLoginError('Network error. Check connection and retry.');
@@ -689,7 +692,13 @@ function AuthContent(): ReactNode {
                   </label>
                   <button
                     type="button"
-                    onClick={() => switchMode('reset')}
+                    onClick={() => {
+                      switchMode('reset');
+                      if (loginIdentifier) {
+                        setResetPhone(loginIdentifier);
+                        window.history.pushState(null, '', `/auth?mode=reset&email=${encodeURIComponent(loginIdentifier)}`);
+                      }
+                    }}
                     className="text-xs text-[var(--color-fg-brand)] hover:underline"
                   >
                     Forgot Password?

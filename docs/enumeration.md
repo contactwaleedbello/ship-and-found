@@ -51,3 +51,4 @@ Security controls rarely come without a usability cost:
 - **Why the Trade-off is Worth It**:
   - The financial risk of automated account enumeration and identity spoofing on a credit platform extending thousands of dollars of hardware without collateral far outweighs an 8% temporary user hesitation.
   - We mitigate the hesitation responsibly by providing clear contextual guidance: *"National Identity Number (matching NIMC records)"* &mdash; without exposing raw character constraints or syntactic masks in the input placeholder.
+

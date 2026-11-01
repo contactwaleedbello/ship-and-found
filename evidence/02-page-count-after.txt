@@ -49,3 +49,4 @@ State switching is managed via URL query parameters (?mode=signup, ?mode=login, 
 using conditional client-side tabpanel rendering. Full-page reloads and redundant session
 initializations are completely eliminated.
 ================================================================================
+

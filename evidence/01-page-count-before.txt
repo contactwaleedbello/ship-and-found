@@ -45,3 +45,4 @@ SEPARATE AUTH PAGES IDENTIFIED FOR SPA CONSOLIDATION:
 - app/(public)/forgot-password/page.tsx
 Target Architecture: Single consolidated route app/(public)/auth/page.tsx with ?mode=login|signup|reset
 ================================================================================
+

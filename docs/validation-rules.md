@@ -78,3 +78,4 @@ Applications must check email **format**, never email **existence**. Attempting 
 >
 > **2. Existence Does Not Prove Ownership or Access**:  
 > Even if an API could definitively verify that `ceo@dangote.com` exists, that confirmation provides zero proof that the individual sitting at the keyboard owns that address, has access to its inbox, or is authorized to enter into a credit agreement with it. True ownership can only be established asynchronously by transmitting a time-limited one-time verification code (OTP) or magic link directly to that inbox and requiring the recipient to prove access.
+

@@ -75,3 +75,4 @@ During initial requirements analysis, three candidate fields were considered and
 
 - **Decoration Removed**: A prominent decorative SVG shield emblem and an animated gradient background was originally placed above the form container.
 - **Reason for Removal**: Clicking the shield icon performed zero action, but keyboard screen reader focus frequently landed on the unlabelled SVG node, confusing visually impaired users. Furthermore, the gradient background reduced contrast ratios below WCAG AAA requirements on mobile screens under direct Nigerian sunlight. It was removed in favor of clean, high-contrast semantic cards.
+

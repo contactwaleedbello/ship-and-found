@@ -53,3 +53,4 @@ When an organization integrates external third-party identity providers (e.g., S
    - Furthermore, separate HTML documents can be submitted via standard form actions (`POST /api/auth/login`) even when a user's mobile browser disables JavaScript, network proxies strip modern script tags, or low-memory devices crash under heavy client-side bundles.
 
 **Conclusion**: For DG Tech Store's consumer retail workflow at Banex Plaza, instant query-parameter switching delivers optimal conversion and zero input loss; however, separate routes remain the superior architectural decision whenever security isolation, independent CSP headers, or non-JS fallbacks take precedence over transition speed.
+

@@ -9,8 +9,6 @@
 /build
 
 # Environment & secrets (never commit per .agents/rules/env-and-secrets.md)
-.env
-.env.*
 !.env.example
 
 # Debug & logs
@@ -38,3 +36,4 @@ prisma/*.db
 .DS_Store
 *.pem
 
+config.bat

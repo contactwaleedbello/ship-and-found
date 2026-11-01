@@ -9,8 +9,6 @@
 /build
 
 # Environment & secrets (never commit per .agents/rules/env-and-secrets.md)
-.env
-.env.*
 !.env.example
 
 # Debug & logs
@@ -31,3 +29,4 @@ next-env.d.ts
 .DS_Store
 *.pem
 
+config.bat

@@ -62,3 +62,4 @@ Every strict rate limiter creates collateral damage for legitimate human users s
 ### The Mitigation:
 1. **Higher Thresholds for Residential/Commercial ISPs**: Differentiate known shared mobile NAT pools (e.g., MTN Nigeria CGNAT `100.64.0.0/10`) from isolated server IPs.
 2. **Step-Up Verification Rather Than Hard Lockout**: When the IP threshold is exceeded, the server does not reject legitimate traffic with a hard 429; it prompts the user for an interactive **CAPTCHA challenge** or SMS OTP verification, allowing real humans on shared connections to proceed while halting headless bots.
+

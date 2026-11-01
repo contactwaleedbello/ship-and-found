@@ -52,3 +52,4 @@ prisma.user.findFirst({ select: { id: true, creditScore: true } })
 
 Output Captured:
 Resolved Query Result: { id: 'usr_01', creditScore: 700 }
+

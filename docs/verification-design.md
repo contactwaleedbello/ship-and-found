@@ -64,3 +64,4 @@ if (record.consumedAt !== null) {
 record.consumedAt = Date.now();
 ```
 As verified in `evidence/22-verification-code-reused.png`, repeating the request with an already-used code immediately returns **`HTTP 409 Conflict: Code Already Consumed`**, eliminating the replay vulnerability completely.
+

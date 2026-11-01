@@ -37,3 +37,4 @@ Then run prisma migrate dev to apply it and verify it works.
 
 --- 4. Root Cause Analysis ---
 Relational engines (SQLite, PostgreSQL, MySQL) strictly reject altering a table to add a NOT NULL constraint to an existing populated table unless a DEFAULT value is declared or all existing rows already have values for that column. Attempting this against a live production database results in an immediate table lock and aborted transaction.
+

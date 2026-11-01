@@ -47,3 +47,4 @@ Refusing to let the agent run migrations is not a free virtue; it carries real o
 3. **Context Switching Overhead**: Requiring manual verification breaks developer flow, shifting cognitive load from high-level business logic to low-level relational mechanics.
 
 **Conclusion**: We knowingly accept the velocity cost of human-executed migrations because the alternative &mdash; an automated agent executing unmonitored DDL against a retail financial ledger &mdash; carries an unacceptable risk of silent table corruption and customer data loss.
+

@@ -8,6 +8,20 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const requestId = request.headers.get('x-request-id') ?? `mw_${crypto.randomUUID()}`;
 
+  // Handle legacy/direct auth routes collapsed in Task 3 SPA architecture
+  if (pathname === '/login') {
+    const authUrl = new URL('/auth?mode=login', request.url);
+    const redirectParam = request.nextUrl.searchParams.get('redirect');
+    if (redirectParam) authUrl.searchParams.set('redirect', redirectParam);
+    return NextResponse.redirect(authUrl);
+  }
+  if (pathname === '/register' || pathname === '/signup') {
+    return NextResponse.redirect(new URL('/auth?mode=signup', request.url));
+  }
+  if (pathname === '/forgot-password' || pathname === '/reset-password') {
+    return NextResponse.redirect(new URL('/auth?mode=reset', request.url));
+  }
+
   // Protected paths
   const isAdminPath = pathname.startsWith('/admin') || pathname.startsWith('/api/admin');
   const isCustomerProtectedPath =
@@ -29,7 +43,7 @@ export async function middleware(request: NextRequest) {
         { status: 401, headers: { 'x-request-id': requestId } }
       );
     }
-    const loginUrl = new URL('/login', request.url);
+    const loginUrl = new URL('/auth?mode=login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
@@ -51,7 +65,7 @@ export async function middleware(request: NextRequest) {
           { status: 401, headers: { 'x-request-id': requestId } }
         );
       }
-      const loginUrl = new URL('/login', request.url);
+      const loginUrl = new URL('/auth?mode=login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -138,7 +152,7 @@ export async function middleware(request: NextRequest) {
         { status: 500, headers: { 'x-request-id': requestId } }
       );
     }
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/auth?mode=login', request.url));
   }
 }
 

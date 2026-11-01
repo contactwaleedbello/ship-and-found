@@ -47,3 +47,4 @@ CREATE TABLE "User" (
 CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "User_role_idx" ON "User"("role");
+

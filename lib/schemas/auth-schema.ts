@@ -85,3 +85,4 @@ export type ServerRegisterInput = z.infer<typeof serverRegisterSchema>;
 export type ServerLoginInput = z.infer<typeof serverLoginSchema>;
 export type ServerResetRequestInput = z.infer<typeof serverResetRequestSchema>;
 export type ServerVerifyCodeInput = z.infer<typeof serverVerifyCodeSchema>;
+

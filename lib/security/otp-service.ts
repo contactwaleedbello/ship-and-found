@@ -116,3 +116,4 @@ export function verifyCode(email: string, inputCode: string): VerifyResult {
 export function getOtpRecord(email: string): OtpRecord | undefined {
   return otpStore.get(email.toLowerCase().trim());
 }
+

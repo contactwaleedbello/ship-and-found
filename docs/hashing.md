@@ -77,3 +77,4 @@ If salting is omitted:
 1. Every user with the same password has an identical database hash.
 2. An attacker computes a single **rainbow table** (a precomputed dictionary of common hashes) once, and checks it in $O(1)$ time to compromise thousands of accounts simultaneously.
 3. With unique salts, an attacker must recompute the entire keyspace individually for every single user.
+

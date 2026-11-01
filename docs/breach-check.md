@@ -76,3 +76,4 @@ sequenceDiagram
 5. **Local Decision**: The server performs the comparison locally. If the suffix matches, the password is confirmed breached and rejected.
 
 **Security Guarantee**: The cleartext password never leaves our server boundary, the full hash is never disclosed, and the user is protected from known breached credentials.
+

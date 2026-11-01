@@ -180,3 +180,4 @@ Most novice systems only build the `Payment` table, discarding failed attempts. 
 > 2. Cross-reference the associated `PaymentAttempt` (`paymentAttemptId`) to establish the originating customer IP, timestamp of initiation, and channel used.
 > 3. Provide the corresponding bank settlement batch ID from our merchant processor matching the exact `gatewayReference`, demonstrating that the funds cleared into our corporate account and were recognized under that fiscal quarter's VAT and Companies Income Tax (CIT) filings.
 > 4. Export the immutable audit log trail (`AuditLog`) proving that the record has not been updated, backdated, or tampered with since creation.
+

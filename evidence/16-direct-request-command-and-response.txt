@@ -41,3 +41,4 @@ Transfer-Encoding: chunked
   Client-side validation provided ZERO security. An adversary writing a 5-line Python or
   bash script bypasses the entire form UI and floods the database with single-letter accounts.
 ================================================================================
+

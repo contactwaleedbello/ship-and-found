@@ -815,3 +815,4 @@ export default function AuthPage(): ReactNode {
     </Suspense>
   );
 }
+
